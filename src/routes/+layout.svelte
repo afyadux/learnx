@@ -310,9 +310,8 @@
     </span>
 </nav>
 
-<main class={ showNavbar ? "active" : "" }>
-    <slot></slot>
-</main>
+<slot></slot>
+
 
 <section class={ showNavbar ? "show" : "" } id="popup-nav" bind:this={ popup }>
 

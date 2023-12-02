@@ -4,6 +4,9 @@
 
 
 
+$max-width: 1360px;
+
+
 // Font Weights
 $weight-light: 200; 
 $weight-regular: 300; 
@@ -30,6 +33,7 @@ $color-success: #2BD84E;
 
 // Typefaces
 $typeface-body:
+    "Inter",
     "Mulish",
     sans-serif;
 

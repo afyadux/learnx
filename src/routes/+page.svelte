@@ -1,12 +1,5 @@
 
 
-<style lang="scss">
-    @use "$lib/interface/variables" as app;
-
-    h1 {
-        color: app.$color-brand;
-    }
-</style>
 
 <script lang="ts">
 
@@ -15,4 +8,12 @@
 <main>
     <h1>Hello World</h1>
 </main>
+
+<style lang="scss">
+    @use "$lib/interface/variables" as app;
+
+    h1 {
+        color: app.$color-brand;
+    }
+</style>
 
