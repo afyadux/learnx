@@ -296,7 +296,7 @@
         <a class={ $page.url.pathname === "/link" ? "highlight" : "" } href="/link">Link</a>
         <a class={ $page.url.pathname === "/link" ? "highlight" : "" } href="/link">Link</a>
         <a class={ $page.url.pathname === "/link" ? "highlight" : "" } href="/link">Link</a>
-        <a class={ $page.url.pathname === "/link" ? "highlight" : "" } href="/link">Link</a>
+        <a class={ $page.url.pathname === "/courses" ? "highlight" : "" } href="/courses">courses</a>
     </div>
 
     <span>
