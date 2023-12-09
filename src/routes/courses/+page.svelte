@@ -18,11 +18,11 @@
 
             </div>
 
-            <img src="/icons/htmlicon.png" id="htmlicon" alt="">
+            <div id="topic-icon">
+                <img src="/icons/htmlicon.png" alt="">
+            </div>
             
         </div>
-
-        
         {/each }
     </div>
 
@@ -31,88 +31,102 @@
 
 <style lang="scss">
 
-#grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
+    #grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
 
-}
+        padding: 0px 5vw;
 
-.card  {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: rgb(193, 241, 255);
-    filter: drop-shadow(0rem 0rem 3rem rgba(40, 42, 54, 0.08));
-    text-align: center;
-}
-
-
-#header {
-    margin-left: 10px;
-    margin-top: 10px;
-    display: inline-block;
-    text-align: left;
-    max-width: 95%;
-    line-height: 1.2em;  
-    max-height: 2.4em; 
-    overflow: hidden;
-}
-
-#members {
-    margin-top: 2.8rem;
-    margin-bottom: .5rem;
-    margin-left: .5rem;
-    display: flex;
-    align-items: center; 
-    position: relative;
-    
     }
 
-#members p {
-    margin-left: 10px;
-}
+    .card  {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        background-color: rgb(193, 241, 255);
+        filter: drop-shadow(0rem 0rem 3rem rgba(40, 42, 54, 0.08));
+        text-align: center;
 
-#members img {
-    position: relative; 
-    width: 1.5rem; 
-    height: 1.5rem; 
-    z-index: 1; 
-    
-    border: 3px solid white;
-    border-radius: 3rem;
-
-    &:not(:first-child) {
-        margin-left: -6px; 
+        gap: 3rem;
+        cursor: pointer;
     }
 
-    &:nth-child(1) {
-        z-index: 3; 
+
+    #header {
+        // margin-left: 10px;
+        // margin-top: 10px;
+
+        margin: 1rem 1rem 0px 1rem;
+        display: inline-block;
+        text-align: left;
+        max-width: 95%;
+        line-height: 1.2em;  
+        max-height: 2.4em; 
+        overflow: hidden;
     }
-    &:nth-child(2) {
-        z-index: 2; 
+
+    #members {
+        // margin-top: 2.8rem;
+        // margin-bottom: .5rem;
+        // margin-left: .5rem;
+        margin: 0px 1rem 1rem 1rem;
+        display: flex;
+        align-items: center; 
+        position: relative;
+        
+        }
+
+    #members p {
+        margin-left: 10px;
     }
-    &:nth-child(3) {
+
+    #members img {
+        position: relative; 
+        width: 1.5rem; 
+        height: 1.5rem; 
         z-index: 1; 
-    }
+        
+        border: 3px solid rgb(193, 241, 255);
+        border-radius: 3rem;
+
+        &:not(:first-child) {
+            margin-left: -6px; 
+        }
+
+        &:nth-child(1) {
+            z-index: 3; 
+        }
+        &:nth-child(2) {
+            z-index: 2; 
+        }
+        &:nth-child(3) {
+            z-index: 1; 
+        }
 
     }
 
-    #htmlicon {
+    #topic-icon {
         position: absolute;
-        border: 2px solid red;  
-        left: 17.2rem; 
-        top: 4rem;
-        width: 3.8rem;
-        height: 3.8rem;
-        transform: rotate(-35deg);   
-          
+        bottom: 0px;
+        right: 0px;
+
+        border-radius: 0.5rem;
+
+        background-color: #FAB5A0;
+
+        width: 5.4rem;
+        height: 7rem;
+
+        transform: translateX(24%) translateY(40%) rotateZ(-35deg);
+        padding: 1.5rem;
+
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
     }
-    
-
-   
-
-  
 </style>
