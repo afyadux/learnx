@@ -1,7 +1,6 @@
 
 
 <script lang="ts">
-    import { page } from "$app/stores";
     import Icon from "$lib/interface/Icon.svelte";
     import { ideaType } from "$lib/models/lesson";
 
@@ -20,22 +19,14 @@
     
 </script>
 
+
+
 <main>
-
-    <article id="showcase">
-        <div>
-            <h1>Types of Chemical Bonds on the Periodic Table</h1>
-            <p>6 min lesson &middot; 12 steps</p>
-        </div>
-        <div></div>
-        <div></div>
-    </article>
-
     <article id="inspector">
         <h3 class="subtitle">A dive into how ionic bonds form & their properties</h3>
-
+    
         <div class="detail">
-
+    
             <div class="chip">
                 <Icon frame={[1.2,1.2]}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -51,7 +42,7 @@
                     <path d="M8.29431 16.7002H8.30329"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>                    
                 </Icon>
-
+    
                 <p>Posted Wednesday &middot; Mar 21, 2023 &middot; 11:59 PM</p>
             </div>
         </div>
@@ -72,19 +63,29 @@
             </div>
         {/each }
         </section>
-
+    
         <section id="quiz" style={ `transform: translateX(${ -translate + 100 }vw);` }>
-
+    
         </section>
     </article>
 </main>
 
 
-<style lang="scss">
 
+<style lang="scss">
     @use "$lib/interface/variables" as app;
 
     main {
+
+        div.chip {
+            fill: transparent;
+            stroke: app.$color-foreground;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0.5rem;
+        }
 
         > * {
             width: 100%;
@@ -93,30 +94,6 @@
 
         }
 
-
-        article#showcase {
-            // border: 1px solid orange;
-            margin-top: 3rem;
-            height: 52vh;
-
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: 1fr;
-            gap: 1rem 5vw;
-
-            div {
-                // border: 1px solid blue;
-            }
-
-            > div:nth-child(1) {
-                display: flex;
-                justify-content: center;
-                flex-direction: column;
-                gap: 1rem;
-
-                h1 { font-family: app.$typeface-heading; font-weight: app.$weight-bold; }
-            }
-        }
 
         article#inspector {
             display: flex;
@@ -135,15 +112,7 @@
             }
 
 
-            div.chip {
-                fill: transparent;
-                stroke: app.$color-foreground;
-
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: 0.5rem;
-            }
+            
         }
 
         article#lesson {
@@ -194,5 +163,4 @@
         }
     }
 </style>
-
 
