@@ -293,10 +293,10 @@
     </a>
 
     <div class="links">
-        <a class={ $page.url.pathname === "/link" ? "highlight" : "" } href="/link">Link</a>
-        <a class={ $page.url.pathname === "/link" ? "highlight" : "" } href="/link">Link</a>
-        <a class={ $page.url.pathname === "/link" ? "highlight" : "" } href="/link">Link</a>
-        <a class={ $page.url.pathname === "/courses" ? "highlight" : "" } href="/courses">courses</a>
+        <a class={ $page.url.pathname === "/courses" ? "highlight" : "" } href="/course">Course</a>
+        <a class={ $page.url.pathname === "/lesson" ? "highlight" : "" } href="/lesson">Lesson</a>
+        <a class={ $page.url.pathname === "/" ? "highlight" : "" } href="/">Link</a>
+        <a class={ $page.url.pathname === "/" ? "highlight" : "" } href="/">Link</a>
     </div>
 
     <span>
