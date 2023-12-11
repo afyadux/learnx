@@ -1,6 +1,7 @@
 
 
 <script lang="ts">
+    import Lessoncard from "$lib/cards/lessoncard.svelte";
     import Icon from "$lib/interface/Icon.svelte";
 
 </script>
@@ -85,7 +86,10 @@
 
 
 
-
+    <article id="objective">
+        <h3>Objective</h3>
+        <p>A transformative course designed to introduce high school students to the fundamental concepts and applications of collegiate-level chemistry. This course aims to demystify the principles of chemistry, showcasing how they underpin the world around us, from the smallest atoms to complex biological systems and environmental processes. Through a blend of theoretical knowledge and practical experiments, students will explore topics such as atomic structure, chemical bonding, thermodynamics, organic chemistry, and biochemistry. The objective is to foster a deep understanding and appreciation of chemistry, encouraging students to develop critical thinking and problem-solving skills that are essential for future scientific pursuits. </p>
+    </article>
 
 
     <article id="lessons">
@@ -93,23 +97,7 @@
 
         <div class="grid">
             {#each Array(7) as _ }
-            <a href="/lesson" class="card">
-
-                <div id="header">
-                    <h3>The Ultimate Hitchikers Guide to the Galaxy</h3>
-                </div>
-
-                <div id="members">
-                    <img src="/icons/profile.png" alt=""> <img src="/icons/profile.png" alt=""> <img src="/icons/profile.png" alt="">
-                    <p> 23 members</p>
-
-                </div>
-
-                <div id="topic-icon">
-                    <img src="/icons/htmlicon.png" alt="">
-                </div>
-                
-            </a>
+                <Lessoncard />
             {/each }
         </div>
     </article>
@@ -151,7 +139,7 @@
 
             // border: 1px solid orange;
             margin-top: 3rem;
-            padding-top: 3rem;
+            padding-top: 4rem;
             padding-bottom: 2rem;
 
             display: grid;
@@ -292,6 +280,16 @@
 
         }
 
+        article#objective {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 1rem;
+
+            margin-top: 1rem;
+            margin-bottom: 3rem;
+        }
+
         article#lessons {
             display: flex;
             flex-direction: column;
@@ -303,94 +301,6 @@
                 gap: 1rem;
 
                 // padding: 0px 5vw;
-            }
-
-            .card  {
-                display: flex;
-                flex-direction: column;
-                position: relative;
-                border-radius: 1rem;
-                overflow: hidden;
-                background-color: rgba(193, 241, 255, 0.5);
-                filter: drop-shadow(0rem 0rem 3rem rgba(40, 42, 54, 0.08));
-                text-align: center;
-
-                gap: 3rem;
-                cursor: pointer;
-
-            }
-
-
-            #header {
-                // margin-left: 10px;
-                // margin-top: 10px;
-
-                margin: 1rem 1rem 0px 1rem;
-                display: inline-block;
-                text-align: left;
-                max-width: 95%;
-                line-height: 1.2em;  
-                max-height: 2.4em; 
-                overflow: hidden;
-            }
-
-            #members {
-                // margin-top: 2.8rem;
-                // margin-bottom: .5rem;
-                // margin-left: .5rem;
-                margin: 0px 1rem 1rem 1rem;
-                display: flex;
-                align-items: center; 
-                position: relative;                
-            }
-
-            #members p {
-                margin-left: 10px;
-            }
-
-            #members img {
-                position: relative; 
-                width: 1.5rem; 
-                height: 1.5rem; 
-                z-index: 1; 
-                
-                border: 3px solid rgb(193, 241, 255);
-                border-radius: 3rem;
-
-                &:not(:first-child) {
-                    margin-left: -6px; 
-                }
-
-                &:nth-child(1) {
-                    z-index: 3; 
-                }
-                &:nth-child(2) {
-                    z-index: 2; 
-                }
-                &:nth-child(3) {
-                    z-index: 1; 
-                }
-
-            }
-
-            #topic-icon {
-                position: absolute;
-                bottom: 0px;
-                right: 0px;
-
-                border-radius: 0.5rem;
-                background-color: #FAB5A0;
-
-                width: 5.4rem;
-                height: 7rem;
-
-                transform: translateX(24%) translateY(40%) rotateZ(-35deg);
-                padding: 1.5rem;
-
-                img {
-                    max-width: 100%;
-                    max-height: 100%;
-                }
             }
         }
 
