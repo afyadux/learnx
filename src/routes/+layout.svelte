@@ -39,7 +39,8 @@
         align-items: center; 
         justify-content: space-between;
 
-        background-color: app.$color-background;
+        background-color: #FAFAFC;
+        backdrop-filter: blur(1rem);
         padding: 0.3rem 5vw; 
 
         &::after {

@@ -24,36 +24,43 @@
 
 
 <main>
-    <article id="inspector">
-        <h3 class="subtitle">A dive into how ionic bonds form & their properties</h3>
-    
-        <div class="detail">
-    
-            <div class="chip">
-                <Icon frame={[1.2,1.2]}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 2V5"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M16 2V5"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M3.5 9.08984H20.5"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M15.6947 13.7002H15.7037"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M15.6947 16.7002H15.7037"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M11.9955 13.7002H12.0045"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M11.9955 16.7002H12.0045"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M8.29431 13.7002H8.30329"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M8.29431 16.7002H8.30329"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>                    
-                </Icon>
-    
-                <p>Posted Wednesday &middot; Mar 21, 2023 &middot; 11:59 PM</p>
+
+    <article id="hero">
+        <img class="background" src="/images/thunderhead.jpeg" alt="">
+
+        <section class="info">
+            <img src="/images/thunderhead.jpeg" alt="">
+            <h1>Determining Emperial Formulas from Percent Composition Data</h1>
+
+            <div class="detail">
+        
+                <div class="chip">
+                    <Icon frame={[1.2,1.2]}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 2V5"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 2V5"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3.5 9.08984H20.5"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 8.5V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5Z"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15.6947 13.7002H15.7037"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15.6947 16.7002H15.7037"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11.9955 13.7002H12.0045"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11.9955 16.7002H12.0045"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.29431 13.7002H8.30329"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.29431 16.7002H8.30329"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>                    
+                    </Icon>
+        
+                    <p>Posted Wednesday &middot; Mar 21, 2023 &middot; 11:59 PM</p>
+                </div>
             </div>
-        </div>
+        </section>
+
     </article>
+    
 
     <article id="stage">
 
         <div class="tabbar">
-            
             <input bind:group={ stageView } type="radio" id="lesson" value="lesson">
             <label for="lesson">Lesson</label>
             
@@ -139,28 +146,85 @@
         }
 
 
-        article#inspector {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-top: 0rem;
+        article#hero {
+            position: relative;
+            padding: calc(12vh + 4rem) 0px 3rem 0px;
+            overflow: hidden;
 
-            .subtitle { font-family: app.$typeface-heading; font-size: 142%; }
+            max-width: unset;
+
+            &::before {
+                content: "";
+                z-index: -1;
+
+                position: absolute;
+                bottom: 0px;
+                left: 0px;
+                right: 0px;
+                height: 100%;
+                background: linear-gradient(180deg, transparent, app.$color-shade);
 
 
-            div.detail {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: 1rem;
+            }
+
+            > img.background {
+                position: absolute;
+                z-index: -2;
+
+                width: 100vw;
+                max-height: unset;
+
+                bottom: 0px;
+                filter: blur(3rem);
+                opacity: 80%;
             }
 
 
-            
+            section.info {
+
+                z-index: 2;
+                padding: 2rem 5vw 1rem 5vw;
+
+                * { z-index: 2; color: app.$color-foreground; stroke: app.$color-foreground; }
+
+                > h1 {
+                    font-size: 210%;
+                    font-family: app.$typeface-heading;
+                    margin-bottom: 0.5rem;
+                    margin-top: 1rem;
+
+                    z-index: 2;
+                }
+
+                > img {
+                    width: 9rem;
+                    height: 16rem;
+                    object-fit: contain;
+                }
+    
+
+    
+                div.detail {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    gap: 1rem;
+                }
+            }
+
+
+
+
         }
+
 
         article#stage {
 
+            position: sticky;
+            top: 4rem;
+
+            margin-top: 1rem;
+            
             div.tabbar {
 
                 display: flex;
@@ -182,6 +246,7 @@
 
                     border-radius: 0.5rem;
                     color: app.$color-midground;
+                    cursor: pointer;
                     
                 }
 
@@ -237,7 +302,7 @@
                 width: 100vw;
                 transform: translateX(100vw);
 
-                border: 1px solid orange;
+                // border: 1px solid orange;
 
             }
         }
