@@ -14,8 +14,9 @@
     ];
 
 
-    let value = false;
-    $: translate = value ? 100 : 0;
+    let stageView: string = "lesson"; 
+
+    $: translate = (stageView === "lesson") ? 0 : 100;
     
 </script>
 
@@ -45,6 +46,19 @@
     
                 <p>Posted Wednesday &middot; Mar 21, 2023 &middot; 11:59 PM</p>
             </div>
+        </div>
+    </article>
+
+    <article id="stage">
+
+        <div class="tabbar">
+            
+            <input bind:group={ stageView } type="radio" id="lesson" value="lesson">
+            <label for="lesson">Lesson</label>
+            
+            <input bind:group={ stageView } type="radio" id="quiz" value="quiz">
+            <label for="quiz">Quiz</label>
+            
         </div>
     </article>
     
@@ -113,6 +127,44 @@
 
 
             
+        }
+
+        article#stage {
+
+
+
+            div.tabbar {
+
+                display: flex;
+                flex-direction: row;
+                gap: 0.5rem;
+
+                width: 300px;
+                margin: 0px auto;
+
+                padding: 0.4rem 0.4rem;
+                background-color: app.$color-elevate;
+                border-radius: 0.8rem;
+
+
+                label {
+                    flex-grow: 1;
+                    text-align: center;
+                    padding: 0.4rem 1rem;
+
+                    border-radius: 0.5rem;
+                    color: app.$color-midground;
+                    
+                }
+
+                input:checked + label {
+                    color: app.$color-info;
+                    font-weight: app.$weight-semibold;
+                    box-shadow: 0 0 1.5rem #282a3614;
+                }
+
+                input { display: none;}
+            }
         }
 
         article#lesson {
