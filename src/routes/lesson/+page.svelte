@@ -14,9 +14,10 @@
     ];
 
 
-    let stageView: string = "lesson"; 
+    let stageView: string = "quiz"; 
 
     $: translate = (stageView === "lesson") ? 0 : 100;
+    $: choices = [2];
     
 </script>
 
@@ -79,7 +80,36 @@
         </section>
     
         <section id="quiz" style={ `transform: translateX(${ -translate + 100 }vw);` }>
-    
+        { #each Array(5) as _, index }
+        <div class="question">
+            <p id="index">{ index + 1 }</p>
+
+            <p id="text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus totam blanditiis sed sunt magnam nobis ab illo, esse quas tempora eaque? Cumque ipsa veritatis nobis asperiores molestias sunt distinctio libero doloribus autem!</p>
+
+            <div class="choices">
+                <label for="">
+                    <span>1</span>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                </label>
+                <label for="">
+                    <span>1</span>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                </label>
+                <label for="">
+                    <span>1</span>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                </label>
+                <label for="">
+                    <span>1</span>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                </label>
+            </div>
+        </div>
+        {/each }
+
+        <div class="submit">
+            <button>Submit Quiz</button>
+        </div>
         </section>
     </article>
 </main>
@@ -130,8 +160,6 @@
         }
 
         article#stage {
-
-
 
             div.tabbar {
 
@@ -211,6 +239,77 @@
 
                 border: 1px solid orange;
 
+            }
+        }
+
+        section#quiz {
+
+
+            div.question {
+                position: relative;
+                max-width: 840px;
+
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+
+                margin: 0px auto 3rem auto;
+                padding-left: 2rem;
+
+                p#text {
+                    width: 100%;
+                }
+
+
+                p#index {
+                    position: absolute;
+                    top: 0px;
+                    left: 0.5rem;
+                    color: app.$color-midground;
+                }
+
+                &:nth-last-child(2) {
+                    margin: 0px auto 0px auto;
+                }
+            }
+
+            div.choices {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+
+
+                label {
+                    padding: 0.5rem 0.5rem;
+                    border: 1px solid app.$color-shade;
+                    border-radius: 0.5rem;
+
+                    display: grid;
+                    grid-template-columns: max-content auto;
+                    grid-template-rows: 1fr;
+                    gap: 0px 0.8rem;
+
+                    span {
+                        width: 1.5rem;
+                        height: 1.5rem;
+                        border-radius: 1.5rem;
+                        border: 1px solid app.$color-shade;
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 80%;
+                    }
+
+                    p { padding-right: 1rem; }
+                }
+            }
+
+            div.submit {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 2rem 0px 8rem 0px;
             }
         }
     }
