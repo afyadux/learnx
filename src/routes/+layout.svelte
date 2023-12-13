@@ -320,7 +320,7 @@
         <a href="/">Link</a>
         <a href="/">Link</a>
         <a href="/">Link</a>
-        <a href="/">Link</a>
+        <a href="/course">Link</a>
 
         <div class="cite">
             <p>Copy &copy; 2023</p>
