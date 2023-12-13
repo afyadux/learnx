@@ -221,10 +221,13 @@
         article#stage {
 
             position: sticky;
-            top: 4rem;
+            top: 3rem;
 
             margin-top: 1rem;
-            
+            z-index: 3;
+            background-color: app.$color-background;
+            padding: 1rem 0px 0.5rem 0px;
+
             div.tabbar {
 
                 display: flex;
@@ -262,9 +265,11 @@
 
         article#lesson {
             position: relative;
+            overflow: hidden;
 
             display: flex;
             flex-direction: row;
+            padding-top: 2rem;
 
             section {
                 transition-property: transform;
