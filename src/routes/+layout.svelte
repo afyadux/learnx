@@ -4,6 +4,8 @@
 <style lang="scss">
     @use "$lib/interface/variables" as app;
 
+   
+
     nav a.highlight {
         position: relative;
         color: app.$color-brand;
@@ -242,6 +244,37 @@
             
         }
     }
+
+    footer {
+        background-color: app.$color-brand;
+        padding: 2rem 4vw;
+        height: 12rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 2rem;
+       
+    }
+
+    #logo {
+        height: 4rem;
+    }
+
+    #logo img {
+        max-height: 100%;
+        max-width: 100%;
+    }
+
+    #trail {
+        margin: 0rem 0px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #trail p {
+        color: white;
+        font-size: .8rem;
+    }
 </style>
 
 <script lang="ts">
@@ -313,6 +346,29 @@
 
 <slot></slot>
 
+<footer>
+
+    <div id="logo">
+        <img src="/icons/dummylogo.png" alt="">
+
+
+
+    </div>
+    
+    <div id="trail">
+        <p>Copyright © LearnX, BPA</p>
+        <p>All Rights Reserved</p>
+
+
+    </div>
+
+
+
+
+</footer>
+
+
+
 
 <section class={ showNavbar ? "show" : "" } id="popup-nav" bind:this={ popup }>
 
@@ -333,6 +389,9 @@
 <section id="toast">
     <p style={ `background-color: ${ color() };` } class={ ($notification === undefined) ? "" : "show" }>{  ($notification === undefined) ? "" : $notification.message }</p>
 </section>
+
+
+
 
 
 
