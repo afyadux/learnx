@@ -3,6 +3,7 @@
 
 <script lang="ts">
     import Icon from "$lib/interface/Icon.svelte";
+    import Textfield from "$lib/interface/Textfield.svelte";
 </script>
 
 
@@ -48,6 +49,15 @@
                 <h2>12</h2>
             </div>
         {/each }
+        </div>
+    </section>
+
+
+
+    <section id="auth">
+
+        <div class="inputs">
+            
         </div>
     </section>
     
@@ -166,6 +176,24 @@
                 border: 1px dashed #aaaab2;
                 border-radius: 0.5rem;
             }
+        }
+    }
+
+
+    section#auth {
+        margin: 0px 8vw;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        div.inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0px 1rem;
+
+            max-width: 1080px;
+            width: 100%;
         }
     }
 
