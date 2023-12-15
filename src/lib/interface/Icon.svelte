@@ -27,7 +27,9 @@
 </style>
 
 <script lang="ts">
-    export let disabled : boolean = false; 
+    export let disabled : boolean = false;
+    
+    /** Function that should run when icon is clicked; <... handleClick={ () => { your function goes here } }> */
     export let handleClick : () => void = () => { };
 
     export let fill : boolean = false;

@@ -5,8 +5,6 @@
     export let value: string = "";
     export let editable: boolean = true;
     export let placeholder: string = "";
-
-    console.log($$slots.default);
 </script>
 
 <div class="textfield">
@@ -53,10 +51,6 @@
             }
         }
 
-
-        div.marker svg {
-            stroke: app.$color-tint !important;
-        }
 
         div.marker, div.action {
             position: absolute;
