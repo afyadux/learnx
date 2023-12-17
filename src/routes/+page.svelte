@@ -1,12 +1,17 @@
 <script lang="ts">
 
-    import Coursecard from "$lib/cards/coursecard.svelte";
+    import EventCard from "$lib/cards/EventCard.svelte";
+import Coursecard from "$lib/cards/coursecard.svelte";
     import Lessoncard from "$lib/cards/lessoncard.svelte";
+    import Hero from "$lib/components/hero.svelte";
+    
 
 </script>
 
 <main>
 
+
+    <Hero/>
 
     <section id="lesson">
         <h4>Jump Back in. </h4>
