@@ -18,6 +18,22 @@
 
     $: translate = (stageView === "lesson") ? 0 : 100;
     $: choices = [2];
+
+    let successfulYear: string;
+    $: submittable = 
+        
+        (successfulYear != "") && (successfulYear != undefined)
+       
+        ; 
+
+
+    const submitForm = () => {
+
+    }
+
+    let openEnded = false;
+
+
     
 </script>
 
@@ -87,33 +103,49 @@
         </section>
     
         <section id="quiz" style={ `transform: translateX(${ -translate + 100 }vw);` }>
-        { #each Array(5) as _, index }
-        <div class="question">
-            <p id="index">{ index + 1 }</p>
 
-            <p id="text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus totam blanditiis sed sunt magnam nobis ab illo, esse quas tempora eaque? Cumque ipsa veritatis nobis asperiores molestias sunt distinctio libero doloribus autem!</p>
 
-            <div class="choices">
-                <label for="">
-                    <span>1</span>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </label>
-                <label for="">
-                    <span>1</span>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </label>
-                <label for="">
-                    <span>1</span>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </label>
-                <label for="">
-                    <span>1</span>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                </label>
+            {#if openEnded}
+            <div class="prompt">
+                <p>Explain the concept of Le Chatelier's Principle and how it applies to chemical equilibrium. Describe a scenario where a change in concentration, temperature, or pressure would shift the equilibrium of a reaction. Illustrate your explanation with a specific chemical reaction, detailing how these changes affect the position of equilibrium and the concentrations of reactants and products.</p>
+                <textarea name="" bind:value={successfulYear} id="textInput"    placeholder="Le Chatelier's Principle states that when a dynamic equilibrium is disturbed by changing the conditions, the system adjusts to restore equilibrium. For example, in the reaction..."></textarea>
+              
+
+              </div>
+
+            {:else}
+
+            { #each Array(5) as _, index }
+            <div class="question">
+                <p id="index">{ index + 1 }</p>
+    
+                <p id="text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus totam blanditiis sed sunt magnam nobis ab illo, esse quas tempora eaque? Cumque ipsa veritatis nobis asperiores molestias sunt distinctio libero doloribus autem!</p>
+    
+                <div class="choices">
+                    <label for="">
+                        <span>1</span>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    </label>
+                    <label for="">
+                        <span>1</span>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    </label>
+                    <label for="">
+                        <span>1</span>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    </label>
+                    <label for="">
+                        <span>1</span>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    </label>
+                </div>
             </div>
-        </div>
-        {/each }
+            {/each }
+    
 
+
+
+            {/if}
         <div class="submit">
             <button>Submit Quiz</button>
         </div>
@@ -383,5 +415,25 @@
             }
         }
     }
+
+    div.prompt {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+
+                > p { font-style: italic; }
+            }
+
+
+            textarea {
+                resize: vertical;
+                padding: 0.6rem 0.8rem;
+                background-color: transparent;
+                border-radius: 0.6rem;
+                width: 100%;
+                border: 1px solid app.$color-shade;
+            }
+
+
 </style>
 
