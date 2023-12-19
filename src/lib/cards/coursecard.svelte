@@ -1,5 +1,15 @@
 
 
+<script lang="ts">
+
+
+  import type { IEvent } from "$lib/models/event.ts";
+
+    export let event : IEvent;
+
+
+    
+</script>
 
 
 <a href="/lesson" class="card">
@@ -14,9 +24,12 @@
 
     </div>
 
-    <div id="topic-icon">
-        <img src="/icons/htmlicon.png" alt="">
+    <div id="topic-icon" style="background-color: {event && event.backgroundColor ? event.backgroundColor : '#defaultColor'}">
+        {#if event && event.thumbnail}
+            <img src={`/icons/${event.thumbnail}`} alt="{event.organization}">
+        {/if}
     </div>
+    
     
 </a>
 
@@ -39,8 +52,7 @@
 
 
     #header {
-        // margin-left: 10px;
-        // margin-top: 10px;
+   
 
         margin: 1rem 1rem 0px 1rem;
         display: inline-block;
@@ -52,9 +64,7 @@
     }
 
     #members {
-        // margin-top: 2.8rem;
-        // margin-bottom: .5rem;
-        // margin-left: .5rem;
+
         margin: 0px 1rem 1rem 1rem;
         display: flex;
         align-items: center; 
@@ -96,7 +106,7 @@
         right: 0px;
 
         border-radius: 0.5rem;
-        background-color: #FAB5A0;
+
 
         width: 5.4rem;
         height: 7rem;

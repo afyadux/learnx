@@ -6,6 +6,7 @@
 @use "$lib/interface/variables" as app;
 
 
+
     div.card {
         height: max-content;
         padding: 0rem 0rem 0rem 0rem;
@@ -80,7 +81,7 @@
 
 
 <div class="card">
-    <img src={ `/images/${ event.thumbnail }` } alt="">            
+    <img src={ `/icons/${ event.thumbnail }` } alt="">            
     <div class="inspector">
         <h3 class="truncated">{ event.organization }</h3>
         

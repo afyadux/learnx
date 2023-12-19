@@ -180,7 +180,6 @@
 
 <script lang="ts">
 
-    import EventCard from "$lib/cards/EventCard.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import events from "$lib/data/event.json";
     import Coursecard from "$lib/cards/coursecard.svelte";
@@ -193,11 +192,7 @@
 
     
 
-    // setInterval(() => {
-    //     if (!autoToggle) { return; }
-
-    //     focusIndex = (focusIndex === (pages.length - 1)) ? 0 : focusIndex + 1;
-    // }, 5000);
+  
 
 </script>
 

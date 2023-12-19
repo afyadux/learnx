@@ -5,6 +5,7 @@ export interface IEvent {
     date: number;
     location: string;
     thumbnail: string;
+    backgroundColor: string;
     description: string;
 }
 
