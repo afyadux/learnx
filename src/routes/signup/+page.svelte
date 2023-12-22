@@ -27,7 +27,7 @@
             <p style="align-self: flex-start; margin-top:12px; color:grey; margin-bottom:1rem;">Ready to learn? Welcome back to LearnX.</p>
             
             
-            <label for="user" >login</label>
+            <label for="user" >Email</label>
             <!-- <input id="user" type="text" name="username" placeholder="Email or Phone Number"> -->
             <Textfield
             placeholder="hello@example.com">
@@ -64,7 +64,7 @@
                 Continue with Apple
             </button>
 
-            <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a style="color: rgb(26,115,232); cursor: pointer;" href="/signup">Sign up</a></p>
+            <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a href="/" style="cursor: pointer;"> <labe for="" style="color: rgb(26,115,232);">Sign up</labe></a>  </p>
         </div>
         
     </section>

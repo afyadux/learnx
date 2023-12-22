@@ -3,10 +3,6 @@
 <script lang="ts">
 
 
-  import type { IEvent } from "$lib/models/event.ts";
-
-    export let event : IEvent;
-
 
     
 </script>
@@ -24,10 +20,8 @@
 
     </div>
 
-    <div id="topic-icon" style="background-color: {event && event.backgroundColor ? event.backgroundColor : '#defaultColor'}">
-        {#if event && event.thumbnail}
-            <img src={`/icons/${event.thumbnail}`} alt="{event.organization}">
-        {/if}
+    <div id="topic-icon">
+            <img src={`/images/outsiders.jpeg` } alt="">
     </div>
     
     
@@ -45,8 +39,10 @@
         filter: drop-shadow(0rem 0rem 3rem rgba(40, 42, 54, 0.08));
         text-align: center;
 
-        gap: 3rem;
+        gap: 7vw 0px;
         cursor: pointer;
+
+        flex-grow: 1;
 
     }
 
@@ -108,8 +104,8 @@
         border-radius: 0.5rem;
 
 
-        width: 5.4rem;
-        height: 7rem;
+        width: 8rem;
+        height: 13.6rem;
 
         transform: translateX(24%) translateY(40%) rotateZ(-35deg);
         padding: 1.5rem;

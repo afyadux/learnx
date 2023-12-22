@@ -31,7 +31,7 @@
 
     }
 
-    let openEnded = false;
+    let openEnded = true;
 
 
     
@@ -141,9 +141,6 @@
                 </div>
             </div>
             {/each }
-    
-
-
 
             {/if}
         <div class="submit">

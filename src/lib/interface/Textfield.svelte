@@ -3,23 +3,18 @@
     import { textfieldType } from "$lib/models/interface";
     import Icon from "./Icon.svelte";
 
-    export let type: textfieldType = textfieldType.text;
     export let value: string = "";
+    export let type: textfieldType = textfieldType.text;
     export let editable: boolean = true;
     export let placeholder: string = "";
-
-
-    function typeAction(node : HTMLInputElement) {
-        node.type = type;
-    }
 
 </script>
 
 <div class="textfield">
     <input
-        use:typeAction
+        type={ type }
         style={ `padding: 0.6rem ${ ($$slots.action) ? 2.5 : 1 }rem 0.6rem ${ ($$slots.icon || $$slots.default) ? 2.5 : 1 }rem` }
-        placeholder={ placeholder } readonly={ !editable } bind:value={ value }>
+        placeholder={ placeholder } readonly={ !editable } value={ value }>
 
     <div class="marker">
         <slot name="icon"></slot>
