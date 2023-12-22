@@ -11,7 +11,7 @@
 <a href="/lesson" class="card">
 
     <div id="header">
-        <h3>The Ultimate Hitchikers Guide to the Galaxy</h3>
+        <h3>The Ultimate Hitchikers Guide to the Galaxy and other lessons to be learned in our</h3>
     </div>
 
     <div id="members">
@@ -29,6 +29,8 @@
 
 
 <style lang="scss">
+    @use "$lib/interface/variables" as app;
+
     .card  {
         display: flex;
         flex-direction: column;
@@ -39,7 +41,7 @@
         filter: drop-shadow(0rem 0rem 3rem rgba(40, 42, 54, 0.08));
         text-align: center;
 
-        gap: 7vw 0px;
+        gap: 2rem 0px;
         cursor: pointer;
 
         flex-grow: 1;
@@ -48,15 +50,26 @@
 
 
     #header {
-   
+        display: flex;
+        flex-direction: column; 
+        align-items: flex-start;
+        justify-content: flex-start;
+        height: max-content;
 
-        margin: 1rem 1rem 0px 1rem;
-        display: inline-block;
-        text-align: left;
-        max-width: 95%;
-        line-height: 1.2em;  
-        max-height: 2.4em; 
-        overflow: hidden;
+        padding: 1rem 1rem;
+
+        h3 {
+            text-align: start;
+            line-height: 150%;
+            font-weight: app.$weight-semibold;
+            height: 3.5rem;
+
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* number of lines to show */
+                    line-clamp: 2; 
+            -webkit-box-orient: vertical;
+        }
     }
 
     #members {
@@ -107,7 +120,7 @@
         width: 8rem;
         height: 13.6rem;
 
-        transform: translateX(24%) translateY(40%) rotateZ(-35deg);
+        transform: translateX(24%) translateY(60%) rotateZ(-30deg);
         padding: 1.5rem;
 
         img {

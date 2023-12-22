@@ -35,10 +35,12 @@
     export let fill : boolean = false;
     export let frame: [number, number] = [1.5, 1.5];
 
+    export let id: string = "";
+
 
 </script>
 
-<button style={ `width: ${ frame[0] }rem; height: ${ frame[1] }rem` } disabled={ disabled } on:click={ handleClick } class={ fill ? "icon fill" : "icon" }>
+<button id={ id } style={ `width: ${ frame[0] }rem; height: ${ frame[1] }rem` } disabled={ disabled } on:click={ handleClick } class={ fill ? "icon fill" : "icon" }>
     <slot></slot>
 </button>
 

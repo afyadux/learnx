@@ -1,6 +1,6 @@
 
 <script lang="ts">
-    import { textfieldType } from "$lib/models/interface";
+    import { textfieldType } from "$lib/interface/interface";
     import Icon from "./Icon.svelte";
 
     export let value: string = "";
