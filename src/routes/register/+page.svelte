@@ -151,10 +151,8 @@
                     }
 
                         input[type="radio"]:checked + span {
-                            box-shadow: 0 0 1.5rem rgba(40, 42, 54, 0.0784313725);
                             color: #3361FF; 
                             font-weight: 400;
-                            padding: .2rem .5rem;
                             border-radius: 3rem;
                         }
 
