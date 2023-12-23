@@ -15,7 +15,7 @@ import AuthSection from "$lib/sections/authSection.svelte";
     </section>
 
     <section id="institution">
-        <div class="image"><img src="/images/caltech.png"></div>
+        <div class="image"><img src="/images/caltech.png" alt=""></div>
         <div class="info">
             <h3>California Institute of Technology</h3>
             <p>120 students &middot; 30 teachers &middot; 13 courses</p>

@@ -6,6 +6,12 @@
     import { ideaType } from "$lib/models/lesson";
     let passwordVisible = true;
 
+    let selectedRole = '';
+
+  function selectRole(role: string) {
+    selectedRole = role;
+  }
+
 
   
 
@@ -22,9 +28,24 @@
 
         <div id="signup">
 
-            <h1 style="align-self:flex-start"> Sign in  </h1>
+            <h1 style="align-self:flex-start"> Register  </h1>
 
-            <p style="align-self: flex-start; margin-top:12px; color:grey; margin-bottom:1rem;">Ready to learn? Welcome back to LearnX.</p>
+            <p style="align-self: flex-start; margin-top:12px; color:grey; margin-bottom:1rem;">Ready to learn? Start by selecting the account options below.</p>
+
+            <div id="acctype">
+                <label>
+                    <input type="radio" bind:group={selectedRole} value="teacher">
+                    <span >Teacher</span>
+                  </label>
+                  <label>
+                    <input type="radio" bind:group={selectedRole} value="student">
+                    <span >Student</span>
+                  </label>
+                  <label>
+                    <input type="radio" bind:group={selectedRole} value="administrator">
+                    <span >Administrator</span>
+                  </label>
+            </div>
             
             
             <label for="user" >Email</label>
@@ -45,11 +66,11 @@
             
 
 
-            <button id="signin">Sign in</button>
+            <button id="signin">Register</button>
 
             <div id="other">
                 <span class="border"> </span>
-                <span id="text">Or sign in with</span>
+                <span id="text">Or register with</span>
                 <span class="border"></span>
 
             </div>
@@ -64,7 +85,7 @@
                 Continue with Apple
             </button>
 
-            <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a href="/" style="cursor: pointer;"> <labe for="" style="color: rgb(26,115,232);">Sign up</labe></a>  </p>
+            <p style="font-size: 14px; margin-top:1rem">Already have an Account?<a href="/" style="cursor: pointer;"> <labe for="" style="color: rgb(26,115,232); margin-left: 5px">Sign in</labe></a>  </p>
         </div>
         
     </section>
@@ -106,7 +127,50 @@
         align-items: center;
         padding: 2rem;
 
-    }
+        div#acctype {
+
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            background-color: #FAFAFC;
+            border-radius: 0.8rem;
+            padding: .4rem .4rem;
+            width: 100%;
+            
+
+            label {
+                display: block;
+                padding: 10px;
+                border-radius: 4px;
+                margin-bottom: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s, color 0.3s;
+
+                    input[type="radio"] {
+                        display: none;
+                    }
+
+                        input[type="radio"]:checked + span {
+                            box-shadow: 0 0 1.5rem rgba(40, 42, 54, 0.0784313725);
+                            color: #3361FF; 
+                            font-weight: 400;
+                            padding: .2rem .5rem;
+                            border-radius: 3rem;
+                        }
+
+                                span {
+                                    color: #69838C; 
+                                }
+}
+
+
+           
+
+        
+        
+             }
+
+            }
 
 
 
@@ -189,7 +253,7 @@
 
     #text {
         color: grey;
-        font-size: 14px;
+        font-size: 12px;
     }
 
     
