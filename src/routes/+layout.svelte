@@ -315,9 +315,6 @@
         popup.addEventListener(("click"), toggleNavbar);
     });
 
-    console.log($page.url.pathname);
-
-
 </script>
 
 

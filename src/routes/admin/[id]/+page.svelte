@@ -3,8 +3,8 @@
 
 <script lang="ts">
     import Coursecard from "$lib/cards/coursecard.svelte";
-import Usercard from "$lib/cards/usercard.svelte";
-import AuthSection from "$lib/sections/authSection.svelte";
+    import Usercard from "$lib/cards/usercard.svelte";
+    import AuthSection from "$lib/sections/authSection.svelte";
 
 
 </script>
