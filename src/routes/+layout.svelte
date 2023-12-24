@@ -83,12 +83,19 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 1rem; 
+            gap: 0.8rem; 
 
             @media screen and (min-width: 640px) {
                 > :global(button) { display: none }
             }
         };
+
+        div#pfp {
+            width: 2.4rem;
+            height: 2.4rem;
+            border: 1px solid app.$color-shade;
+            border-radius: 2rem;
+        }
 
         
     }
@@ -332,6 +339,11 @@
 
     <span>
         <a href="/hire" class="button">Call to Action</a>
+
+        
+        <div id="pfp">
+            <img src="/icons/profile.png" alt="">
+        </div>
 
         <Icon handleClick={ toggleNavbar }>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
