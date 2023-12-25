@@ -1,7 +1,6 @@
 
 
 
-import { redirect } from "@sveltejs/kit";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -18,7 +17,6 @@ const appConfiguration = {
 const app = initializeApp(appConfiguration);
 export const auth = getAuth(app);
 
-console.log("initialized");
 
 
 

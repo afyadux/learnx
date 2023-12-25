@@ -296,11 +296,18 @@
     import { auth } from "$lib/firebase/app";
     import { browser } from "$app/environment";
 
-    $: {
-        if ($page && browser && !auth.currentUser) {
+    beforeNavigate((nav) => {
+
+        if (nav.type === "leave" || !nav.to) { return; }
+
+        if (nav.to!.url.pathname.startsWith("/auth") === false && !auth.currentUser) {
+            nav.cancel();
             goto("/auth/register");
         }
-    }
+
+
+    });
+
 
     onMount(() => {
         popup.addEventListener(("click"), toggleNavbar);
@@ -349,7 +356,7 @@
     </div>
 
     <span>
-        <a href="/" class="button">Call to Action</a>
+        <a href="/auth/forgot" class="button">Call to Action</a>
 
         
         <div id="pfp">

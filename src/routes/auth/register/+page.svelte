@@ -8,6 +8,8 @@
     import { onMount, type ComponentProps, SvelteComponent } from "svelte";
 
     let role: string = "";
+    let roleError = "Choose one of these options";
+
 
     let email: string = "";
     let password: string = "";
@@ -16,19 +18,14 @@
     let emailError : string = "";
     let passwordError : string = "";
 
-    let tabbarError = "";
     const onRoleChange = () => {
-        if (tabbarError.length > 0) { tabbarError = ""; }
+        if (roleError.length > 0) { roleError = ""; }
     }
-
-    setTimeout(() => {
-        if (role === "") { tabbarError = "Choose one of these options" }
-    }, 5000);
 
     $: formValid = 
         (email !== "") && (emailError === "") &&
         (password !== "") && (passwordError === "") &&
-        (role !== "") && (tabbarError === "");
+        (role !== "") && (roleError === "");
 
 
     const submitForm = () => {
@@ -41,10 +38,10 @@
 
 <div id="signup">
 
-    <h1 style="align-self:flex-start">Register { emailError }</h1>
+    <h1 style="align-self:flex-start">Register</h1>
     <p style="align-self: flex-start; margin-top:12px; color:grey; margin-bottom:1rem;">Ready to learn? Start by selecting the account options below.</p>
     
-    <Tabbar onTabbarChange={ onRoleChange } error={ tabbarError } fill options={["student", "teacher", "admin"]} bind:bindingGroup={ role }/>
+    <Tabbar onTabbarChange={ onRoleChange } error={ roleError } fill options={["student", "teacher", "admin"]} bind:bindingGroup={ role }/>
     <br>
 
     <Textfield
