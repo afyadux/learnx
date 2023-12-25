@@ -37,7 +37,7 @@
 
         padding: 2rem 2rem;
 
-        :global(div) {
+        :global(> div) {
             display: flex;
             flex-direction: column;
             justify-content: center;

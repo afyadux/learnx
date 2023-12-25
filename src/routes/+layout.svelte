@@ -291,7 +291,20 @@
 
     import { page } from '$app/stores';
     import { NotificationState, notification, sendNotification } from "$lib/utilities/notifications";
+    import { beforeNavigate, goto, onNavigate } from "$app/navigation";
+    import { onAuthStateChanged } from "firebase/auth";
+    import { auth } from "$lib/firebase/app";
+    import { browser } from "$app/environment";
 
+    $: {
+        if ($page && browser && !auth.currentUser) {
+            goto("/auth/register");
+        }
+    }
+
+    onMount(() => {
+        popup.addEventListener(("click"), toggleNavbar);
+    });
 
     $: color = () => { 
         if ($notification === undefined) { return "transparent"; }
@@ -318,9 +331,7 @@
     let showNavbar: boolean = false;
     const toggleNavbar = () => { showNavbar = !showNavbar };
 
-    onMount(() => {
-        popup.addEventListener(("click"), toggleNavbar);
-    });
+    
 
 </script>
 
@@ -338,7 +349,7 @@
     </div>
 
     <span>
-        <a href="/hire" class="button">Call to Action</a>
+        <a href="/" class="button">Call to Action</a>
 
         
         <div id="pfp">

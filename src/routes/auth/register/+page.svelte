@@ -2,7 +2,9 @@
 
 <script lang="ts">
     import SocialAuth from "$lib/interface/SocialAuth.svelte";
+    import Tabbar from "$lib/interface/Tabbar.svelte";
     import Textfield from "$lib/interface/Textfield.svelte";
+
     let role: string = "";
     
 </script>
@@ -13,7 +15,9 @@
     <h1 style="align-self:flex-start"> Register  </h1>
     <p style="align-self: flex-start; margin-top:12px; color:grey; margin-bottom:1rem;">Ready to learn? Start by selecting the account options below.</p>
     
-    
+    <Tabbar fill options={["student", "teacher", "admin"]} bindingGroup={ role }/>
+    <br>
+
     <label for="user" >Email</label>
     <Textfield placeholder="hello@example.com"></Textfield>
 
