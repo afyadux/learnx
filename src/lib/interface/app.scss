@@ -97,8 +97,9 @@ button, a {
 }
 
 button:disabled {
-    background-color: app.$color-shade;
-    cursor: regular;
+    background-color: app.$color-shade !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
 }
 
 a {

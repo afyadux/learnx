@@ -2,7 +2,7 @@
 <script lang="ts">
     import Icon from "./Icon.svelte";
 
-    let error: string = "";
+    export let error: string = "";
 
     export let value: string;
     export let type: "text" | "password" | "email" | "search" | "number" = "text";
@@ -18,7 +18,6 @@
     }
 
     const onFinishEdit = () => {
-        console.log("Finished editing");
 
         // Email textfield validation
         if (type === "email") {

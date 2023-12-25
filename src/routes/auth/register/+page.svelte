@@ -5,6 +5,7 @@
     import SocialAuth from "$lib/interface/SocialAuth.svelte";
     import Tabbar from "$lib/interface/Tabbar.svelte";
     import Textfield from "$lib/interface/Textfield.svelte";
+    import { onMount, type ComponentProps, SvelteComponent } from "svelte";
 
     let role: string = "";
 
@@ -12,20 +13,43 @@
     let password: string = "";
     let showPassword = false;
 
+    let emailError : string = "";
+    let passwordError : string = "";
+
+    let tabbarError = "";
+    const onRoleChange = () => {
+        if (tabbarError.length > 0) { tabbarError = ""; }
+    }
+
+    setTimeout(() => {
+        if (role === "") { tabbarError = "Choose one of these options" }
+    }, 5000);
+
+    $: formValid = 
+        (email !== "") && (emailError === "") &&
+        (password !== "") && (passwordError === "") &&
+        (role !== "") && (tabbarError === "");
+
+
+    const submitForm = () => {
+        console.log("submit");
+    }
+
 
 </script>
 
 
 <div id="signup">
 
-    <h1 style="align-self:flex-start">Register</h1>
+    <h1 style="align-self:flex-start">Register { emailError }</h1>
     <p style="align-self: flex-start; margin-top:12px; color:grey; margin-bottom:1rem;">Ready to learn? Start by selecting the account options below.</p>
     
-    <Tabbar fill options={["student", "teacher", "admin"]} bind:bindingGroup={ role }/>
+    <Tabbar onTabbarChange={ onRoleChange } error={ tabbarError } fill options={["student", "teacher", "admin"]} bind:bindingGroup={ role }/>
     <br>
 
     <Textfield
         type="email"
+        bind:error={ emailError }
         bind:value={ email } 
         title="Email Address"
         placeholder="name@institution.org"
@@ -36,6 +60,7 @@
     <Textfield
         title="Password"
         actionTitle="Forgot Password?"
+        bind:error={ passwordError }
         bind:value={ password }
         placeholder="Enter password"
         type={ showPassword ? "text" : "password" }
@@ -61,7 +86,7 @@
     
 
 
-    <button id="cta">Register</button>
+    <button disabled={ !formValid } on:click={ submitForm } id="cta">Register</button>
 
     <div id="other">
         <span class="border"> </span>
@@ -73,7 +98,7 @@
     <SocialAuth socialIcon={ "/icons/google.webp" } text={ "Continue with Google" } />
     <SocialAuth socialIcon={ "/icons/apple.svg" } text={ "Continue with Apple" } />
 
-    <p style="font-size: 14px; margin-top:1rem">Already have an Account?<a href="/" style="cursor: pointer;"> <labe for="" style="color: rgb(26,115,232); margin-left: 5px">Sign in</labe></a>  </p>
+    <p style="font-size: 14px; margin-top:1rem">Already have an Account?<a href="/" style="cursor: pointer;"> <label for="" style="color: rgb(26,115,232); margin-left: 5px">Sign in</label></a>  </p>
 </div>
 
 

@@ -2,20 +2,27 @@
 
 
 <script lang="ts">
+
+    export let error = "jadsfasd";
+
     export let id = "";
     export let bindingGroup: string;
     export let fill: boolean = false;
 
     /** All options must have unique identifiers */
-    export let options: string[] = ["option1", "option2"]
+    export let options: string[] = ["option1", "option2"];
+    export let onTabbarChange : () => void = () => { };
+
 
 </script>
 
-<div style={ fill? "width: 100%" : "width: max-content" } class="tabbar" id={ id }>    
+<div class={ error.length > 0 ? "tabbar error" : "tabbar" } style={ fill? "width: 100%" : "width: max-content" }  id={ id }>    
     { #each options as text }
-    <input bind:group={ bindingGroup } type="radio" id={ text.toLowerCase() } value={ text.toLocaleLowerCase() }>
+    <input on:change={ onTabbarChange } bind:group={ bindingGroup } type="radio" id={ text.toLowerCase() } value={ text.toLocaleLowerCase() }>
     <label for={ text.toLocaleLowerCase() }>{ text[0].toUpperCase() }{ text.slice(1).toLocaleLowerCase() }</label>
     {/each }
+
+    <p id="error">{ error }</p>
 </div>
 
 
@@ -24,6 +31,7 @@
     @use "$lib/interface/variables" as app;
 
     div.tabbar {
+        position: relative;
 
         display: flex;
         flex-direction: row;
@@ -35,6 +43,35 @@
         background-color: app.$color-elevate;
         border-radius: 0.8rem;
 
+
+        p#error {
+            opacity: 0%;
+
+            position: absolute;
+            bottom: -1.6rem;
+            left: 0rem;
+            right: 0px;
+
+            text-align: start;
+
+            color: app.$color-error;
+            font-size: 0.8rem;
+            margin: 0.1rem 0px;
+
+            transition-property: opacity;
+            transition-duration: 200ms;
+            transition-timing-function: linear;
+        }
+
+        &.error {
+            margin-bottom: 1.5rem;
+            border: 1px solid app.$color-error;
+        }
+
+
+        &.error p#error {
+            opacity: 100%;
+        }
 
         label {
             flex-grow: 1;
