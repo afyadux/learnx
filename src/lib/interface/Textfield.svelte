@@ -45,8 +45,8 @@
 <div class={ error ? "textfield error" : "textfield" }>
     <div class="header">
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label id="title">{ title }</label>
-        <button id="action" on:click={ onActionClicked }>{ actionTitle }</button>
+        <label class="title">{ title }</label>
+        <button class="action" on:click={ onActionClicked }>{ actionTitle }</button>
     </div>
 
     <input

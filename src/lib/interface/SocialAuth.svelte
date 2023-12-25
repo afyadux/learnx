@@ -2,7 +2,7 @@
 
 <style lang="scss">
 
-    #social {
+    .social {
         width: 100%;
         margin-top: 15px;
         display: flex; 
@@ -19,12 +19,12 @@
 
     }
 
-    #social:hover {
+    .social:hover {
         background-color: lightgray;
         transition: 140ms all ease-in-out;
     }
 
-    #social img {
+    .social img {
         width: 2.5rem; 
         height: auto; 
     }
@@ -36,7 +36,7 @@
 </script>
 
 
-<button id="social">
+<button class="social">
     <img src={ socialIcon } alt="">
     {  text }
 </button>

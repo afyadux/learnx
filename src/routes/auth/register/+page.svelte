@@ -1,10 +1,14 @@
 
 
 <script lang="ts">
+    import { goto } from "$app/navigation";
+    import { auth, database } from "$lib/firebase/app";
     import Icon from "$lib/interface/Icon.svelte";
     import SocialAuth from "$lib/interface/SocialAuth.svelte";
     import Tabbar from "$lib/interface/Tabbar.svelte";
     import Textfield from "$lib/interface/Textfield.svelte";
+    import { createUserWithEmailAndPassword } from "firebase/auth";
+    import { doc, setDoc } from "firebase/firestore"; 
     import { onMount, type ComponentProps, SvelteComponent } from "svelte";
 
     let role: string = "";
@@ -28,15 +32,29 @@
         (role !== "") && (roleError === "");
 
 
-    const submitForm = () => {
-        console.log("submit");
+    const submitForm = async () => {
+
+        try {
+            console.log("Registering user");
+
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(database, "users", userCredential.user.email!), {
+                role: role
+            });
+
+            goto('/profile');
+
+        } catch (error) {
+            console.error(error);
+        }
+
     }
 
 
 </script>
 
 
-<div id="signup">
+<form id="signup">
 
     <h1 style="align-self:flex-start">Register</h1>
     <p style="align-self: flex-start; margin-top:12px; color:grey; margin-bottom:1rem;">Ready to learn? Start by selecting the account options below.</p>
@@ -96,7 +114,7 @@
     <SocialAuth socialIcon={ "/icons/apple.svg" } text={ "Continue with Apple" } />
 
     <p style="font-size: 14px; margin-top:1rem">Already have an Account?<a href="/" style="cursor: pointer;"> <label for="" style="color: rgb(26,115,232); margin-left: 5px">Sign in</label></a>  </p>
-</div>
+</form>
 
 
 <style lang="scss">
