@@ -2,6 +2,7 @@
     import SocialAuth from "$lib/interface/SocialAuth.svelte";
     import Textfield from "$lib/interface/Textfield.svelte";
     import Icon from "$lib/interface/Icon.svelte";
+    import { goto } from "$app/navigation";
 
 
     let email: string = "";
@@ -15,6 +16,9 @@
         (email !== "") && (emailError === "") &&
         (password !== "") && (passwordError === "");
 
+    const submitLoginForm = () => {
+        console.log("login");
+    }
 
 </script>
 
@@ -31,11 +35,12 @@
     placeholder="name@institution.org"
    ></Textfield>
 
-
+    <br>
    
     <Textfield
     title="Password"
     actionTitle="Forgot Password?"
+    onActionClicked={ () => { goto("/auth/forgot") }}
     bind:error={ passwordError }
     bind:value={ password }
     placeholder="Enter password"
@@ -62,7 +67,7 @@
 
 
 
-<button disabled={ !formValid } on:click={ submitForm } id="cta">Register</button>
+<button disabled={ !formValid } on:click={ submitLoginForm } id="cta">Register</button>
 
     <div id="other">
         <span class="border"> </span>
@@ -73,7 +78,7 @@
     <SocialAuth socialIcon={ "/icons/google.webp" } text={ "Continue with Google" } />
     <SocialAuth socialIcon={ "/icons/apple.svg" } text={ "Continue with Apple" } />
 
-    <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a style="color: rgb(26,115,232); cursor: pointer;" href="/signup">Sign up</a></p>
+    <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a style="color: rgb(26,115,232); cursor: pointer;" href="/auth/register">Sign up</a></p>
 
     <style lang="scss">
 

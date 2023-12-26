@@ -71,8 +71,7 @@
     <br>
 
     <Textfield
-        title="Password"
-        actionTitle="Forgot Password?"
+        title="Create Password"
         bind:error={ passwordError }
         bind:value={ password }
         placeholder="Enter password"
@@ -111,7 +110,7 @@
     <SocialAuth socialIcon={ "/icons/google.webp" } text={ "Continue with Google" } />
     <SocialAuth socialIcon={ "/icons/apple.svg" } text={ "Continue with Apple" } />
 
-    <p style="font-size: 14px; margin-top:1rem">Already have an Account?<a href="/" style="cursor: pointer;"> <label for="" style="color: rgb(26,115,232); margin-left: 5px">Sign in</label></a>  </p>
+    <p style="font-size: 14px; margin-top:1rem">Already have an Account?<a href="/auth/login" style="cursor: pointer;"> <label for="" style="color: rgb(26,115,232); margin-left: 5px">Sign in</label></a>  </p>
 </form>
 
 

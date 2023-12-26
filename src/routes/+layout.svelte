@@ -308,16 +308,16 @@
 
     });
 
-    onAuthStateChanged(auth, () => {
-        if (!auth.currentUser) {
-            console.log("NO account");
-            return;
-        }
+    // onAuthStateChanged(auth, () => {
+    //     if (!auth.currentUser) {
+    //         console.log("NO account");
+    //         return;
+    //     }
 
-        if ($page.url.pathname.startsWith("/auth")) {
-            goto("/");
-        }
-    });
+    //     if ($page.url.pathname.startsWith("/auth")) {
+    //         goto("/");
+    //     }
+    // });
 
 
     onMount(() => {

@@ -24,10 +24,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 
     if (event.url.pathname.startsWith("/auth") === false && !auth.currentUser) {
+
         return new Response(null, {
             status: 302,
             headers: {
-                location: (event.url + "auth/register")
+                location: (event.url.origin + "/auth/register/")
             }
         });
     }

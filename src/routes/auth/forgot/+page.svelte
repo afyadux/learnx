@@ -8,7 +8,9 @@
     $: formValid = 
         (email !== "") && (emailError === "") ;
 
+    const submitForgotForm = () => {
 
+    }
 
 </script>
 
@@ -28,8 +30,8 @@
     ></Textfield>
 
 
-    <button disabled={ !formValid } on:click={ submitForm } id="cta">Reset Password</button>
-    <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a href="/" style="cursor: pointer;"> <labe for="" style="color: rgb(26,115,232);">Sign up</labe></a>  </p>
+    <button disabled={ !formValid } on:click={ submitForgotForm } id="cta">Reset Password</button>
+    <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a href="/auth/register" style="cursor: pointer;"> <label for="" style="color: rgb(26,115,232);">Sign up</label></a>  </p>
 </div>
 
 
