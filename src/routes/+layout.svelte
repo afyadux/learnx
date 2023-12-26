@@ -290,14 +290,25 @@
     import Icon from "$lib/interface/Icon.svelte";
     import { page } from '$app/stores';
     import { NotificationState, notification, sendNotification } from "$lib/utilities/notifications";
+    import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+    import { auth } from "$lib/firebase/app";
 
 
 
-    onMount(() => {
+    onMount(async () => {
         popup.addEventListener(("click"), toggleNavbar);
+
+        // const credential = await signInWithEmailAndPassword(auth, "alfred@wunsche.org", "skillsusa");
+        // console.log(credential);
+
+
+        onAuthStateChanged(auth, () => {
+            console.log("The current user is: ", auth.currentUser);
+        });
     });
 
     $: color = () => { 
+
         if ($notification === undefined) { return "transparent"; }
 
         switch ($notification.type) {
@@ -341,7 +352,7 @@
 
     <span>
 
-        <button on:click={() => { }}>Sign Out</button>
+        <button on:click={() => { auth.signOut(); }}>Sign Out</button>
 
         <a href="/profile" id="pfp">
             <img src="/icons/profile.png" alt="">
