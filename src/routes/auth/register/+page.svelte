@@ -12,7 +12,8 @@
     import { onMount, type ComponentProps, SvelteComponent } from "svelte";
 
     let role: string = "";
-    let roleError = "Choose one of these options";
+    let roleError = "";
+    
 
 
     let email: string = "";

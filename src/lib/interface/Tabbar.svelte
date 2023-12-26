@@ -3,14 +3,14 @@
 
 <script lang="ts">
 
-    export let error = "jadsfasd";
+    export let error = "";
 
     export let id = "";
     export let bindingGroup: string;
     export let fill: boolean = false;
 
     /** All options must have unique identifiers */
-    export let options: string[] = ["option1", "option2"];
+    export let options: string[] = ["Lesson", "Quiz"];
     export let onTabbarChange : () => void = () => { };
 
 
