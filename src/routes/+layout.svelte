@@ -305,23 +305,24 @@
             goto("/auth/register");
         }
 
-
     });
 
-    // onAuthStateChanged(auth, () => {
-    //     if (!auth.currentUser) {
-    //         console.log("NO account");
-    //         return;
-    //     }
+    onAuthStateChanged(auth, () => {
 
-    //     if ($page.url.pathname.startsWith("/auth")) {
-    //         goto("/");
-    //     }
-    // });
+        if (!browser) { return; }
+        if (!auth.currentUser) {
+            goto("/auth/login");
+            return;
+        }
 
+        if ($page.url.pathname.startsWith("/auth")) {
+            goto("/");
+        }
+
+        
+    });
 
     onMount(() => {
-
         popup.addEventListener(("click"), toggleNavbar);
     });
 
