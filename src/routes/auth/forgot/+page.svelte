@@ -2,6 +2,13 @@
 <script lang="ts">
     import Textfield from "$lib/interface/Textfield.svelte";
 
+    let email: string = "";
+    let emailError : string = "";
+
+    $: formValid = 
+        (email !== "") && (emailError === "") ;
+
+
 
 </script>
 
@@ -12,11 +19,16 @@
 
     <p style="align-self: flex-start; margin-top:12px; color:grey; margin-bottom:1rem;">Enter your email address to get the password reset email link.</p>
     
-    <label for="password" style="margin-top: 1rem; margin-bottom: 6px;"> Email Address</label> 
-    <Textfield placeholder="hello@example.com"></Textfield>
+    <Textfield
+        type="email"
+        bind:error={ emailError }
+        bind:value={ email } 
+        title="Email Address"
+        placeholder="name@institution.org"
+    ></Textfield>
 
 
-    <button id="cta">Password Reset</button>
+    <button disabled={ !formValid } on:click={ submitForm } id="cta">Reset Password</button>
     <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a href="/" style="cursor: pointer;"> <labe for="" style="color: rgb(26,115,232);">Sign up</labe></a>  </p>
 </div>
 

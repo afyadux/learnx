@@ -34,7 +34,7 @@
         if (type === "password") {
 
             if (value === "" || value === undefined) { error = "Please enter a password"; return; }
-            if (value.length < 8) { error = "Password must be at least 8 charachters long"; return; }
+            if (value.length < 8) { error = "Password must be at least 8 characters long"; return; }
 
             error = "";
         }
