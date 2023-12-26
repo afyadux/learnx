@@ -35,8 +35,6 @@
     const submitForm = async () => {
 
         try {
-            console.log("Registering user");
-
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await setDoc(doc(database, "users", userCredential.user.email!), {
                 role: role

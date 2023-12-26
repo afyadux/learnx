@@ -90,7 +90,7 @@
             }
         };
 
-        div#pfp {
+        a#pfp {
             width: 2.4rem;
             height: 2.4rem;
             border: 1px solid app.$color-shade;
@@ -308,8 +308,20 @@
 
     });
 
+    onAuthStateChanged(auth, () => {
+        if (!auth.currentUser) {
+            console.log("NO account");
+            return;
+        }
+
+        if ($page.url.pathname.startsWith("/auth")) {
+            goto("/");
+        }
+    });
+
 
     onMount(() => {
+
         popup.addEventListener(("click"), toggleNavbar);
     });
 
@@ -359,9 +371,9 @@
         <a href="/auth/forgot" class="button">Call to Action</a>
 
         
-        <div id="pfp">
+        <a href="/profile" id="pfp">
             <img src="/icons/profile.png" alt="">
-        </div>
+        </a>
 
         <Icon handleClick={ toggleNavbar }>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
