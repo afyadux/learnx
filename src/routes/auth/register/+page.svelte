@@ -34,19 +34,11 @@
 
 
     const submitForm = async () => {
-
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(database, "users", userCredential.user.email!), {
-                role: role
-            });
-
-            goto('/profile');
 
         } catch (error) {
             console.error(error);
         }
-
     }
 
 

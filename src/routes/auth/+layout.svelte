@@ -4,8 +4,6 @@
 
 
 <script lang="ts">
-    import { auth } from "$lib/firebase/app";
-    import { onMount } from "svelte";
 </script>
 
 <main>

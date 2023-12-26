@@ -86,7 +86,7 @@
             gap: 0.8rem; 
 
             @media screen and (min-width: 640px) {
-                > :global(button) { display: none }
+                > :global(button#dropdown) { display: none }
             }
         };
 
@@ -288,39 +288,10 @@
     import { onMount } from "svelte";
     import "$lib/interface/app.scss";
     import Icon from "$lib/interface/Icon.svelte";
-
     import { page } from '$app/stores';
     import { NotificationState, notification, sendNotification } from "$lib/utilities/notifications";
-    import { beforeNavigate, goto, onNavigate } from "$app/navigation";
-    import { onAuthStateChanged } from "firebase/auth";
-    import { auth } from "$lib/firebase/app";
-    import { browser } from "$app/environment";
 
-    beforeNavigate((nav) => {
 
-        if (nav.type === "leave" || !nav.to) { return; }
-
-        if (nav.to!.url.pathname.startsWith("/auth") === false && !auth.currentUser) {
-            nav.cancel();
-            goto("/auth/register");
-        }
-
-    });
-
-    onAuthStateChanged(auth, () => {
-
-        if (!browser) { return; }
-        if (!auth.currentUser) {
-            goto("/auth/login");
-            return;
-        }
-
-        if ($page.url.pathname.startsWith("/auth")) {
-            goto("/");
-        }
-
-        
-    });
 
     onMount(() => {
         popup.addEventListener(("click"), toggleNavbar);
@@ -369,14 +340,14 @@
     </div>
 
     <span>
-        <a href="/auth/forgot" class="button">Call to Action</a>
 
-        
+        <button on:click={() => { }}>Sign Out</button>
+
         <a href="/profile" id="pfp">
             <img src="/icons/profile.png" alt="">
         </a>
 
-        <Icon handleClick={ toggleNavbar }>
+        <Icon id="dropdown" handleClick={ toggleNavbar }>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>                                             
@@ -390,25 +361,13 @@
 
     <div id="logo">
         <img src="/icons/dummylogo.png" alt="">
-
-
-
     </div>
     
     <div id="trail">
         <p>Copyright © LearnX, BPA</p>
         <p>All Rights Reserved</p>
-
-
     </div>
-
-
-
-
 </footer>
-
-
-
 
 <section class={ showNavbar ? "show" : "" } id="popup-nav" bind:this={ popup }>
 

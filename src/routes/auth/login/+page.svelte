@@ -3,8 +3,6 @@
     import Textfield from "$lib/interface/Textfield.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import { goto } from "$app/navigation";
-    import { signInWithEmailAndPassword } from "firebase/auth";
-    import { auth } from "$lib/firebase/app";
 
 
     let email: string = "";
@@ -20,15 +18,6 @@
 
     const submitLoginForm = async () => {
         console.log("Trying to sign in");
-
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-
-            goto("/profile");
-
-        } catch (error) { 
-            console.log("error signing in");
-        }
     }
 </script>
 
