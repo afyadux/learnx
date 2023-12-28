@@ -1,19 +1,27 @@
 
 
+<script lang="ts">
+    import Editable from "$lib/interface/Editable.svelte";
+import type { lessonData } from "../../routes/course/[courseID]/proxy+page";
+
+    export let lesson: lessonData;
+    const { title, ideas, quiz, index } = lesson;
+</script>
 
 
 <a href="/" class="lesson">
 
     <div class="lead">
         <!-- <p>0% complete</p> -->
-        <p>#1</p>
+        <p>#{ index + 1 }</p>
         <button>Delete</button>
     </div>
 
     <div class="trail">
-        <h4>Determining an emperical formula from percent composition data</h4>
-        <p>5 min read</p>
-        <p>15 Questions</p>
+        <!-- <h4>Determining an emperical formula from percent composition data</h4> -->
+        <Editable type="h4" value={title} editable={false} placeholder="Lesson Title ..." />
+        <p>{ ideas.length } min read</p>
+        <p>{ quiz.length } Questions</p>
     </div>
 </a>
 
@@ -72,7 +80,7 @@
             grid-template-rows: max-content max-content;
             gap: 0.2rem 0.5rem;
 
-            h4 { grid-column: span 2; font-weight: app.$weight-semibold; }
+            :global(h4) { grid-column: span 2; font-weight: app.$weight-semibold; height: 3em; }
             p { color: app.$color-midground }
             > p:nth-child(3) { text-align: end; }
         }

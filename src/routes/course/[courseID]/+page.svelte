@@ -208,8 +208,8 @@
         <h3>Lessons</h3>
 
         <div class="grid">
-            {#each lessonsUI as _ }
-                <Lessoncard />
+            {#each lessonsUI as item }
+                <Lessoncard lesson={ item }/>
             {/each }
 
             <button on:click={ addLesson } class="add lesson">
