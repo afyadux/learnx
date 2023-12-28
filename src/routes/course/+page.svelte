@@ -2,7 +2,29 @@
 
 <script lang="ts">
     import Lessoncard from "$lib/cards/lessoncard.svelte";
+    import Usercard from "$lib/cards/usercard.svelte";
+    import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
+
+    const courseID = "chemistry";
+
+    $: lessons = Array(0);
+    $: students = Array(0); 
+
+    let tag: string = ""
+    let title: string = "";
+    let objective: string = "";
+    // let cover: string = "/images/thunderhead.jpeg";
+    let cover = ""; 
+
+
+    async function onTitleEdit() {
+        
+    }
+
+    const addLesson = () => {
+        lessons = [...lessons, undefined];
+    }
 
 </script>
 
@@ -11,15 +33,45 @@
     <article id="showcase">
 
         <div>
-            <h6>&#35;chemistry</h6>
-            <h1>Chemistry Unveiled: Understanding the World Around Us</h1>
+
+            <span>
+                &#35;
+                <Editable
+                    placeholder="Course Type"
+                    type="h6"
+                    value={ tag  }
+                    editable={ true }
+                />
+            </span>
+            
+
+            <Editable
+                type="h1"
+                value={ title }
+                editable={ true }
+                placeholder="Course 101: Enter Short Descriptive Title Here..."
+            />
+
             <div class="instructor">
                 <img src="/icons/instructor.png" alt="">
                 <p>Mrs. Gangi</p>
             </div>
         </div>
+
         <div>
-            <img src={ `/images/thunderhead.jpeg` }  alt="">
+            { #if cover }
+            <img src={ cover }  alt="">
+            { :else }
+            <button class="add cover">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+
+                <h5>Add Cover</h5>
+            </button>
+            {/if }  
         </div>
 
 
@@ -27,7 +79,7 @@
             <div class="nuggets">
                 <div>
                     <h6>Lessons</h6>
-                    <p>12</p>
+                    <p>{ lessons.length }</p>
                 </div>
                 <div>
                     <h6>Difficulty</h6>
@@ -46,7 +98,7 @@
                         </svg>                    
                     </Icon>
     
-                    <p>12 students</p>
+                    <p>{ students.length } students</p>
                 </div>
 
 
@@ -59,7 +111,7 @@
                         </svg>                                             
                     </Icon>
     
-                    <p>8 hrs</p>
+                    <p>0 hrs</p>
                 </div>
 
 
@@ -88,7 +140,28 @@
 
     <article id="objective">
         <h3>Objective</h3>
-        <p>A transformative course designed to introduce high school students to the fundamental concepts and applications of collegiate-level chemistry. This course aims to demystify the principles of chemistry, showcasing how they underpin the world around us, from the smallest atoms to complex biological systems and environmental processes. Through a blend of theoretical knowledge and practical experiments, students will explore topics such as atomic structure, chemical bonding, thermodynamics, organic chemistry, and biochemistry. The objective is to foster a deep understanding and appreciation of chemistry, encouraging students to develop critical thinking and problem-solving skills that are essential for future scientific pursuits. </p>
+
+        <Editable
+            editable={ true }
+            placeholder="Enter course objective here ..." 
+            value={ objective }/>
+    </article>
+
+    <article id="students">
+        <h3>Students</h3>
+
+        <div class="grid">
+            { #each students as _ }
+                <Usercard />
+            {/each }
+        </div>
+
+        { #if students.length === 0 }
+            <div class="empty">
+                <img src="/images/community.png" alt="">
+                <h4>No students enrolled</h4>
+            </div>
+        {/if }
     </article>
 
 
@@ -96,21 +169,22 @@
         <h3>Lessons</h3>
 
         <div class="grid">
-            {#each Array(7) as _ }
+            {#each lessons as _ }
                 <Lessoncard />
             {/each }
 
-            <button on:click={ () => { console.log("Add lesson") }} class="add lesson">
+            <button on:click={ addLesson } class="add lesson">
                 <div class="icon">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
                 </div>
+
+                <h5>Add Lesson</h5>
             </button>
         </div>
     </article>
 
-    
 </main>
 
 
@@ -121,6 +195,60 @@
     main {
 
         padding-bottom: 5rem;
+
+        button.add {
+            border: 1px dashed app.$color-shade;
+            border-radius: 1rem;
+            background-color: transparent;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+
+            h5 { color: app.$color-midground; }
+
+            
+
+            div.icon {
+                width: 3rem;
+                height: 3rem;
+                stroke: app.$color-foreground;
+                transform: rotateZ(45deg);
+                border: 1px dashed app.$color-shade;
+                border-radius: 10rem;
+
+                transition-property: all;
+                transition-duration: 300;
+                transition-timing-function: linear;
+                
+
+                svg {
+                    height: 60%;
+                    width: 60%;
+                }
+            }
+
+            &:hover div.icon {
+                background-color: app.$color-background;
+                box-shadow: 0 0 1.5rem #282a3614;
+                border: 1px solid transparent;
+            }
+
+            &.cover {
+                width: 14rem;
+                height: 19rem;
+            }
+
+            &.lesson {
+                width: 100%;
+                height: 100%;
+
+                min-height: 9rem;
+
+            }
+        }
 
         div.chip {
             fill: transparent;
@@ -177,9 +305,11 @@
                     img { width: 2rem; height: 2rem; border-radius: 1rem; }
                 }
 
-                h1 { font-family: app.$typeface-heading; font-weight: app.$weight-bold; }
+                :global(h1) { font-family: app.$typeface-heading; font-weight: app.$weight-bold; }
 
-                h6 {
+                :global(span) { display: flex; justify-content: flex-start; }
+
+                :global(h6), :global(span) {
                     position: relative;
                     text-transform: uppercase;
                     width: max-content;
@@ -298,6 +428,28 @@
             margin-bottom: 3rem;
         }
 
+        article#students {
+            div.grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                margin-top: 1rem;
+                gap: 1rem 1rem;
+            }
+
+            div.empty {
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 3rem 0px;
+
+                gap: 1rem;
+
+                img { height: 12rem; }
+                h4 { color: app.$color-midground; }
+            }
+        }
+
         article#lessons {
             display: flex;
             flex-direction: column;
@@ -306,39 +458,14 @@
             div.grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                grid-auto-rows: 1fr;
                 gap: 1rem;
+
 
                 // padding: 0px 5vw;
             }
 
-            button.add.lesson {
-                border: 1px dashed app.$color-shade;
-                border-radius: 1rem;
-                width: 100%;
-                height: 100%;
-                background-color: transparent;
-
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                div.icon {
-                    width: 3rem;
-                    height: 3rem;
-                    stroke: app.$color-foreground;
-                    transform: rotateZ(45deg);
-
-                    border-radius: 10rem;
-                    background-color: app.$color-background;
-
-                    box-shadow: 0 0 1.5rem #282a3614;
-
-                    svg {
-                        height: 60%;
-                        width: 60%;
-                    }
-                }
-            }
+            
         }
 
         

@@ -5,8 +5,9 @@
 <a href="/" class="lesson">
 
     <div class="lead">
-        <p>0% complete</p>
+        <!-- <p>0% complete</p> -->
         <p>#1</p>
+        <button>Delete</button>
     </div>
 
     <div class="trail">
@@ -46,6 +47,19 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0px 0.5rem;
+
+            button {
+                padding: 0px;
+                height: max-content;
+                width: max-content;
+                margin-left: auto;
+                background-color: transparent;
+                color: app.$color-midground;
+
+                &:hover {
+                    color: app.$color-error;
+                }
+            }
 
             > *:nth-child(2) {
                 text-align: end;
