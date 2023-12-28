@@ -3,27 +3,63 @@
 <script lang="ts">
     import Lessoncard from "$lib/cards/lessoncard.svelte";
     import Usercard from "$lib/cards/usercard.svelte";
+    import { database } from "$lib/firebase/app";
     import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
+    import { Timestamp, addDoc, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+    import type { courseLoadData, lessonData } from "./proxy+page";
 
-    const courseID = "chemistry";
+    export let data: courseLoadData;
+    const { courseID, tag, title, objective, lessons } = data;
+    const courseReference = doc(database, "course", courseID);
 
-    $: lessons = Array(0);
+    let lessonsUI : lessonData[] = lessons;
     $: students = Array(0); 
 
-    let tag: string = ""
-    let title: string = "";
-    let objective: string = "";
+    let tagUI: string = tag;
+    let titleUI: string = title;
+    let objectiveUI: string = objective;
     // let cover: string = "/images/thunderhead.jpeg";
-    let cover = ""; 
+    let coverUI = ""; 
 
 
     async function onTitleEdit() {
-        
+        await updateDoc(courseReference, { title: titleUI });
     }
 
-    const addLesson = () => {
-        lessons = [...lessons, undefined];
+    async function onTagEdit() {
+        await updateDoc(courseReference, { tag: tagUI });
+    }
+
+    async function onObjectiveEdit() {
+        await updateDoc(courseReference, { objective: objectiveUI });
+    }
+
+
+    async function addLesson() {
+
+        const updateIndex = lessonsUI.length;
+
+        await updateDoc(courseReference, {
+            lessons: arrayUnion({
+                index: updateIndex,
+                title: "",
+                subtitle: "",
+                postDate: Timestamp.fromDate(new Date()),
+                ideas: [],
+                quiz: []
+            })
+        });
+
+        lessonsUI = [...lessonsUI, {
+            index: updateIndex,
+            title: "",
+            subtitle: "",
+            postDate: new Date(),
+            ideas: [],
+            quiz: []
+        }]
+
     }
 
 </script>
@@ -37,19 +73,21 @@
             <span>
                 &#35;
                 <Editable
-                    placeholder="Course Type"
-                    type="h6"
-                    value={ tag  }
-                    editable={ true }
+                type="h6"
+                onFinishEdit={ onTagEdit }
+                editable={ true }
+                bind:value={ tagUI }
+                placeholder="Course Type"
                 />
             </span>
             
 
             <Editable
                 type="h1"
-                value={ title }
+                bind:value={ titleUI }
                 editable={ true }
                 placeholder="Course 101: Enter Short Descriptive Title Here..."
+                onFinishEdit={ onTitleEdit }
             />
 
             <div class="instructor">
@@ -59,8 +97,8 @@
         </div>
 
         <div>
-            { #if cover }
-            <img src={ cover }  alt="">
+            { #if coverUI }
+            <img src={ coverUI }  alt="">
             { :else }
             <button class="add cover">
                 <div class="icon">
@@ -79,7 +117,7 @@
             <div class="nuggets">
                 <div>
                     <h6>Lessons</h6>
-                    <p>{ lessons.length }</p>
+                    <p>{ lessonsUI.length }</p>
                 </div>
                 <div>
                     <h6>Difficulty</h6>
@@ -144,7 +182,8 @@
         <Editable
             editable={ true }
             placeholder="Enter course objective here ..." 
-            value={ objective }/>
+            onFinishEdit={ onObjectiveEdit } 
+            bind:value={ objectiveUI }/>
     </article>
 
     <article id="students">
@@ -169,7 +208,7 @@
         <h3>Lessons</h3>
 
         <div class="grid">
-            {#each lessons as _ }
+            {#each lessonsUI as _ }
                 <Lessoncard />
             {/each }
 
