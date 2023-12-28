@@ -99,6 +99,14 @@
             {#each Array(7) as _ }
                 <Lessoncard />
             {/each }
+
+            <button on:click={ () => { console.log("Add lesson") }} class="add lesson">
+                <div class="icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </button>
         </div>
     </article>
 
@@ -301,6 +309,35 @@
                 gap: 1rem;
 
                 // padding: 0px 5vw;
+            }
+
+            button.add.lesson {
+                border: 1px dashed app.$color-shade;
+                border-radius: 1rem;
+                width: 100%;
+                height: 100%;
+                background-color: transparent;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                div.icon {
+                    width: 3rem;
+                    height: 3rem;
+                    stroke: app.$color-foreground;
+                    transform: rotateZ(45deg);
+
+                    border-radius: 10rem;
+                    background-color: app.$color-background;
+
+                    box-shadow: 0 0 1.5rem #282a3614;
+
+                    svg {
+                        height: 60%;
+                        width: 60%;
+                    }
+                }
             }
         }
 

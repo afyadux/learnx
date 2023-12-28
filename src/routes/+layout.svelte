@@ -291,8 +291,13 @@
     import { page } from '$app/stores';
     import { NotificationState, notification, sendNotification } from "$lib/utilities/notifications";
     import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-    import { auth } from "$lib/firebase/app";
+    import { auth, database } from "$lib/firebase/app";
+    import { doc, getDoc } from "firebase/firestore";
 
+
+    interface profile {
+        role: string
+    }
 
 
     onMount(async () => {
@@ -301,10 +306,19 @@
         // const credential = await signInWithEmailAndPassword(auth, "alfred@wunsche.org", "skillsusa");
         // console.log(credential);
 
+        
 
-        onAuthStateChanged(auth, () => {
-            console.log("The current user is: ", auth.currentUser);
-        });
+        // onAuthStateChanged(auth, async () => {
+        //     console.log("The current user is: ", auth.currentUser);
+
+        //     if (!auth.currentUser) { return; }
+
+        //     const snapshot = await getDoc(doc(database, "users", auth.currentUser.email!));
+        //     const { role }: profile = snapshot.data() as profile;
+
+
+
+        // });
     });
 
     $: color = () => { 
