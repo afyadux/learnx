@@ -2,14 +2,16 @@
 
 <script lang="ts">
     import Editable from "$lib/interface/Editable.svelte";
-import type { lessonData } from "../../routes/course/[courseID]/proxy+page";
+    import type { lessonData } from "$lib/models/app";
 
+    export let index: number;
     export let lesson: lessonData;
-    const { title, ideas, quiz, index } = lesson;
+    const { title } = lesson;
+
 </script>
 
 
-<a href="/" class="lesson">
+<a href="/lesson/{ lesson }" class="lesson">
 
     <div class="lead">
         <!-- <p>0% complete</p> -->
@@ -20,8 +22,8 @@ import type { lessonData } from "../../routes/course/[courseID]/proxy+page";
     <div class="trail">
         <!-- <h4>Determining an emperical formula from percent composition data</h4> -->
         <Editable type="h4" value={title} editable={false} placeholder="Lesson Title ..." />
-        <p>{ ideas.length } min read</p>
-        <p>{ quiz.length } Questions</p>
+        <p>2 min read</p>
+        <p>5 Questions</p>
     </div>
 </a>
 

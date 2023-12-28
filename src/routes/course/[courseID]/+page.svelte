@@ -6,12 +6,14 @@
     import { database } from "$lib/firebase/app";
     import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
+    import type { courseLoadData, lessonData } from "$lib/models/app";
     import { Timestamp, addDoc, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
-    import type { courseLoadData, lessonData } from "./proxy+page";
 
     export let data: courseLoadData;
     const { courseID, tag, title, objective, lessons } = data;
     const courseReference = doc(database, "course", courseID);
+
+    console.log(data);
 
     let lessonsUI : lessonData[] = lessons;
     $: students = Array(0); 
@@ -38,27 +40,22 @@
 
     async function addLesson() {
 
-        const updateIndex = lessonsUI.length;
-
-        await updateDoc(courseReference, {
-            lessons: arrayUnion({
-                index: updateIndex,
-                title: "",
-                subtitle: "",
-                postDate: Timestamp.fromDate(new Date()),
-                ideas: [],
-                quiz: []
-            })
-        });
-
-        lessonsUI = [...lessonsUI, {
-            index: updateIndex,
+        const newLesson = {
+            courseID: courseID,
             title: "",
             subtitle: "",
-            postDate: new Date(),
             ideas: [],
-            quiz: []
-        }]
+            quiz: [],
+            postDate: Timestamp.fromDate(new Date())
+        }
+
+        const lessonRef = await addDoc(collection(database, "lesson"), newLesson);
+
+        await updateDoc(courseReference, {
+            lessons: arrayUnion(lessonRef.id)
+        });
+
+        lessonsUI = [...lessonsUI, newLesson];
 
     }
 
@@ -117,7 +114,7 @@
             <div class="nuggets">
                 <div>
                     <h6>Lessons</h6>
-                    <p>{ lessonsUI.length }</p>
+                    <!-- <p>{ lessonsUI.length }</p> -->
                 </div>
                 <div>
                     <h6>Difficulty</h6>
@@ -136,7 +133,7 @@
                         </svg>                    
                     </Icon>
     
-                    <p>{ students.length } students</p>
+                    <!-- <p>{ students.length } students</p> -->
                 </div>
 
 
@@ -195,7 +192,7 @@
             {/each }
         </div>
 
-        { #if students.length === 0 }
+        { #if [].length === 0 }
             <div class="empty">
                 <img src="/images/community.png" alt="">
                 <h4>No students enrolled</h4>
@@ -208,8 +205,8 @@
         <h3>Lessons</h3>
 
         <div class="grid">
-            {#each lessonsUI as item }
-                <Lessoncard lesson={ item }/>
+            {#each lessonsUI as item, index }
+                <Lessoncard lesson={ item } index={ index }/>
             {/each }
 
             <button on:click={ addLesson } class="add lesson">

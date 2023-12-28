@@ -13,26 +13,4 @@ export const load:PageLoad = async ({ params }) => {
     }
 }
 
-export interface courseLoadData extends PageData {
-    courseID: string;
-    objective: string;
-    tag: string;
-    title: string;
-    lessons: lessonData[]
-}
 
-export interface lessonData {
-    index: number;
-    title: string;
-    subtitle: string;
-    postDate: Date;
-    ideas: string[];
-    quiz: QuizQuestion[];
-}
-
-export interface QuizQuestion {
-    question: string;
-    type: string;
-    choices: string[];
-    correct: number;
-}

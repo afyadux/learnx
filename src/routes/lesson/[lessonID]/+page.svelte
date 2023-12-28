@@ -1,15 +1,53 @@
 
 
 <script lang="ts">
+    import Question from "$lib/cards/question.svelte";
+    import { database } from "$lib/firebase/app";
+    import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import Tabbar from "$lib/interface/Tabbar.svelte";
-    import { ideaType } from "$lib/models/lesson";
+    import { ideaType, type QuizQuestion, type lessonData } from "$lib/models/app";
+    import { Timestamp, arrayUnion, doc, updateDoc } from "firebase/firestore";
+    import type { PageData } from "../$types";
+    import { page } from "$app/stores";
 
+    export let data: lessonData;
+    const { title, postDate, quiz, courseID } = data;
+    const { lessonID } = $page.params;
+
+
+    let titleUI: string = title;
+    let quizUI: QuizQuestion[] = quiz;
+
+    async function addQuestion() {
+        const updatedQuiz: QuizQuestion[] = [...quizUI, {
+            prompt: "",
+            type: "",
+            choices: ["", "", "", ""],
+            correct: 0
+        }];
+
+        await updateDoc(doc(database, "lesson", lessonID), {
+            quiz: updatedQuiz
+        });
+
+        quizUI = updatedQuiz;
+    }
+
+    async function questionUpdate(value: QuizQuestion, index: number) {
+
+        const updated = [...quizUI.slice(0, index), value , ...quizUI.slice(index + 1)];
+        await updateDoc(doc(database, "lesson", lessonID), {
+            quiz: updated
+        });
+
+        quizUI = updated;
+    }
 
     let ideas = [
         { type: ideaType.text, data: "A chemical bond is a lasting attraction between atoms or ions that enables the formation of molecules, crystals, and other structures. The bond may result from the electrostatic force between oppositely charged ions as in ionic bonds, or through the sharing of electrons as in covalent bonds. The strength of chemical bonds varies considerably; there are strong bonds such as covalent, ionic and metallic bonds, and weak bonds or secondary bonds such as dipole interactions, the London dispersion force, and hydrogen bonding." },
         { type: ideaType.text, data: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
-        { type: ideaType.video, data: "/videos/sample.mp4" },
+        { type: ideaType.video, data: "/sample.mp4" },
         { type: ideaType.text, data: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
         { type: ideaType.text, data: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
     ];
@@ -17,14 +55,12 @@
 
     let stageView: string = "quiz"; 
 
-    $: translate = (stageView === "lesson") ? 0 : 100;
     $: choices = [2];
+    $: translate = (stageView === "lesson") ? 0 : 100;
 
     let successfulYear: string;
     $: submittable = 
-        
         (successfulYear != "") && (successfulYear != undefined)
-       
         ; 
 
 
@@ -47,7 +83,13 @@
 
         <section class="info">
             <img src="/images/thunderhead.jpeg" alt="">
-            <h1>Determining Emperial Formulas from Percent Composition Data</h1>
+
+            <Editable
+                bind:value={ titleUI }
+                type="h1"
+                placeholder="This Lesson's Title ..."
+
+            />
 
             <div class="detail">
         
@@ -67,7 +109,7 @@
                         </svg>                    
                     </Icon>
         
-                    <p>Posted Wednesday &middot; Mar 21, 2023 &middot; 11:59 PM</p>
+                    <p>Posted { postDate.toDate().toLocaleString() }</p>
                 </div>
             </div>
         </section>
@@ -76,70 +118,46 @@
     
 
     <article id="stage">
-        <Tabbar bindingGroup={ stageView } />
+        <Tabbar bind:bindingGroup={ stageView } />
     </article>
     
     <article id="lesson">
-        <section id="ideas" style={ `transform: translateX(${ -translate }vw);` }>
+        <section id="ideas" style="display: { (stageView === "lesson") ? "flex" : "none" };">
         { #each ideas as idea, index }
             <div class="idea">
             {#if idea.type === ideaType.text }
                 <p>{ idea.data }</p>
             {:else if idea.type === ideaType.video }
                 <video controls>
-                    <source src={ idea.data } type="video/mp4">
+                    <source src={ `/videos/${ idea.data }` } type="video/mp4">
                     <track kind="captions">
                 </video>
             {/if }
             </div>
         {/each }
         </section>
-    
-        <section id="quiz" style={ `transform: translateX(${ -translate + 100 }vw);` }>
 
 
-            {#if openEnded}
-            <div class="prompt">
-                <p>Explain the concept of Le Chatelier's Principle and how it applies to chemical equilibrium. Describe a scenario where a change in concentration, temperature, or pressure would shift the equilibrium of a reaction. Illustrate your explanation with a specific chemical reaction, detailing how these changes affect the position of equilibrium and the concentrations of reactants and products.</p>
-                <textarea name="" bind:value={successfulYear} id="textInput"    placeholder="Le Chatelier's Principle states that when a dynamic equilibrium is disturbed by changing the conditions, the system adjusts to restore equilibrium. For example, in the reaction..."></textarea>
-              
-
-              </div>
-
-            {:else}
-
-            { #each Array(5) as _, index }
-            <div class="question">
-                <p id="index">{ index + 1 }</p>
-    
-                <p id="text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus totam blanditiis sed sunt magnam nobis ab illo, esse quas tempora eaque? Cumque ipsa veritatis nobis asperiores molestias sunt distinctio libero doloribus autem!</p>
-    
-                <div class="choices">
-                    <label for="">
-                        <span>1</span>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                    </label>
-                    <label for="">
-                        <span>1</span>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                    </label>
-                    <label for="">
-                        <span>1</span>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                    </label>
-                    <label for="">
-                        <span>1</span>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                    </label>
-                </div>
-            </div>
+        <section id="quiz" style="display: { (stageView === "quiz") ? "block" : "none" };">
+            { #each quizUI as question, index }
+                <Question updateQuestion={ questionUpdate } question={ question } index={ index } />
             {/each }
 
-            {/if}
-        <div class="submit">
-            <button>Submit Quiz</button>
-        </div>
+            <button class="add" on:click={ addQuestion }>
+                <div class="icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+
+                <h5>Add Question</h5>
+            </button>
+
+            <div class="submit">
+                <button>Submit Quiz</button>
+            </div>
         </section>
+
     </article>
 </main>
 
@@ -165,6 +183,48 @@
             max-width: app.$max-width;
             margin: 0px auto;
 
+        }
+
+        button.add {
+            border: 1px dashed app.$color-shade;
+            border-radius: 1rem;
+            background-color: transparent;
+            padding: 1rem 0px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            gap: 1rem;
+
+            h5 { color: app.$color-midground; }
+
+            
+
+            div.icon {
+                width: 3rem;
+                height: 3rem;
+                stroke: app.$color-foreground;
+                transform: rotateZ(45deg);
+                border: 1px dashed app.$color-shade;
+                border-radius: 10rem;
+
+                transition-property: all;
+                transition-duration: 300;
+                transition-timing-function: linear;
+                
+
+                svg {
+                    height: 60%;
+                    width: 60%;
+                }
+            }
+
+            &:hover div.icon {
+                background-color: app.$color-background;
+                box-shadow: 0 0 1.5rem #282a3614;
+                border: 1px solid transparent;
+            }
         }
 
 
@@ -209,7 +269,7 @@
 
                 * { z-index: 2; color: app.$color-foreground; stroke: app.$color-foreground; }
 
-                > h1 {
+                :global(h1) {
                     font-size: 210%;
                     font-family: app.$typeface-heading;
                     margin-bottom: 0.5rem;
@@ -268,7 +328,6 @@
             }
 
             section#ideas {
-                position: absolute;
                 width: 100%;
 
                 display: flex;
@@ -292,78 +351,10 @@
                     border-radius: 1rem;
                 }
             }
-
-            section#quiz {
-                width: 100vw;
-                transform: translateX(100vw);
-
-                // border: 1px solid orange;
-
-            }
         }
 
         section#quiz {
-
-
-            div.question {
-                position: relative;
-                max-width: 840px;
-
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-
-                margin: 0px auto 3rem auto;
-                padding-left: 2rem;
-
-                p#text {
-                    width: 100%;
-                }
-
-
-                p#index {
-                    position: absolute;
-                    top: 0px;
-                    left: 0.5rem;
-                    color: app.$color-midground;
-                }
-
-                &:nth-last-child(2) {
-                    margin: 0px auto 0px auto;
-                }
-            }
-
-            div.choices {
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-
-
-                label {
-                    padding: 0.5rem 0.5rem;
-                    border: 1px solid app.$color-shade;
-                    border-radius: 0.5rem;
-
-                    display: grid;
-                    grid-template-columns: max-content auto;
-                    grid-template-rows: 1fr;
-                    gap: 0px 0.8rem;
-
-                    span {
-                        width: 1.5rem;
-                        height: 1.5rem;
-                        border-radius: 1.5rem;
-                        border: 1px solid app.$color-shade;
-
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 80%;
-                    }
-
-                    p { padding-right: 1rem; }
-                }
-            }
+            width: 100vw;
 
             div.submit {
                 display: flex;
@@ -371,26 +362,16 @@
                 justify-content: center;
                 margin: 2rem 0px 8rem 0px;
             }
+
+            button.add {
+                margin: 0px auto;
+                width: 100%;
+                max-width: 500px;
+            }
         }
     }
 
-    div.prompt {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-
-                > p { font-style: italic; }
-            }
-
-
-            textarea {
-                resize: vertical;
-                padding: 0.6rem 0.8rem;
-                background-color: transparent;
-                border-radius: 0.6rem;
-                width: 100%;
-                border: 1px solid app.$color-shade;
-            }
+    
 
 
 </style>
