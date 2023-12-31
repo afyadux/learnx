@@ -6,7 +6,7 @@
     export let placeholder: string = "This is the placeholder"; 
 
     export let editable = false;
-    export let type: "paragraph" | "h1" | "h4" | "h6" = "paragraph";
+    export let type: "paragraph" | "h1" | "h4" | "h6" | "h2" = "paragraph";
     export let onFinishEdit : () => void = () => { }; 
 
     const onSetEditable = (node: HTMLElement) => {
@@ -40,6 +40,10 @@
 { :else if type === "h1"}
     <!-- svelte-ignore a11y-missing-content -->
     <h1 style={ `--placeholder: "${ placeholder }"` } use:onSetEditable bind:innerText={ value } on:blur={ onFinishEdit } contenteditable></h1>
+
+    { :else if type === "h2"}
+    <!-- svelte-ignore a11y-missing-content -->
+    <h2 style={ `--placeholder: "${ placeholder }"` } use:onSetEditable bind:innerText={ value } on:blur={ onFinishEdit } contenteditable></h2>
 
 { :else if type === "h4"}
     <!-- svelte-ignore a11y-missing-content -->

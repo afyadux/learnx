@@ -4,6 +4,11 @@
 <script lang="ts">
     import Icon from "$lib/interface/Icon.svelte";
     import AuthSection from "$lib/sections/authSection.svelte";
+    import Editable from "$lib/interface/Editable.svelte";
+
+    let FirstName: any;
+    let LastName: any;
+
 
 
 </script>
@@ -36,8 +41,18 @@
 
 
             <div class="name">
-                <h2>Jean-Paul</h2>
-                <h1>Metoyer</h1>
+                <Editable
+                bind:value={ FirstName}
+                type="h2"
+                placeholder="FIrst Name Here"
+            />
+
+                <Editable
+                bind:value={LastName}
+                type="h1"
+                placeholder="Last Name here"
+            />
+
             </div>
 
 
