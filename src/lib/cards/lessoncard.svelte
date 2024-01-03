@@ -6,12 +6,12 @@
 
     export let index: number;
     export let lesson: lessonData;
-    const { title } = lesson;
+    const { title, id } = lesson;
 
 </script>
 
 
-<a href="/lesson/{ lesson }" class="lesson">
+<a href="/lesson/{ id }" class="lesson">
 
     <div class="lead">
         <!-- <p>0% complete</p> -->
@@ -20,7 +20,6 @@
     </div>
 
     <div class="trail">
-        <!-- <h4>Determining an emperical formula from percent composition data</h4> -->
         <Editable type="h4" value={title} editable={false} placeholder="Lesson Title ..." />
         <p>2 min read</p>
         <p>5 Questions</p>

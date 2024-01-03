@@ -15,6 +15,7 @@
 
     console.log(data);
 
+
     let lessonsUI : lessonData[] = lessons;
     $: students = Array(0); 
 
@@ -55,7 +56,7 @@
             lessons: arrayUnion(lessonRef.id)
         });
 
-        lessonsUI = [...lessonsUI, newLesson];
+        lessonsUI = [...lessonsUI, { ...newLesson, id: lessonRef.id }];
 
     }
 
@@ -114,7 +115,7 @@
             <div class="nuggets">
                 <div>
                     <h6>Lessons</h6>
-                    <!-- <p>{ lessonsUI.length }</p> -->
+                    <p>{ lessonsUI.length }</p>
                 </div>
                 <div>
                     <h6>Difficulty</h6>

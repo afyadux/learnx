@@ -27,6 +27,7 @@ export interface courseLoadData extends PageData {
 }
 
 export interface lessonData extends PageData {
+    id: string;
     courseID: string;
     title: string;
     subtitle: string;

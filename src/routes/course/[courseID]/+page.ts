@@ -7,9 +7,23 @@ export const load:PageLoad = async ({ params }) => {
     const { courseID } = params; 
 
     const snapshot = await getDoc(doc(database, "course", courseID));
+    const IDs : string[] = (snapshot.data() as any).lessons;
+
+
+    const fetchLessons = IDs.map((id) => getDoc(doc(database, "lesson",  id)));
+    const fetch = (await Promise.all(fetchLessons)).map((snap) => snap.data()!);
+    const lessons = fetch.map((item, index) => {
+
+        return {
+            ... item,
+            id: IDs[index]
+        };
+    });
+
     return {
         courseID: snapshot.id,
-        ... snapshot.data()
+        ... snapshot.data(),
+        lessons: lessons
     }
 }
 
