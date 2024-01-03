@@ -10,7 +10,6 @@ interface UserProfile {
     firstName: string,
     lastName: string,
     photoURL: string | null,
-
     role: string,
 }
 

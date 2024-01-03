@@ -48,6 +48,13 @@
     }
 
     const onInstitutionUsernameChanged = async () => {
+
+        const regexPattern = /^[a-z\-]+$/
+        if (regexPattern.test(institutionUsername) === false) {
+            institutionUsernameError = "Usernames must be lowercase, and can only contain hyphens";
+            return;
+        };
+
         const snap = await getDoc(doc(database, "institution", institutionUsername.toLocaleLowerCase()));
         if (!snap.exists()) { return; }
 

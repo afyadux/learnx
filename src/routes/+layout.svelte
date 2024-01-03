@@ -252,6 +252,41 @@
         }
     }
 
+    main#auth {
+        height: calc(100vh - 12rem);
+        padding-top: 4rem;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        div {
+            max-width: 800px;
+            margin: 0px auto;
+
+            padding: 0px 3rem;
+        }
+
+        > div:first-child {
+            height: 40%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            // margin-top: 2rem;
+        }
+
+        div#links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+
+            > * { text-align: center; }
+        }
+    }
+
     footer {
         background-color: app.$color-brand;
         padding: 2rem 4vw;
@@ -293,7 +328,7 @@
     import { onAuthStateChanged, signInWithEmailAndPassword, type User } from "firebase/auth";
     import { auth, database } from "$lib/firebase/app";
     import { doc, getDoc } from "firebase/firestore";
-    import { updateUser } from "$lib/utilities/authentication";
+    import { updateUser, user } from "$lib/utilities/authentication";
 
     $: color = () => { 
 
@@ -335,7 +370,6 @@
 
 
     onMount(async () => {
-
     }); 
 
 </script>
@@ -369,7 +403,26 @@
     </span>
 </nav>
 
-<slot></slot>
+{ #if ($user === undefined && $page.url.pathname.startsWith("/auth") === false) }
+    <main id="auth">
+        <div>
+            <img src="/images/auth.png" alt="">
+        </div>
+
+        <div id="links">
+            <h3>A world of infinate educational potential: just a few clicks away</h3>
+            <h5>Sign in to securely access your classes & lessons</h5>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <a href="/auth/register" class="button">Create Account</a>
+            <a href="/auth/login" class="button secondary">Sign In</a>
+        </div>
+
+    </main>
+{ :else }
+    <slot></slot>
+{/if }
 
 <footer>
 
