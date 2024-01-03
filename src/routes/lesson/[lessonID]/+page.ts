@@ -12,7 +12,7 @@ export const load:PageLoad = async ({ params }) => {
 
     return {
         ... pointer.data(),
-        lessonID: lessonID
+        id: lessonID
     };
 }
 

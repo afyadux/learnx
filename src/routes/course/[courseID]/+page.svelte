@@ -13,7 +13,6 @@
     const { courseID, tag, title, objective, lessons } = data;
     const courseReference = doc(database, "course", courseID);
 
-    console.log(data);
 
 
     let lessonsUI : lessonData[] = lessons;

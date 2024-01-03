@@ -6,8 +6,10 @@
     import AuthSection from "$lib/sections/authSection.svelte";
     import Editable from "$lib/interface/Editable.svelte";
 
-    let FirstName: any;
-    let LastName: any;
+
+    let institutionalName: string = "";
+    let firstNameUI: string = "";
+    let lastNameUI: string = "";
 
 
 
@@ -36,21 +38,28 @@
 
                 <div class=""><img src="/icons/profile.png" alt=""></div>
 
-                <h4>Wunsche High</h4>
+                <Editable
+                bind:value={ institutionalName }
+                type="h4"
+                placeholder="Institution Name"
+                editable={ true } 
+                />
             </div>
 
 
             <div class="name">
                 <Editable
-                bind:value={ FirstName}
+                bind:value={ firstNameUI }
                 type="h2"
-                placeholder="FIrst Name Here"
+                placeholder="First Name"
+                editable={ true }
             />
 
                 <Editable
-                bind:value={LastName}
+                bind:value={ lastNameUI }
                 type="h1"
-                placeholder="Last Name here"
+                placeholder="Last Name"
+                editable={ true }
             />
 
             </div>
@@ -142,7 +151,7 @@
                 fill: transparent;
             }
 
-            div.icons > h4 {
+            div.icons > :global(h4) {
                 grid-column: span 3;
                 font-weight: app.$weight-semibold;
                 color: app.$color-midground;

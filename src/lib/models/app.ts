@@ -12,11 +12,6 @@ export interface IEvent {
     description: string;
 }
 
-export enum ideaType {
-    text,
-    video
-}
-
 
 export interface courseLoadData extends PageData {
     courseID: string;
@@ -32,8 +27,13 @@ export interface lessonData extends PageData {
     title: string;
     subtitle: string;
     postDate: Timestamp;
-    ideas: string[];
+    ideas: LessonIdea[];
     quiz: QuizQuestion[];
+} 
+
+export interface LessonIdea {
+    type: "text" | "video",
+    value: string; 
 }
 
 export interface QuizQuestion {

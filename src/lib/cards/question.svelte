@@ -37,7 +37,7 @@
         <p id="index">{ index + 1 }</p>
 
         <Editable
-        editable={ true }
+            editable={ true }
             bind:value={ promptUI }
             onFinishEdit={ update }
             placeholder="Question { index +1  } prompt ..."

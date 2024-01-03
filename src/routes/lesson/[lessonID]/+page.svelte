@@ -6,18 +6,30 @@
     import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import Tabbar from "$lib/interface/Tabbar.svelte";
-    import { ideaType, type QuizQuestion, type lessonData } from "$lib/models/app";
+    import type { LessonIdea, QuizQuestion, lessonData } from "$lib/models/app";
     import { Timestamp, arrayUnion, doc, updateDoc } from "firebase/firestore";
     import type { PageData } from "../$types";
     import { page } from "$app/stores";
+    import Idea from "$lib/cards/idea.svelte";
 
     export let data: lessonData;
-    const { title, postDate, quiz, courseID } = data;
+    const { title, postDate, quiz, courseID, id } = data;
     const { lessonID } = $page.params;
 
 
+    let openEnded = true;
     let titleUI: string = title;
     let quizUI: QuizQuestion[] = quiz;
+
+    let stageView: string = "quiz"; 
+
+    $: choices = [2];
+    $: translate = (stageView === "lesson") ? 0 : 100;
+
+    let successfulYear: string;
+    $: submittable = 
+        (successfulYear != "") && (successfulYear != undefined)
+        ; 
 
     async function addQuestion() {
         const updatedQuiz: QuizQuestion[] = [...quizUI, {
@@ -44,31 +56,26 @@
         quizUI = updated;
     }
 
-    let ideas = [
-        { type: ideaType.text, data: "A chemical bond is a lasting attraction between atoms or ions that enables the formation of molecules, crystals, and other structures. The bond may result from the electrostatic force between oppositely charged ions as in ionic bonds, or through the sharing of electrons as in covalent bonds. The strength of chemical bonds varies considerably; there are strong bonds such as covalent, ionic and metallic bonds, and weak bonds or secondary bonds such as dipole interactions, the London dispersion force, and hydrogen bonding." },
-        { type: ideaType.text, data: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
-        { type: ideaType.video, data: "/sample.mp4" },
-        { type: ideaType.text, data: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
-        { type: ideaType.text, data: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
+    let ideas : LessonIdea[] = [
+        { type: "text", value: "A chemical bond is a lasting attraction between atoms or ions that enables the formation of molecules, crystals, and other structures. The bond may result from the electrostatic force between oppositely charged ions as in ionic bonds, or through the sharing of electrons as in covalent bonds. The strength of chemical bonds varies considerably; there are strong bonds such as covalent, ionic and metallic bonds, and weak bonds or secondary bonds such as dipole interactions, the London dispersion force, and hydrogen bonding." },
+        { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
+        { type: "video",value: "/sample.mp4" },
+        { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
+        { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
     ];
 
 
-    let stageView: string = "quiz"; 
-
-    $: choices = [2];
-    $: translate = (stageView === "lesson") ? 0 : 100;
-
-    let successfulYear: string;
-    $: submittable = 
-        (successfulYear != "") && (successfulYear != undefined)
-        ; 
+    const onFinishEditTitle = async () => {
+        await updateDoc(doc(database, "lesson", id), {
+            title: titleUI
+        });
+    }
 
 
     const submitForm = () => {
 
     }
 
-    let openEnded = true;
 
 
     
@@ -85,10 +92,11 @@
             <img src="/images/thunderhead.jpeg" alt="">
 
             <Editable
+                editable={ true }
                 bind:value={ titleUI }
                 type="h1"
                 placeholder="This Lesson's Title ..."
-
+                onFinishEdit={ onFinishEditTitle }
             />
 
             <div class="detail">
@@ -124,16 +132,7 @@
     <article id="lesson">
         <section id="ideas" style="display: { (stageView === "lesson") ? "flex" : "none" };">
         { #each ideas as idea, index }
-            <div class="idea">
-            {#if idea.type === ideaType.text }
-                <p>{ idea.data }</p>
-            {:else if idea.type === ideaType.video }
-                <video controls>
-                    <source src={ `/videos/${ idea.data }` } type="video/mp4">
-                    <track kind="captions">
-                </video>
-            {/if }
-            </div>
+            <Idea data={ idea } index={ index } />
         {/each }
         </section>
 
@@ -338,18 +337,7 @@
                 padding-bottom: 6rem;
                 padding-top: 1rem;
 
-                p {
-                    color: app.$color-tint;
-                }
-
-                div.idea {
-                    max-width: 800px;
-                }
-
-                div.idea video {
-                    width: 100%;
-                    border-radius: 1rem;
-                }
+                
             }
         }
 
