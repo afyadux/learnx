@@ -8,9 +8,9 @@
     import { user } from "$lib/utilities/authentication";
 
 
-    let institutionalName: string = "";
-    let firstNameUI: string = "";
-    let lastNameUI: string = "";
+    let institutionalName: string = $user.institution?.name ? $user.institution.name : "";
+    let firstNameUI: string = $user ? $user.firstName : "";
+    let lastNameUI: string = $user ? $user.lastName : "";
 
     console.log($user);
 
@@ -20,14 +20,14 @@
 
 <main>
     <section id="type">
-        <p>Student</p>
+        <p>{ $user.role[0].toUpperCase() + $user.role.slice(1) }</p>
     </section>
 
     <section id="account">
         <div class="profile">
 
             <div class="icons">
-                <div class=""><img src={  $user?.photoURL ? $user.photoURL : "/icons/anonymous.png"  } alt=""></div>
+                <div class=""><img src={  $user?.photoURL ? $user.photoURL : "/icons/edit-pfp.png"  } alt=""></div>
 
                 <div>
                 <Icon>
@@ -38,7 +38,7 @@
                 </Icon>
                 </div>
 
-                <div class=""><img src="/icons/profile.png" alt=""></div>
+                <div class=""><img src="/icons/institution.png" alt=""></div>
 
                 <Editable
                 bind:value={ institutionalName }
@@ -80,7 +80,6 @@
         </div>
     </section>
 
-    <AuthSection />
 
 </main>
 
@@ -146,7 +145,8 @@
                 gap: 1rem 0px;
             }
 
-            div.icons > div:nth-child(1) { 
+            div.icons > div:nth-child(1),
+            div.icons > div:nth-child(3) { 
                 border-radius: 5rem;
                 border: 1px solid app.$color-shade;
             }

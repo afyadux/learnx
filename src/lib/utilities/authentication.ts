@@ -11,16 +11,29 @@ interface UserProfile {
     lastName: string,
     photoURL: string | null,
     role: string,
+
+    institution: {
+        name: string,
+        pfp: string
+    } | undefined;
 }
 
 
-export const user = writable<UserProfile | undefined>(undefined);
+export const user = writable<UserProfile>(undefined);
 
 export async function updateUser(fresh: User | null) {
 
     if (fresh === null) {
         console.warn("User has logged out!");
-        user.update(() => undefined);
+        user.set({
+            id: "",
+            email: "",
+            firstName: "",
+            lastName: "",
+            photoURL: "",
+            role: "",
+            institution: undefined
+        });
         return;
     }
 
@@ -28,7 +41,14 @@ export async function updateUser(fresh: User | null) {
     const [first, last] = profile.displayName ? profile.displayName.split("^^") : ["", ""];
 
     const snap = await getDoc(doc(database, "users", profile.email!));
-    const { role } = (snap.data() as any);
+    const { role, institution } = (snap.data() as any);
+
+    let fetchCampus = undefined;
+
+    if (institution) {
+        const data = (await getDoc(doc(database, "institution", institution))).data() as any;
+        fetchCampus = { name: data.name, pfp: data.pfp }
+    }
 
     user.set({
         id: profile.uid,
@@ -38,6 +58,7 @@ export async function updateUser(fresh: User | null) {
         photoURL: profile.photoURL,
 
         role: role,
+        institution: fetchCampus
     });
 
 }

@@ -63,10 +63,13 @@
 
     const submitForm = async () => {
         try {
+
+            const [firstName, surname] = name.split(" ");
+
             const writeAuth =
                 createUserWithEmailAndPassword(auth, email, password)
                 .then((snap) => {
-                    updateProfile(snap.user, { displayName: name })
+                    updateProfile(snap.user, { displayName: `${ firstName }^^${ surname }` })
                 });
 
             const writeData = setDoc(doc(database, "users", email), {

@@ -392,7 +392,7 @@
         <button on:click={() => { auth.signOut(); }}>Sign Out</button>
 
         <a href="/profile" id="pfp">
-            <img src="/icons/profile.png" alt="">
+            <img src={ $user.photoURL ? $user.photoURL : "/icons/anonymous.png" } alt="">
         </a>
 
         <Icon id="dropdown" handleClick={ toggleNavbar }>

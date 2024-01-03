@@ -20,6 +20,7 @@
 
     *[contenteditable] {
         cursor: pointer;
+        padding: 0.15rem 0px;
 
         &:empty { 
         }
