@@ -7,39 +7,92 @@
     import SocialAuth from "$lib/interface/SocialAuth.svelte";
     import Tabbar from "$lib/interface/Tabbar.svelte";
     import Textfield from "$lib/interface/Textfield.svelte";
-    import { createUserWithEmailAndPassword } from "firebase/auth";
-    import { doc, setDoc } from "firebase/firestore"; 
+    import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+    import { doc, getDoc, setDoc } from "firebase/firestore"; 
     import { onMount, type ComponentProps, SvelteComponent } from "svelte";
 
     let role: string = "";
     let roleError = "";
+
+    let institutionName: string = "";
+    let institutionNameError = "";
+
+    let institutionUsername: string = "";
+    let institutionUsernameError = "";
+
+    let name: string = "";
+    let nameError : string = "";
     
-
-
     let email: string = "";
+    let emailError : string = "";
+
     let password: string = "";
     let showPassword = false;
-
-    let emailError : string = "";
     let passwordError : string = "";
+
+
+    $: formValid = 
+        (role === "admin" ?
+            (
+                (institutionName !== "") && (institutionNameError === "") &&
+                (institutionUsername !== "") && (institutionUsernameError === "")
+            ) : true) &&
+
+        (name !== "") && (nameError === "") &&
+        (email !== "") && (emailError === "") &&
+        (password !== "") && (passwordError === "") &&
+        (role !== "") && (roleError === "");
 
     const onRoleChange = () => {
         if (roleError.length > 0) { roleError = ""; }
     }
 
-    $: formValid = 
-        (email !== "") && (emailError === "") &&
-        (password !== "") && (passwordError === "") &&
-        (role !== "") && (roleError === "");
+    const onInstitutionUsernameChanged = async () => {
+        const snap = await getDoc(doc(database, "institution", institutionUsername.toLocaleLowerCase()));
+        if (!snap.exists()) { return; }
 
+        institutionUsernameError = "A school with that username is already registered";
+    }
 
     const submitForm = async () => {
         try {
+            const writeAuth =
+                createUserWithEmailAndPassword(auth, email, password)
+                .then((snap) => {
+                    updateProfile(snap.user, { displayName: name })
+                });
+
+            const writeData = setDoc(doc(database, "users", email), {
+                role: role,
+                institution: (role === "admin") ? institutionUsername : null
+            });
+
+            const writeInstitution = setDoc(doc(database, "institution", institutionUsername.toLocaleLowerCase()), {
+                name: institutionName,
+                admin: email,
+                pfp: null,
+                courses: [],
+                popularCourses: []
+            });
+
+
+            if (role === "admin") {
+                await Promise.all([writeAuth, writeData, writeInstitution]);
+            } else {
+                await Promise.all([writeAuth, writeData]);
+            }
+            
+            goto("/profile");
 
         } catch (error) {
             console.error(error);
         }
     }
+
+    setTimeout(() => {
+        if (role) { return } 
+        roleError = "Choose one of these options please"
+    }, 7000)
 
 
 </script>
@@ -53,12 +106,58 @@
     <Tabbar onTabbarChange={ onRoleChange } error={ roleError } fill options={["student", "teacher", "admin"]} bind:bindingGroup={ role }/>
     <br>
 
+    { #if role === "admin"}
+        <h5 style="font-weight: 500;">Administration</h5>
+
+        <Textfield
+        type="name"
+        bind:error={ institutionNameError }
+        bind:value={ institutionName } 
+        title="Institution Name"
+        placeholder="e.g. California Institute of Technology"
+        required={ true }
+        requiredError="What school/institution are you a part of"
+        ></Textfield>
+
+        <br>
+
+        <Textfield
+        type="name"
+        bind:error={ institutionUsernameError }
+        bind:value={ institutionUsername } 
+        title="Institution Username"
+        placeholder="e.g. caltech"
+        required={ true }
+        requiredError="Enter a valid & unique username for your institution"
+        onEdit={ onInstitutionUsernameChanged }
+        ></Textfield>
+
+
+        <br>
+        <br>
+    {/if }
+
+    <h5 style="font-weight: 500;">Personal Account</h5>
+    <Textfield
+        type="name"
+        bind:error={ nameError }
+        bind:value={ name } 
+        title="Full Name"
+        placeholder="Ada Lovelace"
+        required={ true }
+        requiredError="Enter your full name, separated by a space"
+    ></Textfield>
+
+    <br>
+
     <Textfield
         type="email"
         bind:error={ emailError }
         bind:value={ email } 
         title="Email Address"
         placeholder="name@institution.org"
+        required={ true }
+        requiredError="Enter your official email address"
     ></Textfield>
 
     <br>
@@ -69,6 +168,8 @@
         bind:value={ password }
         placeholder="Enter password"
         type={ showPassword ? "text" : "password" }
+        required={ true }
+        requiredError="Enter a password you will use to sign in"
     >   
     <Icon slot="action" handleClick={ () => { showPassword = !showPassword } }>
         { #if showPassword }
@@ -89,7 +190,7 @@
     </Icon>
     </Textfield>
     
-
+    <br>
 
     <button disabled={ !formValid } on:click={ submitForm } id="cta">Register</button>
 

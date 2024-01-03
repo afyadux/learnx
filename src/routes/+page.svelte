@@ -7,8 +7,6 @@
 </script>
 
 <main>
-
-
     <Hero/>
 
     <section id="lesson">
@@ -16,11 +14,9 @@
 
         <div class="grid">
             {#each Array(3) as _ }
-            <Lessoncard/>
+            <!-- <Lessoncard/> -->
             {/each }
         </div>
-
-
     </section>
 
 

@@ -5,12 +5,14 @@
     import Icon from "$lib/interface/Icon.svelte";
     import AuthSection from "$lib/sections/authSection.svelte";
     import Editable from "$lib/interface/Editable.svelte";
+    import { user } from "$lib/utilities/authentication";
 
 
     let institutionalName: string = "";
     let firstNameUI: string = "";
     let lastNameUI: string = "";
 
+    console.log($user);
 
 
 </script>
@@ -25,7 +27,7 @@
         <div class="profile">
 
             <div class="icons">
-                <div class=""><img src="/icons/instructor.png" alt=""></div>
+                <div class=""><img src={  $user?.photoURL ? $user.photoURL : "/icons/anonymous.png"  } alt=""></div>
 
                 <div>
                 <Icon>
@@ -142,6 +144,11 @@
                 grid-template-columns: 8rem 4rem 8rem;
                 grid-template-rows: 8rem 1.5rem;
                 gap: 1rem 0px;
+            }
+
+            div.icons > div:nth-child(1) { 
+                border-radius: 5rem;
+                border: 1px solid app.$color-shade;
             }
 
             div.icons > div:nth-child(2) {

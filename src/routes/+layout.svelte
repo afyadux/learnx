@@ -290,64 +290,53 @@
     import Icon from "$lib/interface/Icon.svelte";
     import { page } from '$app/stores';
     import { NotificationState, notification, sendNotification } from "$lib/utilities/notifications";
-    import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+    import { onAuthStateChanged, signInWithEmailAndPassword, type User } from "firebase/auth";
     import { auth, database } from "$lib/firebase/app";
     import { doc, getDoc } from "firebase/firestore";
+    import { updateUser } from "$lib/utilities/authentication";
 
+    $: color = () => { 
+
+    if ($notification === undefined) { return "transparent"; }
+
+    switch ($notification.type) {
+        case NotificationState.info:
+            return "#3361FF";
+
+        case NotificationState.error:
+            return "#FF5E6E";
+
+        case NotificationState.warning:
+            return "#FF8800";
+
+        case NotificationState.success:
+            return "#2BD84E";
+
+        default:
+            return "#3361FF";
+    }
+    }
+
+    let showNavbar: boolean = false;
+    const toggleNavbar = () => { showNavbar = !showNavbar };
 
     interface profile {
         role: string
     }
 
-
-    onMount(async () => {
-        popup.addEventListener(("click"), toggleNavbar);
-
-        // const credential = await signInWithEmailAndPassword(auth, "alfred@wunsche.org", "skillsusa");
-        // console.log(credential);
-
-        
-
-        // onAuthStateChanged(auth, async () => {
-        //     console.log("The current user is: ", auth.currentUser);
-
-        //     if (!auth.currentUser) { return; }
-
-        //     const snapshot = await getDoc(doc(database, "users", auth.currentUser.email!));
-        //     const { role }: profile = snapshot.data() as profile;
-
-
-
-        // });
-    });
-
-    $: color = () => { 
-
-        if ($notification === undefined) { return "transparent"; }
-
-        switch ($notification.type) {
-            case NotificationState.info:
-                return "#3361FF";
-
-            case NotificationState.error:
-                return "#FF5E6E";
-
-            case NotificationState.warning:
-                return "#FF8800";
-
-            case NotificationState.success:
-                return "#2BD84E";
-
-            default:
-                return "#3361FF";
-        }
+    function addToggleNavbar(node: HTMLElement) {
+        node.addEventListener(("click"), toggleNavbar);
     }
 
-    let popup: HTMLElement;
-    let showNavbar: boolean = false;
-    const toggleNavbar = () => { showNavbar = !showNavbar };
+    // - Authentication
+    onAuthStateChanged(auth, () => {
+        updateUser(auth.currentUser);
+    });
 
-    
+
+    onMount(async () => {
+
+    }); 
 
 </script>
 
@@ -394,7 +383,7 @@
     </div>
 </footer>
 
-<section class={ showNavbar ? "show" : "" } id="popup-nav" bind:this={ popup }>
+<section class={ showNavbar ? "show" : "" } id="popup-nav" use:addToggleNavbar>
 
     <div class="links">
         <a href="/">Link</a>

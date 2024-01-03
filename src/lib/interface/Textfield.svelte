@@ -2,22 +2,34 @@
 <script lang="ts">
     import Icon from "./Icon.svelte";
 
+    export let required: boolean = false;
+    export let requiredError: string = "";
+
+
     export let error: string = "";
 
     export let value: string;
-    export let type: "text" | "password" | "email" | "search" | "number" = "text";
+    export let type: "text" | "name" | "password" | "email" | "search" | "number" = "text";
     export let editable: boolean = true;
     export let placeholder: string = "";
 
     export let title: string = "";
     export let actionTitle: string = "";
     export let onActionClicked: () => void = () => {  }; 
+    export let onEdit: () => void = () => {  };
 
     const onEditTextfield = () => {
 
     }
 
     const onFinishEdit = () => {
+
+        if (required && (value === ""  || value === undefined)) {
+            error = requiredError; return;
+        }
+
+        error = "";
+
 
         // Email textfield validation
         if (type === "email") {
@@ -33,11 +45,11 @@
         // Email textfield validation
         if (type === "password") {
 
-            if (value === "" || value === undefined) { error = "Please enter a password"; return; }
             if (value.length < 8) { error = "Password must be at least 8 characters long"; return; }
-
             error = "";
         }
+
+        onEdit();
     }
     
 </script>
@@ -46,7 +58,10 @@
     <div class="header">
         <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="title">{ title }</label>
+
+        { #if actionTitle }
         <button class="action" on:click={ onActionClicked }>{ actionTitle }</button>
+        {/if }
     </div>
 
     <input
@@ -56,14 +71,19 @@
         style={ `padding: 0.6rem ${ ($$slots.action) ? 2.5 : 1 }rem 0.6rem ${ ($$slots.icon || $$slots.default) ? 2.5 : 1 }rem` }
         placeholder={ placeholder } readonly={ !editable } bind:value={ value }>
 
+    
+    { #if ($$slots.default || $$slots.icon) }
     <div class="marker">
         <slot name="icon"></slot>
         <slot></slot>         
     </div>
+    {/if }
 
+    { #if ($$slots.action) }
     <div class="action">
         <slot name="action"></slot>            
     </div>
+    {/if }
 
     <label id="error" for="">{ error }</label>
 </div>
