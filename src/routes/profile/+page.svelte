@@ -8,7 +8,7 @@
     import { user } from "$lib/utilities/authentication";
 
 
-    let institutionalName: string = $user.institution?.name ? $user.institution.name : "";
+    let institutionalName: string = $user.institution?.name ? $user.institution.name : "No Institution Joined";
     let firstNameUI: string = $user ? $user.firstName : "";
     let lastNameUI: string = $user ? $user.lastName : "";
 
@@ -66,8 +66,6 @@
 
             </div>
 
-
-
         </div>
 
         <div class="progress">
@@ -80,6 +78,14 @@
         </div>
     </section>
 
+
+    <section id="join">
+        <div class="thumbnail"><img src="/images/empty/campus.png" alt=""></div>
+        <h4>You have not joined any institution</h4>
+        <p>Classes and lessons are only accessible to members of a certain institution</p>
+        <a class="button secondary" href="/institution">Join and find classes & lessons</a>
+
+    </section>
 
 </main>
 
@@ -202,6 +208,29 @@
                 border: 1px dashed #aaaab2;
                 border-radius: 0.5rem;
             }
+        }
+    }
+
+    section#join {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        margin-bottom: 8rem;
+
+        a {
+                margin-top: 1rem;
+            }
+
+        div.thumbnail {
+            height: 15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 2rem;
+
+            
         }
     }
 

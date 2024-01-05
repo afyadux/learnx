@@ -44,5 +44,11 @@ export interface QuizQuestion {
 }
 
 
+export interface Institution {
+    pfp: string;
+    name: string;
+}
+
+
 
 

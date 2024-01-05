@@ -43,8 +43,9 @@
                     font-size:120%;
                     line-height: 150%;
                     font-weight: app.$weight-semibold;
+                    font-family: app.$typeface-heading;
 
-                    span { font-size: inherit; }
+                    span { font-size: inherit; font-family: app.$typeface-heading; }
 
                     @media screen and (min-width: 960px) {
                         font-size: 180%;

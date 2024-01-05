@@ -58,9 +58,9 @@
     }
 
     h4 {
-        font-size: 26px;
-        font-weight: bolder;
-        margin-bottom: 15px;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: app.$color-foreground;
     }
 </style>
 

@@ -1,6 +1,143 @@
 
 
 
+
+
+<script lang="ts">
+    import { onMount } from "svelte";
+    import "$lib/interface/app.scss";
+    import Icon from "$lib/interface/Icon.svelte";
+    import { page } from '$app/stores';
+    import { NotificationState, notification, sendNotification } from "$lib/utilities/notifications";
+    import { onAuthStateChanged, signInWithEmailAndPassword, type User } from "firebase/auth";
+    import { auth, database } from "$lib/firebase/app";
+    import { doc, getDoc } from "firebase/firestore";
+    import { updateUser, user } from "$lib/utilities/authentication";
+
+    $: color = () => { 
+
+    if ($notification === undefined) { return "transparent"; }
+
+    switch ($notification.type) {
+        case NotificationState.info:
+            return "#3361FF";
+
+        case NotificationState.error:
+            return "#FF5E6E";
+
+        case NotificationState.warning:
+            return "#FF8800";
+
+        case NotificationState.success:
+            return "#2BD84E";
+
+        default:
+            return "#3361FF";
+    }
+    }
+
+    let showNavbar: boolean = false;
+    const toggleNavbar = () => { showNavbar = !showNavbar };
+
+    interface profile {
+        role: string
+    }
+
+    function addToggleNavbar(node: HTMLElement) {
+        node.addEventListener(("click"), toggleNavbar);
+    }
+
+    // - Authentication
+    onAuthStateChanged(auth, () => {
+        updateUser(auth.currentUser);
+    });
+
+
+    onMount(async () => {
+    }); 
+
+</script>
+
+
+<nav>
+    <a href="/" id="logo">
+        <img src="/icons/dummylogo.png" alt="">
+    </a>
+
+    <div class="links">
+        <a class={ $page.url.pathname === "/course" ? "highlight" : "" } href="/course">Courses</a>
+        <a class={ $page.url.pathname === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
+        <a class={ $page.url.pathname === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
+    </div>
+
+    <span>
+
+        <button on:click={() => { auth.signOut(); }}>Enroll in a Course</button>
+
+        <a href="/profile" id="pfp">
+            <img src={ $user.photoURL ? $user.photoURL : "/icons/anonymous.png" } alt="">
+        </a>
+
+        <Icon id="dropdown" handleClick={ toggleNavbar }>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>                                             
+        </Icon>
+    </span>
+</nav>
+
+{ #if ($user.id === "" && $page.url.pathname.startsWith("/auth") === false) }
+    <main id="auth">
+        <div>
+            <img src="/images/empty/auth.png" alt="">
+        </div>
+
+        <div id="links">
+            <h3>A world of infinate educational potential: just a few clicks away</h3>
+            <h5>Sign in to securely access your classes & lessons</h5>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <a href="/auth/register" class="button">Create Account</a>
+            <a href="/auth/login" class="button secondary">Sign In</a>
+        </div>
+
+    </main>
+{ :else }
+    <slot></slot>
+{/if }
+
+<footer>
+
+    <div id="logo">
+        <img src="/icons/dummylogo.png" alt="">
+    </div>
+    
+    <div id="trail">
+        <p>Copyright © LearnX, BPA</p>
+        <p>All Rights Reserved</p>
+    </div>
+</footer>
+
+<section class={ showNavbar ? "show" : "" } id="popup-nav" use:addToggleNavbar>
+
+    <div class="links">
+        <a class={ $page.url.pathname === "/course" ? "highlight" : "" } href="/course">Courses</a>
+        <a class={ $page.url.pathname === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
+        <a class={ $page.url.pathname === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
+
+        <div class="cite">
+            <p>Copy &copy; 2023</p>
+            <p>All rights reserved</p>
+        </div>
+    </div>
+
+</section>
+
+<section id="toast">
+    <p style={ `background-color: ${ color() };` } class={ ($notification === undefined) ? "" : "show" }>{  ($notification === undefined) ? "" : $notification.message }</p>
+</section>
+
 <style lang="scss">
     @use "$lib/interface/variables" as app;
 
@@ -318,143 +455,6 @@
         font-size: .8rem;
     }
 </style>
-
-<script lang="ts">
-    import { onMount } from "svelte";
-    import "$lib/interface/app.scss";
-    import Icon from "$lib/interface/Icon.svelte";
-    import { page } from '$app/stores';
-    import { NotificationState, notification, sendNotification } from "$lib/utilities/notifications";
-    import { onAuthStateChanged, signInWithEmailAndPassword, type User } from "firebase/auth";
-    import { auth, database } from "$lib/firebase/app";
-    import { doc, getDoc } from "firebase/firestore";
-    import { updateUser, user } from "$lib/utilities/authentication";
-
-    $: color = () => { 
-
-    if ($notification === undefined) { return "transparent"; }
-
-    switch ($notification.type) {
-        case NotificationState.info:
-            return "#3361FF";
-
-        case NotificationState.error:
-            return "#FF5E6E";
-
-        case NotificationState.warning:
-            return "#FF8800";
-
-        case NotificationState.success:
-            return "#2BD84E";
-
-        default:
-            return "#3361FF";
-    }
-    }
-
-    let showNavbar: boolean = false;
-    const toggleNavbar = () => { showNavbar = !showNavbar };
-
-    interface profile {
-        role: string
-    }
-
-    function addToggleNavbar(node: HTMLElement) {
-        node.addEventListener(("click"), toggleNavbar);
-    }
-
-    // - Authentication
-    onAuthStateChanged(auth, () => {
-        updateUser(auth.currentUser);
-    });
-
-
-    onMount(async () => {
-    }); 
-
-</script>
-
-
-<nav>
-    <a href="/" id="logo">
-        <img src="/icons/dummylogo.png" alt="">
-    </a>
-
-    <div class="links">
-        <a class={ $page.url.pathname === "/courses" ? "highlight" : "" } href="/course">Course</a>
-        <a class={ $page.url.pathname === "/lesson" ? "highlight" : "" } href="/lesson">Lesson</a>
-        <a class={ $page.url.pathname === "/profile" ? "highlight" : "" } href="/profile">Profile</a>
-        <a class={ $page.url.pathname === "/" ? "highlight" : "" } href="/">Link</a>
-    </div>
-
-    <span>
-
-        <button on:click={() => { auth.signOut(); }}>Sign Out</button>
-
-        <a href="/profile" id="pfp">
-            <img src={ $user.photoURL ? $user.photoURL : "/icons/anonymous.png" } alt="">
-        </a>
-
-        <Icon id="dropdown" handleClick={ toggleNavbar }>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>                                             
-        </Icon>
-    </span>
-</nav>
-
-{ #if ($user === undefined && $page.url.pathname.startsWith("/auth") === false) }
-    <main id="auth">
-        <div>
-            <img src="/images/auth.png" alt="">
-        </div>
-
-        <div id="links">
-            <h3>A world of infinate educational potential: just a few clicks away</h3>
-            <h5>Sign in to securely access your classes & lessons</h5>
-        </div>
-
-        <div style="display: flex; gap: 1rem;">
-            <a href="/auth/register" class="button">Create Account</a>
-            <a href="/auth/login" class="button secondary">Sign In</a>
-        </div>
-
-    </main>
-{ :else }
-    <slot></slot>
-{/if }
-
-<footer>
-
-    <div id="logo">
-        <img src="/icons/dummylogo.png" alt="">
-    </div>
-    
-    <div id="trail">
-        <p>Copyright © LearnX, BPA</p>
-        <p>All Rights Reserved</p>
-    </div>
-</footer>
-
-<section class={ showNavbar ? "show" : "" } id="popup-nav" use:addToggleNavbar>
-
-    <div class="links">
-        <a href="/">Link</a>
-        <a href="/">Link</a>
-        <a href="/">Link</a>
-        <a href="/course">Link</a>
-
-        <div class="cite">
-            <p>Copy &copy; 2023</p>
-            <p>All rights reserved</p>
-        </div>
-    </div>
-
-</section>
-
-<section id="toast">
-    <p style={ `background-color: ${ color() };` } class={ ($notification === undefined) ? "" : "show" }>{  ($notification === undefined) ? "" : $notification.message }</p>
-</section>
 
 
 

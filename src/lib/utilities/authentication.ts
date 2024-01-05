@@ -4,6 +4,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { database } from "$lib/firebase/app";
 
 
+
+
 interface UserProfile {
     id: string,
     email: string,
@@ -18,22 +20,23 @@ interface UserProfile {
     } | undefined;
 }
 
+const nullUser = {
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    photoURL: "",
+    role: "",
+    institution: undefined
+}
 
-export const user = writable<UserProfile>(undefined);
+export const user = writable<UserProfile>(nullUser);
 
 export async function updateUser(fresh: User | null) {
 
     if (fresh === null) {
         console.warn("User has logged out!");
-        user.set({
-            id: "",
-            email: "",
-            firstName: "",
-            lastName: "",
-            photoURL: "",
-            role: "",
-            institution: undefined
-        });
+        user.set(nullUser);
         return;
     }
 
