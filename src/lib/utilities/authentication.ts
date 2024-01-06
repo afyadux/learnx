@@ -13,19 +13,19 @@ interface UserProfile {
     firstName: string,
     lastName: string,
     photoURL: string | null,
-    role: string,
+    role: "admin" | "teacher" | "student",
 
     request: Institution | undefined,
     institution: Institution | undefined;
 }
 
-const nullUser = {
+const nullUser: UserProfile = {
     id: "",
     email: "",
     firstName: "",
     lastName: "",
     photoURL: "",
-    role: "",
+    role: "student",
     request: undefined,
     institution: undefined
 }
@@ -49,14 +49,15 @@ export async function updateUser(fresh: User | null) {
     let fetchCampus = undefined;
     let fetchRequest = undefined;
 
-    if (institution) {
+
+    if (institution != null) {
         const req = await getDoc(doc(database, "institution", institution));
         const data = req.data() as any;
         fetchCampus = { id: req.id, name: data.name, pfp: data.pfp }
     }
 
-    if (request) {
-        const req = await getDoc(doc(database, "institution", institution));
+    if (request != null) {
+        const req = await getDoc(doc(database, "institution", request));
         const data = req.data() as any;
         fetchRequest = { id: req.id, name: data.name, pfp: data.pfp }
     }
@@ -68,8 +69,8 @@ export async function updateUser(fresh: User | null) {
         lastName: last,
         photoURL: profile.photoURL,
 
-        request: fetchRequest,
         role: role,
+        request: fetchRequest,
         institution: fetchCampus
     });
 

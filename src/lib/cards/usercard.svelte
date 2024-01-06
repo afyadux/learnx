@@ -5,14 +5,22 @@
 <script lang="ts">
     import Icon from "$lib/interface/Icon.svelte";
     export let approvals: boolean = false;
+
+    export let user : undefined | {
+        email: string;
+        name: string;
+        pfp: string;
+    } = undefined;
+
+    console.log(user);
 </script>
 
 
 <div class="user">
-    <div class="image"><img src="/icons/profile.png" alt=""></div>
+    <div class="image"><img src={ (user === undefined || user?.pfp === null) ? "/icons/nopfp.png" : user.pfp } alt=""></div>
     <div class="name">
-        <h6>Escanor Ravenclaw</h6>
-        <p>escanor@gmail.com</p>
+        <h6>{ user ? user.name : "" }</h6>
+        <p>{ user ? user.email : "" }</p>
     </div>
 
     <div class="approvals" style={ `${ approvals ? "display: flex" : "display: none" }` }>
@@ -45,6 +53,11 @@
         gap: 0px 1rem;
         grid-template-columns: 3rem auto;
         grid-template-rows: 3rem;
+    }
+
+    div.image {
+        border-radius: 4rem;
+        border: 1px solid app.$color-shade;
     }
 
     div.name {

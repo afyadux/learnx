@@ -6,13 +6,26 @@
     import AuthSection from "$lib/sections/authSection.svelte";
     import Editable from "$lib/interface/Editable.svelte";
     import { user } from "$lib/utilities/authentication";
+    import Usercard from "$lib/cards/usercard.svelte";
+    import Layout from "../auth/+layout.svelte";
+    import { doc, getDoc, getDocs } from "firebase/firestore";
+    import { database } from "$lib/firebase/app";
 
 
     let institutionalName: string = $user.institution?.name ? $user.institution.name : "No Institution Joined";
     let firstNameUI: string = $user ? $user.firstName : "";
     let lastNameUI: string = $user ? $user.lastName : "";
 
-    console.log($user);
+
+    const fetchRequests = (async () => {
+        // if ($user.institution) { return; }
+
+        console.log($user);
+        const institutionID = $user.institution!.id!;
+
+        const { joinRequests: requests } = (await getDoc(doc(database, "institution", institutionID))).data() as any; 
+        return requests; 
+    })();
 
 
 </script>
@@ -78,14 +91,38 @@
         </div>
     </section>
 
+    { #if $user.email !== "" && $user.role === "admin" }
+    <section id="requests">
+        <h3>Join Requests</h3>
 
+        { #await fetchRequests }
+            <p>Loading ...</p>
+        {:then requests } 
+            <div class="grid">
+                { #each requests as person }
+                    <Usercard user={ person } approvals={ true }/>
+                {/each }
+            </div>
+        {/await }
+
+    </section>
+    {/if }
+
+
+    
+
+    { #if $user.role !== "admin" }
     <section id="join">
+        <h3>Institution</h3>
+
         <div class="thumbnail"><img src="/images/empty/campus.png" alt=""></div>
         <h4>You have not joined any institution</h4>
         <p>Classes and lessons are only accessible to members of a certain institution</p>
         <a class="button secondary" href="/institution">Join and find classes & lessons</a>
 
     </section>
+    {/if }
+
 
 </main>
 
@@ -95,7 +132,12 @@
     
     main {
         padding-top: 5rem;
+        padding-bottom: 8rem;
         min-height: calc(100vh - 12rem);
+    }
+
+    main > section {
+        margin: 0px 8vw;
     }
 
 
@@ -104,7 +146,6 @@
         align-items: center;
         justify-content: flex-start;
 
-        padding: 0px 8vw;
         margin-top: 3rem;
         margin-bottom: 1rem;
 
@@ -130,7 +171,6 @@
     }
 
     section#account {
-        padding: 0px 8vw;
 
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -208,6 +248,17 @@
                 border: 1px dashed #aaaab2;
                 border-radius: 0.5rem;
             }
+        }
+    }
+
+    section#requests {
+
+
+        div.grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-auto-rows: 1fr;
+            gap: 1rem 1rem;
         }
     }
 

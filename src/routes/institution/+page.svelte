@@ -29,7 +29,7 @@
         });
 
         const updateInstitution = updateDoc(doc(database, "institution", school.id), {
-            joinRequests: arrayUnion(userID)
+            joinRequests: arrayUnion({ email: $user.email, pfp: $user.photoURL, name: ($user.firstName + " " + $user.lastName) })
         });
 
         await Promise.all([updateUser, updateInstitution]);

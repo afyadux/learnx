@@ -66,10 +66,22 @@
 
             const [firstName, surname] = name.split(" ");
 
+            if (role === "admin") {
+                await setDoc(doc(database, "institution", institutionUsername.toLocaleLowerCase()), {
+                    name: institutionName,
+                    admin: email,
+                    pfp: null,
+                    courses: [],
+                    popularCourses: [],
+                    joinRequests: []
+                });
+            }  
+
             const writeAuth =
                 createUserWithEmailAndPassword(auth, email, password)
                 .then((snap) => {
-                    updateProfile(snap.user, { displayName: `${ firstName }^^${ surname }` })
+                    updateProfile(snap.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
+                    console.log("Done writing name")
                 });
 
             const writeData = setDoc(doc(database, "users", email), {
@@ -77,23 +89,8 @@
                 institution: (role === "admin") ? institutionUsername : null
             });
 
-            const writeInstitution = setDoc(doc(database, "institution", institutionUsername.toLocaleLowerCase()), {
-                name: institutionName,
-                admin: email,
-                pfp: null,
-                courses: [],
-                popularCourses: [],
-                joinRequests: []
-            });
-
-
-            if (role === "admin") {
-                await Promise.all([writeAuth, writeData, writeInstitution]);
-            } else {
-                await Promise.all([writeAuth, writeData]);
-            }
-            
-            goto("/profile");
+            await Promise.all([writeAuth, writeData]);
+            goto("/");
 
         } catch (error) {
             console.error(error);
