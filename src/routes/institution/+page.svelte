@@ -1,9 +1,59 @@
 
 <script lang="ts">
-    import type { Institution } from "$lib/models/app";
+    import { database } from "$lib/firebase/app";
+    import type { Institution, InstitutionRequest } from "$lib/models/app";
+    import { user } from "$lib/utilities/authentication";
+    import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+    import { onMount } from "svelte";
+
+    
 
     let request : Institution | undefined = undefined; 
-    let schools : Institution[] = [{ pfp: "caltech.png", name: "California Institute of Technology" }, { pfp: "caltech.png", name: "California Institute of Technology" }];
+    let schools : Institution[] = [
+        { id: "caltech", pfp: "caltech.png", name: "California Institute of Technology" },
+        { id: "wunsche", pfp: "caltech.png", name: "Wunsche Institute of Pornography" },
+        { id: "caltech", pfp: "caltech.png", name: "California Institute of Technology" },
+    ];
+
+    onMount(() => {
+
+
+        request = $user.request
+    })
+
+    async function sendRequest(school: Institution) {
+        
+        const userID = $user.email;
+        const updateUser = updateDoc(doc(database, "users", userID), {
+            request: school.id
+        });
+
+        const updateInstitution = updateDoc(doc(database, "institution", school.id), {
+            joinRequests: arrayUnion(userID)
+        });
+
+        await Promise.all([updateUser, updateInstitution]);
+        
+        request = school;
+    }
+
+    async function revokeRequest(school: Institution | undefined) {
+
+        if (!school) { return; }
+
+        const userID = $user.email;
+        const updateUser = updateDoc(doc(database, "users", userID), {
+            request: null
+        });
+
+        const updateInstitution = updateDoc(doc(database, "institution", school.id), {
+            joinRequests: arrayRemove(userID)
+        });
+
+        await Promise.all([updateUser, updateInstitution]);
+        
+        request = undefined;
+    }
 </script>
     
 <main>
@@ -15,22 +65,22 @@
 
         <div class={ request ? "grid request" : "grid" } >
             { #if request !== undefined }
-                <div class="campus" style="margin-bottom: 4rem;">
+                <button class="campus" style="margin-bottom: 4rem;">
                     <div class="pfp"><img src="/images/caltech.png" alt=""></div>
                     <div class="info">
                         <h5>California Institute of Technology</h5>
                         <h6>@caltech</h6>
                     </div>
 
-                    <button class="secondary">Requested</button>
-                </div>
+                    <button on:click={ () => { revokeRequest(request) }} class="secondary">Cancel</button>
+                </button>
                 
                 <span></span>
                 <span></span>
             {/if }
 
             { #each schools as campus }
-                <div class="campus">
+                <button class="campus" >
                     <div class="pfp"><img src="/images/caltech.png" alt=""></div>
                     <div class="info">
                         <h5>California Institute of Technology</h5>
@@ -38,11 +88,11 @@
                     </div>
 
                     { #if request == undefined }
-                    <button class="tertiary">Join</button>
+                    <button on:click={ () => { sendRequest(campus) }} class="tertiary">Join</button>
                     { :else }
                     <span></span>
                     {/if }
-                </div>
+                </button>
             {/each }
         </div>
     </section>
@@ -81,7 +131,7 @@
 
                     margin-top: 2rem;
 
-                    &.request > div.campus:nth-child(4) {
+                    &.request > button.campus:nth-child(4) {
                             
 
                         position: relative;
@@ -95,20 +145,25 @@
 
                     }
 
-                    div.campus {
+                    button.campus {
                         padding: 0.8rem 0.8rem;
 
                         display: grid;
                         grid-template-columns: 5rem auto max-content;
                         gap: 1rem; 
 
-                        border-radius: 1.5rem;
+                        border-radius: 1.2rem;
                         background-color: app.$color-background;
                         border: 1px solid app.$color-shade;
 
                         transition-property: all;
                         transition-duration: 150ms;
                         transition-timing-function: ease-in;
+
+                        color: unset;
+                        width: unset;
+
+                        text-align: start;
 
                         
 
@@ -117,7 +172,7 @@
                             box-shadow: 0 0 1.5rem #282a3614;
                         }
 
-                        img { border-radius: 0.8rem; }
+                        img { border-radius: 0.5rem; }
                         h6 { color: app.$color-midground }
                     }
                     

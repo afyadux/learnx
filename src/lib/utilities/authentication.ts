@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 import type { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { database } from "$lib/firebase/app";
+import type { Institution } from "$lib/models/app";
 
 
 
@@ -14,10 +15,8 @@ interface UserProfile {
     photoURL: string | null,
     role: string,
 
-    institution: {
-        name: string,
-        pfp: string
-    } | undefined;
+    request: Institution | undefined,
+    institution: Institution | undefined;
 }
 
 const nullUser = {
@@ -27,6 +26,7 @@ const nullUser = {
     lastName: "",
     photoURL: "",
     role: "",
+    request: undefined,
     institution: undefined
 }
 
@@ -44,13 +44,21 @@ export async function updateUser(fresh: User | null) {
     const [first, last] = profile.displayName ? profile.displayName.split("^^") : ["", ""];
 
     const snap = await getDoc(doc(database, "users", profile.email!));
-    const { role, institution } = (snap.data() as any);
+    const { role, institution, request } = (snap.data() as any);
 
     let fetchCampus = undefined;
+    let fetchRequest = undefined;
 
     if (institution) {
-        const data = (await getDoc(doc(database, "institution", institution))).data() as any;
-        fetchCampus = { name: data.name, pfp: data.pfp }
+        const req = await getDoc(doc(database, "institution", institution));
+        const data = req.data() as any;
+        fetchCampus = { id: req.id, name: data.name, pfp: data.pfp }
+    }
+
+    if (request) {
+        const req = await getDoc(doc(database, "institution", institution));
+        const data = req.data() as any;
+        fetchRequest = { id: req.id, name: data.name, pfp: data.pfp }
     }
 
     user.set({
@@ -60,6 +68,7 @@ export async function updateUser(fresh: User | null) {
         lastName: last,
         photoURL: profile.photoURL,
 
+        request: fetchRequest,
         role: role,
         institution: fetchCampus
     });

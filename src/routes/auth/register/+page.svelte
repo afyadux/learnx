@@ -82,7 +82,8 @@
                 admin: email,
                 pfp: null,
                 courses: [],
-                popularCourses: []
+                popularCourses: [],
+                joinRequests: []
             });
 
 

@@ -45,8 +45,15 @@ export interface QuizQuestion {
 
 
 export interface Institution {
+    id: string;
     pfp: string;
     name: string;
+}
+
+export interface InstitutionRequest {
+    type: "teacher" | "student";
+    email: string;
+
 }
 
 
