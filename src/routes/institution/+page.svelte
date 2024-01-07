@@ -97,7 +97,32 @@
     </section>
     { :else }
 
-        <h3>{ $user.institution?.name }</h3>
+
+    <section id="hero">
+
+        <div id="content">
+
+            <h1>{ $user.institution?.name }</h1>
+            <p>We thank you for being a student at our wonderful school and hope that you excel. If have any questions or concerns, please do not hesitate to reach out to one of your teachers or the administrator. If you want to view your registered courses or lessons, click on the buttons below. </p>
+
+            <div id="links">
+                <a href="/" class=" button secondary"> View courses</a>
+                <a href="/" class=" button tertiary"> View lessons</a>
+
+            </div>
+
+
+        </div>
+
+        <div id="graphic">
+            <img src="/images/school.webp" alt="">
+            <div id="backdrop"></div>
+        </div>
+        
+
+
+
+    </section>
 
         <!--  -->
     { /if }
@@ -109,12 +134,107 @@
 
     main {
         padding-top: 4rem;
+        
         min-height: calc(100vh - 12rem);
 
         display: flex;
         flex-direction: column;
 
+        
 
+        section#hero {
+            margin-bottom: 3rem;
+            align-self: center;
+           
+            width: 84vw;
+            margin-top: 5rem;
+            display: flex;
+            flex-direction: row;
+            gap: 3rem;
+
+            
+
+            div#content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 3rem;
+
+                h1 {
+                    font-size: 50px;
+                }
+
+                
+            }
+            
+            div#graphic {
+                flex: 1;
+                position: relative;
+
+                img {
+                    width: 100%;
+                    border-radius: 3rem;
+                    position: relative;
+                    z-index: 1;
+
+                }
+            }
+                div#backdrop {
+                    border-radius: 3rem;
+                    width: 100%;
+                    height: 90%;
+                    bottom: 27%;
+                    left: 13%;
+                    position: absolute;
+                    z-index: -1;
+                    background-color: app.$color-brand;
+                    opacity: 20%;
+
+                }
+            }
+            @media screen and (max-width: 1180px) {
+            section#hero {
+                flex-direction:column-reverse;
+                margin-bottom: 3rem;
+                align-self: center;
+                align-items: center;
+                width: 84vw;
+                margin-top: 5rem;
+                display: flex;
+                gap: 3rem;
+
+                div#graphic {
+
+                    width: 80%;
+                    
+                    img {
+                        width: 100%;
+                        border-radius: 3rem;
+                        position: relative;
+                        z-index: 1;
+
+
+                    }
+
+                    div#backdrop {
+                        border-radius: 3rem;
+                        width: 100%;
+                        height: 90%;
+                        position: absolute;
+                        z-index: -1;
+                        background-color: app.$color-brand;
+                        opacity: 20%;
+
+                    }
+                }
+
+            }
+        }
+
+        
+
+        
+    
         section {
             max-width: 1280px;
             margin: 0px auto;
