@@ -7,7 +7,7 @@ import type { Institution } from "$lib/models/app";
 
 
 
-interface UserProfile {
+export interface UserProfile {
     id: string,
     email: string,
     firstName: string,

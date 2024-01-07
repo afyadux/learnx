@@ -47,7 +47,7 @@
         });
 
         const updateInstitution = updateDoc(doc(database, "institution", school.id), {
-            joinRequests: arrayRemove(userID)
+            joinRequests: arrayRemove({ email: $user.email, pfp: $user.photoURL, name: ($user.firstName + " " + $user.lastName) })
         });
 
         await Promise.all([updateUser, updateInstitution]);
@@ -57,8 +57,7 @@
 </script>
     
 <main>
-
-
+    { #if  $user.email !== "" && !$user.institution }
     <section id="join">
         <h1>Join an institution</h1>
         <h4>Unlock unparalleled access to educational courses & lessons tailored for expertise in any area</h4>
@@ -96,6 +95,12 @@
             {/each }
         </div>
     </section>
+    { :else }
+
+        <h3>{ $user.institution?.name }</h3>
+
+        <!--  -->
+    { /if }
 
 </main>
 

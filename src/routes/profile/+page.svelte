@@ -5,29 +5,60 @@
     import Icon from "$lib/interface/Icon.svelte";
     import AuthSection from "$lib/sections/authSection.svelte";
     import Editable from "$lib/interface/Editable.svelte";
-    import { user } from "$lib/utilities/authentication";
+    import { user, type UserProfile } from "$lib/utilities/authentication";
     import Usercard from "$lib/cards/usercard.svelte";
     import Layout from "../auth/+layout.svelte";
-    import { doc, getDoc, getDocs } from "firebase/firestore";
+    import { arrayRemove, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
     import { database } from "$lib/firebase/app";
 
+    interface UserRequest {
+        email: string, name: string, pfp: string 
+    }
 
     let institutionalName: string = $user.institution?.name ? $user.institution.name : "No Institution Joined";
     let firstNameUI: string = $user ? $user.firstName : "";
     let lastNameUI: string = $user ? $user.lastName : "";
 
+    let requestsUI : UserRequest[] = [];
 
-    const fetchRequests = (async () => {
+    // Functions
+    (async () => {
         // if ($user.institution) { return; }
-
-        console.log($user);
         const institutionID = $user.institution!.id!;
 
         const { joinRequests: requests } = (await getDoc(doc(database, "institution", institutionID))).data() as any; 
-        return requests; 
+        requestsUI = requests;
     })();
 
+    const approveUser = async (person: UserRequest) => {
+        console.log("approving: ", person); 
 
+        try {
+
+            const institutionID = $user.institution?.id;
+            if (!institutionID || institutionID === "") { return; }
+
+            await updateDoc(doc(database, "users", person.email), {
+                institution: institutionID,
+                request: null
+            });
+
+            await updateDoc(doc(database, "institution", institutionID), {
+                joinRequests: arrayRemove(person)
+            });
+
+
+            requestsUI = requestsUI.filter((item) => item.email !== person.email);
+
+        } catch (error) { console.log(error) }
+
+    }
+
+    // - UI
+    console.log($user); 
+
+
+    
 </script>
 
 
@@ -57,7 +88,7 @@
                 bind:value={ institutionalName }
                 type="h4"
                 placeholder="Institution Name"
-                editable={ true } 
+                editable={ $user.role === "admin" } 
                 />
             </div>
 
@@ -95,15 +126,24 @@
     <section id="requests">
         <h3>Join Requests</h3>
 
-        { #await fetchRequests }
-            <p>Loading ...</p>
-        {:then requests } 
+        { #if requestsUI.length === 0 }
+            <div class="thumbnail"><img src="/images/empty/community.png" alt=""></div>
+
+            <div style="display: flex; flex-direction: column; align-items: center">
+                <h3>You are all caught up</h3>
+                <p>You have no new members requesting to join your institution</p>
+            </div>
+        { :else }
             <div class="grid">
-                { #each requests as person }
-                    <Usercard user={ person } approvals={ true }/>
+                { #each requestsUI as person }
+                    <Usercard
+                        user={ person }
+                        approvals={ true }
+                        onApprove={ () => approveUser(person) }
+                        />
                 {/each }
             </div>
-        {/await }
+        { /if }            
 
     </section>
     {/if }
@@ -111,7 +151,7 @@
 
     
 
-    { #if $user.role !== "admin" }
+    { #if $user.role !== "admin" && !$user.institution }
     <section id="join">
         <h3>Institution</h3>
 
@@ -127,7 +167,6 @@
 </main>
 
 <style lang="scss">
-
     @use "$lib/interface/variables" as app;
     
     main {
@@ -140,6 +179,12 @@
         margin: 0px 8vw;
     }
 
+
+    div.thumbnail {
+        height: 14rem;
+        display: flex;
+        justify-content: center;
+    }
 
     section#type {
         display: flex;
@@ -280,14 +325,8 @@
             justify-content: center;
 
             margin-bottom: 2rem;
-
-            
         }
     }
-
-
-    
-
 </style>
 
 

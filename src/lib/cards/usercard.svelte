@@ -12,7 +12,8 @@
         pfp: string;
     } = undefined;
 
-    console.log(user);
+    export let onApprove: () => void = () => {};
+    export let onDeny: () => void = () => {};
 </script>
 
 
@@ -24,13 +25,13 @@
     </div>
 
     <div class="approvals" style={ `${ approvals ? "display: flex" : "display: none" }` }>
-        <Icon id="tick">
+        <Icon id="tick" handleClick={ onApprove }>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 7L9.42857 17L6 13"stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
         </Icon>
 
-        <Icon id="ex">
+        <Icon id="ex" handleClick={ onDeny }>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
