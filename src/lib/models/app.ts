@@ -18,7 +18,11 @@ export interface courseLoadData extends PageData {
     objective: string;
     tag: string;
     title: string;
-    lessons: lessonData[]
+    lessons: lessonData[],
+    instructor: {
+        name: string;
+        pfp: string | null;
+    }
 }
 
 export interface lessonData extends PageData {

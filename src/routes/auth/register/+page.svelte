@@ -85,6 +85,8 @@
                 });
 
             const writeData = setDoc(doc(database, "users", email), {
+                courses: [], 
+                request: null,
                 role: role,
                 institution: (role === "admin") ? institutionUsername : null
             });

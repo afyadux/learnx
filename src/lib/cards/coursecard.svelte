@@ -1,10 +1,11 @@
 
 
 <script lang="ts">
+    export let course: string; 
 </script>
 
 
-<a href="/lesson" class="card">
+<a href="/course/{ course }" class="course card">
 
     <div id="header">
         <h3>The Ultimate Hitchikers Guide to the Galaxy and other lessons to be learned in our</h3>
@@ -19,8 +20,6 @@
     <div id="topic-icon">
             <img src={`/images/outsiders.jpeg` } alt="">
     </div>
-    
-    
 </a>
 
 

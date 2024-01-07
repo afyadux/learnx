@@ -10,7 +10,7 @@
     import { Timestamp, addDoc, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 
     export let data: courseLoadData;
-    const { courseID, tag, title, objective, lessons } = data;
+    const { courseID, tag, title, objective, lessons, instructor } = data;
     const courseReference = doc(database, "course", courseID);
 
 
@@ -23,6 +23,8 @@
     let objectiveUI: string = objective;
     // let cover: string = "/images/thunderhead.jpeg";
     let coverUI = ""; 
+
+    console.log(data)
 
 
     async function onTitleEdit() {
@@ -88,8 +90,8 @@
             />
 
             <div class="instructor">
-                <img src="/icons/instructor.png" alt="">
-                <p>Mrs. Gangi</p>
+                <img style="border: 1px solid lightgray; border-radius: 2rem" src={ instructor.pfp ? instructor.pfp : "/icons/anonymous.png" }  alt="">
+                <p>{ instructor.name }</p>
             </div>
         </div>
 

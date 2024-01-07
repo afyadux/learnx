@@ -3,6 +3,7 @@ import type { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { database } from "$lib/firebase/app";
 import type { Institution } from "$lib/models/app";
+import { browser } from "$app/environment";
 
 
 
@@ -39,8 +40,10 @@ export async function updateUser(fresh: User | null) {
     if (fresh === null) {
         console.warn("User has logged out!");
         user.set(nullUser);
+        if (browser) { document.cookie = ``; }
         return;
     }
+
 
     const profile = fresh!;
     const [first, last] = profile.displayName ? profile.displayName.split("^^") : ["", ""];
@@ -56,8 +59,6 @@ export async function updateUser(fresh: User | null) {
         const req = await getDoc(doc(database, "institution", institution));
         const data = req.data() as any;
         fetchCampus = { id: req.id, name: data.name, pfp: data.pfp }
-
-        
     }
 
     if (request != null) {
@@ -65,6 +66,11 @@ export async function updateUser(fresh: User | null) {
         const data = req.data() as any;
         fetchRequest = { id: req.id, name: data.name, pfp: data.pfp }
     }
+
+    if (browser) {
+        document.cookie = `institution=${ fetchCampus?.id ? fetchCampus.id : "" }; user=${ profile.email }`;
+    }; 
+
 
     user.set({
         id: profile.uid,
@@ -78,6 +84,8 @@ export async function updateUser(fresh: User | null) {
         request: fetchRequest,
         institution: fetchCampus
     });
+
+
 
 }
 

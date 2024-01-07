@@ -51,7 +51,13 @@
                 cover: "",
                 objective: "",
                 title: courseName,
-                lessons: []
+                lessons: [],
+                campus: $user.institution?.id,
+
+                instructor: {
+                    name: `${ $user.firstName } ${ $user.lastName }`,
+                    pfp: $user.photoURL
+                }
             });
 
             await updateDoc(doc(database, "users", $user.email!), {
@@ -127,7 +133,7 @@
         { :else }
             <div class="grid">
                 { #each coursesUI as course }
-                    <Coursecard />
+                    <Coursecard course={ course } />
                 {/each }
             </div>
         {/if }

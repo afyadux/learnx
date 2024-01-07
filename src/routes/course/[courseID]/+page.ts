@@ -4,7 +4,6 @@ import { database } from "$lib/firebase/app";
 
 export const load:PageLoad = async (data) => {
 
-    console.log(data);
     const { courseID } = data.params; 
 
     const snapshot = await getDoc(doc(database, "course", courseID));
