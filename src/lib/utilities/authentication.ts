@@ -14,6 +14,7 @@ export interface UserProfile {
     lastName: string,
     photoURL: string | null,
     role: "admin" | "teacher" | "student",
+    courses: string[];
 
     request: Institution | undefined,
     institution: Institution | undefined;
@@ -26,6 +27,7 @@ const nullUser: UserProfile = {
     lastName: "",
     photoURL: "",
     role: "student",
+    courses: [],
     request: undefined,
     institution: undefined
 }
@@ -44,7 +46,7 @@ export async function updateUser(fresh: User | null) {
     const [first, last] = profile.displayName ? profile.displayName.split("^^") : ["", ""];
 
     const snap = await getDoc(doc(database, "users", profile.email!));
-    const { role, institution, request } = (snap.data() as any);
+    const { role, institution, request, courses } = (snap.data() as any);
 
     let fetchCampus = undefined;
     let fetchRequest = undefined;
@@ -54,6 +56,8 @@ export async function updateUser(fresh: User | null) {
         const req = await getDoc(doc(database, "institution", institution));
         const data = req.data() as any;
         fetchCampus = { id: req.id, name: data.name, pfp: data.pfp }
+
+        
     }
 
     if (request != null) {
@@ -68,6 +72,7 @@ export async function updateUser(fresh: User | null) {
         firstName: first,
         lastName: last,
         photoURL: profile.photoURL,
+        courses: courses,
 
         role: role,
         request: fetchRequest,

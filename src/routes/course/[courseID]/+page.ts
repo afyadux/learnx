@@ -2,9 +2,10 @@ import { doc, getDoc } from "firebase/firestore";
 import type { PageData, PageLoad } from "./$types";
 import { database } from "$lib/firebase/app";
 
-export const load:PageLoad = async ({ params }) => {
+export const load:PageLoad = async (data) => {
 
-    const { courseID } = params; 
+    console.log(data);
+    const { courseID } = data.params; 
 
     const snapshot = await getDoc(doc(database, "course", courseID));
     const IDs : string[] = (snapshot.data() as any).lessons;

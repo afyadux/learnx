@@ -139,6 +139,23 @@ svg {
     white-space: nowrap;
 }
 
+div.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    a { color: app.$color-brand; }
+}
+
+div.empty > div.thumbnail {
+    
+    height: 15rem;
+
+    display: flex;
+    justify-content: center;
+    
+}
+
 section > h3 {
     width: 100%;
     margin-bottom: 1rem;

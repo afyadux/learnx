@@ -180,12 +180,6 @@
     }
 
 
-    div.thumbnail {
-        height: 14rem;
-        display: flex;
-        justify-content: center;
-    }
-
     section#type {
         display: flex;
         align-items: center;

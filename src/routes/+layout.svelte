@@ -141,8 +141,6 @@
 <style lang="scss">
     @use "$lib/interface/variables" as app;
 
-   
-
     nav a.highlight {
         position: relative;
         color: app.$color-brand;
