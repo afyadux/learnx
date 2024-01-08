@@ -8,7 +8,6 @@ import type { CourseData, lessonData } from "$lib/models/app";
 export const load: PageServerLoad = async ({ request }) => {
 
     try {
-
         const cookieHeader = request.headers.get('cookie');
         const cookies: any = {};
         if (cookieHeader) {
@@ -27,7 +26,6 @@ export const load: PageServerLoad = async ({ request }) => {
         const lessonIDs = courses.flatMap((course) => course.lessons) as any as string[];
 
         const lessonQuery = query(collection(database, "lesson"), where(documentId(), "in", lessonIDs))
-
         const fulfilledSnapshots = await getDocs(lessonQuery) as any;
 
         const lessons : lessonData[] = fulfilledSnapshots.docs.map((snap: any) => { 

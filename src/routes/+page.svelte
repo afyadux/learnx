@@ -3,6 +3,9 @@
     import Coursecard from "$lib/cards/coursecard.svelte";
     import Lessoncard from "$lib/cards/lessoncard.svelte";
     import Hero from "$lib/sections/hero.svelte";
+
+    const getUserCourses = async () => {
+    }
     
 </script>
 
