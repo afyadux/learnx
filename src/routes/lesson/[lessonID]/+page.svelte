@@ -13,23 +13,14 @@
     import Idea from "$lib/cards/idea.svelte";
 
     export let data: lessonData;
-    const { title, postDate, quiz, courseID, id } = data;
+    const { title, postDate, quiz, courseID, id, ideas } = data;
     const { lessonID } = $page.params;
 
-
-    let openEnded = true;
+    let ideasUI: LessonIdea[] = ideas;
     let titleUI: string = title;
     let quizUI: QuizQuestion[] = quiz;
 
-    let stageView: string = "quiz"; 
-
-    $: choices = [2];
-    $: translate = (stageView === "lesson") ? 0 : 100;
-
-    let successfulYear: string;
-    $: submittable = 
-        (successfulYear != "") && (successfulYear != undefined)
-        ; 
+    let stageView: string = "lesson";
 
     async function addQuestion() {
         const updatedQuiz: QuizQuestion[] = [...quizUI, {
@@ -56,13 +47,30 @@
         quizUI = updated;
     }
 
-    let ideas : LessonIdea[] = [
-        { type: "text", value: "A chemical bond is a lasting attraction between atoms or ions that enables the formation of molecules, crystals, and other structures. The bond may result from the electrostatic force between oppositely charged ions as in ionic bonds, or through the sharing of electrons as in covalent bonds. The strength of chemical bonds varies considerably; there are strong bonds such as covalent, ionic and metallic bonds, and weak bonds or secondary bonds such as dipole interactions, the London dispersion force, and hydrogen bonding." },
-        { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
-        { type: "video",value: "/sample.mp4" },
-        { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
-        { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
-    ];
+    const addIDea = async () => {
+        await updateDoc(doc(database, "lesson", lessonID), {
+            ideas: [...ideasUI, { type: "text", value: "" }]
+        })
+
+        ideasUI = [...ideasUI, { type: "text", value: "" }]
+    }
+
+    async function ideaUpdate(value: LessonIdea, index: number) {
+        const updated = [...ideasUI.slice(0, index), value , ...ideasUI.slice(index + 1)];
+        await updateDoc(doc(database, "lesson", lessonID), {
+            ideas: updated
+        });
+
+        ideasUI = updated;
+    }
+
+    // let ideas : LessonIdea[] = [
+    //     { type: "text", value: "A chemical bond is a lasting attraction between atoms or ions that enables the formation of molecules, crystals, and other structures. The bond may result from the electrostatic force between oppositely charged ions as in ionic bonds, or through the sharing of electrons as in covalent bonds. The strength of chemical bonds varies considerably; there are strong bonds such as covalent, ionic and metallic bonds, and weak bonds or secondary bonds such as dipole interactions, the London dispersion force, and hydrogen bonding." },
+    //     { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
+    //     { type: "video",value: "/sample.mp4" },
+    //     { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
+    //     { type: "text", value: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit repudiandae minima minus vitae, dolor velit nemo perferendis quidem assumenda magnam eius maxime porro, eos cupiditate atque quod iusto similique! Quam officia consectetur, sapiente et deserunt ullam ab aut doloremque culpa consequuntur? Facere dolor deserunt quod repellat eveniet suscipit." },
+    // ];
 
 
     const onFinishEditTitle = async () => {
@@ -70,6 +78,8 @@
             title: titleUI
         });
     }
+
+    
 
 
     const submitForm = () => {
@@ -131,9 +141,18 @@
     
     <article id="lesson">
         <section id="ideas" style="display: { (stageView === "lesson") ? "flex" : "none" };">
-        { #each ideas as idea, index }
-            <Idea data={ idea } index={ index } />
+        { #each ideasUI as idea, index }
+            <Idea updateIdea={ ideaUpdate } data={ idea } index={ index } />
         {/each }
+
+        <button on:click={ addIDea } class="add lesson">
+            <div class="icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h5>Add new point</h5>
+        </button>
         </section>
 
 
@@ -195,10 +214,11 @@
             justify-content: center;
             flex-direction: row;
             gap: 1rem;
+            width: 100%;
+            max-width: 540px;
+
 
             h5 { color: app.$color-midground; }
-
-            
 
             div.icon {
                 width: 3rem;

@@ -77,13 +77,8 @@
                 });
             }  
 
-            const writeAuth =
-                createUserWithEmailAndPassword(auth, email, password)
-                .then((snap) => {
-                    updateProfile(snap.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
-                    console.log("Done writing name")
-                });
-
+            const userSnapshot = await createUserWithEmailAndPassword(auth, email, password);
+            const writeAuth = updateProfile(userSnapshot.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
             const writeData = setDoc(doc(database, "users", email), {
                 courses: [], 
                 request: null,

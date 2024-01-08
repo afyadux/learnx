@@ -23,7 +23,8 @@
 
     // Functions
     (async () => {
-        // if ($user.institution) { return; }
+
+        if ($user.role !== "admin" || !$user.institution) { return; }
         const institutionID = $user.institution!.id!;
 
         const { joinRequests: requests } = (await getDoc(doc(database, "institution", institutionID))).data() as any; 
@@ -127,11 +128,13 @@
         <h3>Join Requests</h3>
 
         { #if requestsUI.length === 0 }
-            <div class="thumbnail"><img src="/images/empty/community.png" alt=""></div>
+            <div class="empty">
+                <div class="thumbnail"><img src="/images/empty/community.png" alt=""></div>
 
             <div style="display: flex; flex-direction: column; align-items: center">
                 <h3>You are all caught up</h3>
                 <p>You have no new members requesting to join your institution</p>
+            </div>
             </div>
         { :else }
             <div class="grid">

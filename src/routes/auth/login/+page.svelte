@@ -20,7 +20,7 @@
 
     const submitLoginForm = async () => {
         await signInWithEmailAndPassword(auth, email, password);
-        goto("/"); 
+        goto("/profile");
     }
 </script>
 
@@ -69,7 +69,7 @@
 
 
 
-<button disabled={ !formValid } on:click={ submitLoginForm } id="cta">Register</button>
+<button disabled={ !formValid } on:click={ () => submitLoginForm() } id="cta">Register</button>
 
     <div id="other">
         <span class="border"> </span>

@@ -106,8 +106,8 @@
             <p>We thank you for being a student at our wonderful school and hope that you excel. If have any questions or concerns, please do not hesitate to reach out to one of your teachers or the administrator. If you want to view your registered courses or lessons, click on the buttons below. </p>
 
             <div id="links">
-                <a href="/" class=" button secondary"> View courses</a>
-                <a href="/" class=" button tertiary"> View lessons</a>
+                <a href="/course" class="button secondary"> View courses</a>
+                <a href="/lesson" class="button tertiary"> View lessons</a>
 
             </div>
 
@@ -158,10 +158,13 @@
                 flex: 1;
                 display: flex;
                 flex-direction: column;
-                gap: 3rem;
+                gap: 2rem;
+
+                padding-top: 1.5rem;
 
                 h1 {
-                    font-size: 50px;
+                    font-size: 3rem;
+                    font-family: app.$typeface-heading;
                 }
 
                 
@@ -173,23 +176,23 @@
 
                 img {
                     width: 100%;
-                    border-radius: 3rem;
+                    border-radius: 2rem;
                     position: relative;
                     z-index: 1;
+                    margin-top: 1rem;
 
                 }
             }
                 div#backdrop {
-                    border-radius: 3rem;
+                    border-radius: 2rem;
                     width: 100%;
                     height: 90%;
-                    bottom: 27%;
-                    left: 13%;
+                    bottom: 15%;
+                    left: 9%;
                     position: absolute;
                     z-index: -1;
                     background-color: app.$color-brand;
-                    opacity: 20%;
-
+                    opacity: 10%;
                 }
             }
             @media screen and (max-width: 1180px) {

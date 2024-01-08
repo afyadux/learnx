@@ -1,16 +1,21 @@
 <script lang="ts">
-    import type { lessonData } from "$lib/models/app";
+    import Lessoncard from "$lib/cards/lessoncard.svelte";
+    import type { CourseData, lessonData } from "$lib/models/app";
 
+    export let data; 
+    const { lessons } = data;
 
     let enrolledUI : lessonData[] = [];
-    let availableUI: lessonData[] = [];
+    let availableUI: lessonData[] = lessons;
+
+    console.log(lessons)
 </script>
 
 <main>
     <section>
-        <h3>Enrolled</h3>
+        <h3>Lessons</h3>
         
-        {#if enrolledUI.length === 0 }
+        {#if availableUI.length === 0 }
             <div class="empty">
                 <div class="thumbnail"><img src="/images/empty/tutorial.png" alt=""></div>
                 <div class="msg">
@@ -20,7 +25,9 @@
             </div>
         {:else}
         <div class="grid enrolled">
-
+            {#each availableUI as item }
+            <Lessoncard lesson={ item } />
+            {/each }
         </div>
         {/if}
 
@@ -41,7 +48,7 @@
             margin-bottom: 4rem;
 
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1rem 1rem;
         }
     }

@@ -6,10 +6,10 @@
     import { database } from "$lib/firebase/app";
     import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
-    import type { courseLoadData, lessonData } from "$lib/models/app";
+    import type { CourseData, lessonData } from "$lib/models/app";
     import { Timestamp, addDoc, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 
-    export let data: courseLoadData;
+    export let data: CourseData;
     const { courseID, tag, title, objective, lessons, instructor } = data;
     const courseReference = doc(database, "course", courseID);
 

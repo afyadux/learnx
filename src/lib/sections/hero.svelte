@@ -241,8 +241,8 @@
         <div class="content">
             { #each Array(4) as _,index }
                 <div class={ `container${ (index < focusIndex) ? " hidden" : "" }` }
-                    style={ `--displacement: ${ index < focusIndex ? -(containerWidth) * index : -(containerWidth) * focusIndex  }` }>
-                    <Coursecard />
+                    style={ `--displacement: ${ index < focusIndex ? -(containerWidth) * index : -(containerWidth) * focusIndex  }; border: 1px solid gray;` }>
+                    <!-- <Coursecard /> -->
                 </div>
             {/each } 
         </div>

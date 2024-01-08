@@ -6,11 +6,16 @@
     import Coursecard from "$lib/cards/coursecard.svelte";
     import { database } from "$lib/firebase/app";
     import Textfield from "$lib/interface/Textfield.svelte";
+    import type { CourseData } from "$lib/models/app.js";
     import { user } from "$lib/utilities/authentication";
     import { getDoc, doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 
-    let coursesUI = $user.courses;
+    export let data;
+    const { courses } = data as { courses: CourseData[] };
+    let personalCourses = $user.courses.map((id) => courses.find((each) => each.id === id));
+
+    let institutionalCourses = courses;
 
     let courseName: string = "";
     let courseNameError: string = "";
@@ -46,7 +51,8 @@
 
     const createCourse = async () => {
         try {
-            await setDoc(doc(database, "course", courseID), {
+
+            const newCourse = {
                 tag: "",
                 cover: "",
                 objective: "",
@@ -58,13 +64,23 @@
                     name: `${ $user.firstName } ${ $user.lastName }`,
                     pfp: $user.photoURL
                 }
-            });
+            }
+
+            await setDoc(doc(database, "course", courseID), newCourse);
 
             await updateDoc(doc(database, "users", $user.email!), {
                 courses: arrayUnion(courseID)
             });
 
-            coursesUI.push(courseID);
+            personalCourses.push({
+                id: courseID,
+                ... newCourse
+            });
+
+            institutionalCourses.push({
+                id: courseID,
+                ... newCourse
+            });
 
             goto(`/course/${ courseID }`);
 
@@ -72,8 +88,6 @@
             console.error(error);
         }
     }
-
-    console.log($user);
 
 </script>
 
@@ -113,8 +127,8 @@
     { /if }
 
     <section id="courses">
-        <h3>{ $user.role === "student" ? "Courses you are enrolled in" : ($user.role === "teacher" ? "Courses you are teaching" : "Courses offered at your school") }</h3>
-        { #if coursesUI.length === 0 }
+        <h3>{ $user.role === "student" ? "Courses you are enrolled in" : ($user.role === "teacher" ? "Courses you are teaching" : "Your Courses") }</h3>
+        { #if personalCourses.length === 0 }
         <div class="empty">
             <div class="thumbnail"><img src="/images/empty/class.png" alt=""></div>
 
@@ -132,12 +146,25 @@
         </div>
         { :else }
             <div class="grid">
-                { #each coursesUI as course }
-                    <Coursecard course={ course } />
+                { #each personalCourses as course }
+                { #if course}
+                    <Coursecard course={ course } /> 
+                {/if }
                 {/each }
             </div>
         {/if }
     </section> 
+
+    <section id="institution">
+        <h3>{ $user.role === "student" ? "Available courses to enroll in" : ($user.role === "teacher" ? "Other institutional courses" : `${ $user.institution?.name }'s Courses`) }</h3>
+    
+        <div class="grid">
+            { #each institutionalCourses as course }
+            <Coursecard course={ course } />
+            {/each }
+        </div>
+        
+    </section>
 
 </main>
 
@@ -152,7 +179,8 @@
     }
 
     main > * {
-        margin: 0px 8vw;
+        margin: 2rem 8vw 0px 8vw;
+
     }
 
     form#create {
@@ -177,14 +205,15 @@
 
     }
 
+    section > div.grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem 1rem;
+    }
+
     section#courses {
         div.empty a { color: app.$color-brand; }
 
-        div.grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem 1rem;
-        }
     }
 </style>
 

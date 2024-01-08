@@ -40,7 +40,11 @@ export async function updateUser(fresh: User | null) {
     if (fresh === null) {
         console.warn("User has logged out!");
         user.set(nullUser);
-        if (browser) { document.cookie = ``; }
+        if (browser) {
+            document.cookie = `institution=;`;
+            document.cookie = `user=;`;
+            document.cookie = `role=;`;
+        }
         return;
     }
 
@@ -68,7 +72,9 @@ export async function updateUser(fresh: User | null) {
     }
 
     if (browser) {
-        document.cookie = `institution=${ fetchCampus?.id ? fetchCampus.id : "" }; user=${ profile.email }`;
+        document.cookie = `institution=${fetchCampus?.id ? fetchCampus.id : ""};`;
+        document.cookie = `user=${profile.email};`;
+        document.cookie = `role=${role};`;
     }; 
 
 
@@ -84,7 +90,6 @@ export async function updateUser(fresh: User | null) {
         request: fetchRequest,
         institution: fetchCampus
     });
-
 
 
 }

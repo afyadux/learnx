@@ -1,20 +1,21 @@
 
 
 <script lang="ts">
-    export let course: string; 
+    import type { CourseData } from "$lib/models/app";
+
+    export let course: CourseData;
 </script>
 
 
-<a href="/course/{ course }" class="course card">
+<a href="/course/{ course.id }" class="course card">
 
     <div id="header">
-        <h3>The Ultimate Hitchikers Guide to the Galaxy and other lessons to be learned in our</h3>
+        <h3>{ course.title }</h3>
     </div>
 
     <div id="members">
         <img src="/icons/profile.png" alt=""> <img src="/icons/profile.png" alt=""> <img src="/icons/profile.png" alt="">
-        <p> 23 members</p>
-
+        <p>&middot; { course.lessons.length } lessons</p>
     </div>
 
     <div id="topic-icon">

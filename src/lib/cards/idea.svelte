@@ -7,12 +7,14 @@
 
     export let data: LessonIdea;
     export let index: number;
+    export let updateIdea : (_value: LessonIdea, _index: number) => Promise<void>;
 
     const { type, value } = data;
 
     let valueUI: string = value;
-    async function update() {
 
+    const update = () => {
+        updateIdea({ value: valueUI, type: "text" }, index);
     }
 </script>
 

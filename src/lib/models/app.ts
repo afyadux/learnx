@@ -13,8 +13,8 @@ export interface IEvent {
 }
 
 
-export interface courseLoadData extends PageData {
-    courseID: string;
+export interface CourseData extends PageData {
+    id: string;
     objective: string;
     tag: string;
     title: string;

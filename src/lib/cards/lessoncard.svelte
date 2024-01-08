@@ -4,9 +4,14 @@
     import Editable from "$lib/interface/Editable.svelte";
     import type { lessonData } from "$lib/models/app";
 
-    export let index: number;
+    export let index: number = 1;
     export let lesson: lessonData;
+    export let consumer: boolean = true;
     const { title, id } = lesson;
+
+    console.log(lesson);
+
+
 
 </script>
 
@@ -14,9 +19,15 @@
 <a href="/lesson/{ id }" class="lesson">
 
     <div class="lead">
-        <!-- <p>0% complete</p> -->
+        
+        {#if consumer }
+        <p>0% complete</p>
+        {/if}
         <p>#{ index + 1 }</p>
+        
+        {#if !consumer }
         <button>Delete</button>
+        {/if}
     </div>
 
     <div class="trail">
