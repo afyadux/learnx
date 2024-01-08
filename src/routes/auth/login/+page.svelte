@@ -69,7 +69,7 @@
 
 
 
-<button disabled={ !formValid } on:click={ () => submitLoginForm() } id="cta">Register</button>
+<button disabled={ !formValid } on:click={ submitLoginForm } id="cta">Login</button>
 
     <div id="other">
         <span class="border"> </span>

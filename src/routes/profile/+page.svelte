@@ -2,14 +2,17 @@
 
 
 <script lang="ts">
+    import Textfield from "$lib/interface/Textfield.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import AuthSection from "$lib/sections/authSection.svelte";
     import Editable from "$lib/interface/Editable.svelte";
-    import { user, type UserProfile } from "$lib/utilities/authentication";
+    import { updateUser, user, type UserProfile } from "$lib/utilities/authentication";
     import Usercard from "$lib/cards/usercard.svelte";
     import Layout from "../auth/+layout.svelte";
     import { arrayRemove, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
-    import { database } from "$lib/firebase/app";
+    import { auth, database } from "$lib/firebase/app";
+  import { onAuthStateChanged } from "firebase/auth";
+   
 
     interface UserRequest {
         email: string, name: string, pfp: string 
@@ -57,6 +60,12 @@
 
     // - UI
     console.log($user); 
+
+    onAuthStateChanged(auth, () => {
+        updateUser(auth.currentUser);
+    });
+
+    
 
 
     
@@ -165,6 +174,33 @@
 
     </section>
     {/if }
+
+
+    <section id="user">
+
+        <h3>Account</h3>
+
+        <div id="info">
+
+            <Textfield editable={false}
+            type="email"
+            title="Email"
+            placeholder="name@institution.org"
+        ></Textfield>
+
+        <Textfield
+        editable={false}
+        type="password"
+        title="password"
+        placeholder="password123"
+    ></Textfield>
+            
+            
+        </div>
+
+        <button on:click={() => { auth.signOut(); }} class="tertiary secondary"> Logout</button>
+        
+    </section>
 
 
 </main>
@@ -322,6 +358,34 @@
             justify-content: center;
 
             margin-bottom: 2rem;
+        }
+    }
+
+    section#user {
+        border-top: 1px solid grey;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+
+        h3 {
+            margin-top: 1rem;
+        }
+        
+        div#info {
+            display: flex;
+            flex-direction: row;
+            gap: 5rem;
+
+            @media screen and (max-width:960px) {
+
+                flex-direction: column;
+                
+            }
+
+        }
+
+        button {
+            align-self: center;
         }
     }
 </style>

@@ -162,6 +162,10 @@
 
                 padding-top: 1.5rem;
 
+              
+
+              
+
                 h1 {
                     font-size: 3rem;
                     font-family: app.$typeface-heading;
