@@ -160,6 +160,10 @@
                 flex-direction: column;
                 gap: 3rem;
 
+              
+
+              
+
                 h1 {
                     font-size: 50px;
                 }

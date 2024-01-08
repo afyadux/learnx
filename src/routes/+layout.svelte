@@ -212,6 +212,14 @@
             justify-content: center;
             gap: 1rem;
             transform: translateX(-50%);
+
+            a {
+                border-bottom: 1px solid transparent; /* Invisible border */
+                transition: all 240ms ease-in-out;
+                &:hover {
+                    border-bottom-color: app.$color-brand;
+            }
+            }
             
         }
 
@@ -231,6 +239,12 @@
             height: 2.4rem;
             border: 1px solid app.$color-shade;
             border-radius: 2rem;
+            transition: box-shadow 240ms ease-in-out;
+
+
+            &:hover {
+                box-shadow: 0px 0px 2px 0px app.$color-brand;
+            }
         }
 
         

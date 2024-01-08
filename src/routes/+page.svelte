@@ -25,7 +25,7 @@
 
         <div class="grid">
             {#each Array(4) as _ }
-            <Coursecard/>
+            <Coursecard />
             {/each }
         </div>
 
