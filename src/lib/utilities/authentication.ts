@@ -1,9 +1,9 @@
 import { writable } from "svelte/store";
-import type { User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { database } from "$lib/firebase/app";
+import { auth, database } from "$lib/firebase/app";
 import type { Institution } from "$lib/models/app";
 import { browser } from "$app/environment";
+import type { User } from "firebase/auth";
 
 
 
@@ -44,7 +44,9 @@ export async function updateUser(fresh: User | null) {
             document.cookie = `institution=;`;
             document.cookie = `user=;`;
             document.cookie = `role=;`;
+            document.cookie = `sent=false;`;
         }
+
         return;
     }
 
@@ -90,8 +92,14 @@ export async function updateUser(fresh: User | null) {
         request: fetchRequest,
         institution: fetchCampus
     });
-
-
 }
 
+export function updateUserEmail(newEmail: string) {
+    user.update((current) => {
+        return {
+            ... current,
+            email: newEmail
+        }
+    })
+}
 

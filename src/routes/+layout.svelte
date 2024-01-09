@@ -8,7 +8,7 @@
     import "$lib/interface/app.scss";
     import Icon from "$lib/interface/Icon.svelte";
     import { page } from '$app/stores';
-    import { NotificationState, notification, sendNotification } from "$lib/utilities/notifications";
+    import { notification, sendNotification } from "$lib/utilities/notifications";
     import { onAuthStateChanged, signInWithEmailAndPassword, type User } from "firebase/auth";
     import { auth, database } from "$lib/firebase/app";
     import { doc, getDoc } from "firebase/firestore";
@@ -19,16 +19,16 @@
     if ($notification === undefined) { return "transparent"; }
 
     switch ($notification.type) {
-        case NotificationState.info:
+        case "info":
             return "#3361FF";
 
-        case NotificationState.error:
+        case "error":
             return "#FF5E6E";
 
-        case NotificationState.warning:
+        case "warning":
             return "#FF8800";
 
-        case NotificationState.success:
+        case "success":
             return "#2BD84E";
 
         default:

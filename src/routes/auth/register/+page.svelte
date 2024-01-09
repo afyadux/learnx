@@ -78,7 +78,7 @@
             }  
 
             const userSnapshot = await createUserWithEmailAndPassword(auth, email, password);
-            const writeAuth = updateProfile(userSnapshot.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
+            const writeAuth = await updateProfile(userSnapshot.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
             const writeData = setDoc(doc(database, "users", email), {
                 courses: [], 
                 request: null,

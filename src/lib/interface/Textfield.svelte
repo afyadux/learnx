@@ -124,6 +124,15 @@
                 border: 0.8px solid app.$color-info; 
                 outline: none;
             }
+
+            &[readonly] {
+                pointer-events: none;
+            }
+
+            &[readonly]:focus {
+                border: 1px solid app.$color-shade;
+                outline: none;
+            }
         }
 
         
