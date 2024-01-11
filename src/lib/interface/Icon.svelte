@@ -13,6 +13,7 @@
         &:disabled {
             cursor: not-allowed;
             pointer-events: none;
+            background-color: transparent;
 
             > :global(svg) {
                 stroke: #B3B5C3;

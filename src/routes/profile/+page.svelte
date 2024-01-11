@@ -11,7 +11,7 @@
     import Layout from "../auth/+layout.svelte";
     import { arrayRemove, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
     import { auth, database } from "$lib/firebase/app";
-    import { getAuth, onAuthStateChanged, reauthenticateWithCredential, sendEmailVerification, sendSignInLinkToEmail, updateEmail, updatePassword, verifyBeforeUpdateEmail } from "firebase/auth";
+    import { EmailAuthCredential, EmailAuthProvider, getAuth, reauthenticateWithCredential, sendEmailVerification, sendSignInLinkToEmail, updateCurrentUser, updateEmail, updatePassword, updateProfile, verifyBeforeUpdateEmail } from "firebase/auth";
     import { sendNotification } from "$lib/utilities/notifications";
    
 
@@ -32,7 +32,20 @@
     let password: string = "";
     let showPassword = false;
     let passwordError : string = "";
-    let passwordEditable: boolean = false;
+
+    let confirmationPassword: string = "";
+    let showConfirmationPassword = false;
+    let confirmationPasswordError : string = "";
+    let confirmationPasswordEditable : boolean = false;
+
+    let newPassword: string = "";
+    let showNewPassword = false;
+    let newPasswordError : string = "";
+
+    $: updatePasswordError = 
+        (confirmationPassword === "" || newPassword === "") ||
+        (confirmationPasswordError !== "" || newPasswordError !== "");
+
 
     // Functions
     (async () => {
@@ -44,6 +57,7 @@
         requestsUI = requests;
     })();
 
+    // Approves a user to join an institution
     const approveUser = async (person: UserRequest) => {
         console.log("approving: ", person); 
 
@@ -88,39 +102,45 @@
     }
 
     const updateUserPassword = async () => {
-        if (passwordError !== "") { password = ""; passwordError = ""; passwordEditable = false; }
         if (auth.currentUser == null) { return }
+
+        sendNotification({ type: "info", message: "Updating password ..." });
+
+        const { current, update } = { current: confirmationPassword, update: newPassword };
+        const credential = EmailAuthProvider.credential($user.email, current); 
 
         try {
 
-            const response = await sendSignInLinkToEmail(auth, $user.email, { url: "https://learnxcms.firebaseapp.com", handleCodeInApp: true })
+            await reauthenticateWithCredential(auth.currentUser, credential);
+            await updatePassword(auth.currentUser, newPassword);
 
-            // const response = await sendSignInLinkToEmail(auth, "carlkomondi@gmail.com", { url: "http://localhost:8080/", handleCodeInApp: false })
+            sendNotification({
+                message: `Successfully updated your password :)`,
+                type: "info"
+            }, 5000);
 
-            // const response = await updatePassword(auth.currentUser, password);
-            // await sendSignInLinkToEmail(auth, email, { handleCodeInApp: false, url: "https://google.com" });
+            confirmationPassword = "";
+            newPassword = "";
 
-            // sendNotification({
-            //     message: `We have recieved request to update password`,
-            //     type: "info"
-            // }, 4000);
-
-            // console.log(response);
-
-            // updateUserEmail(email);
-            // console.log(response)
-
-        } catch (error) { console.log(error); }
+        } catch (error : any) {
+            if (error.code == "auth/invalid-credential") {
+                sendNotification({ type: "error", message: "Wrong password provided" }, 3000);
+                newPassword = "";
+            }
+        }
     }
 
-    onAuthStateChanged(auth, () => {
-        updateUser(auth.currentUser);
-    });
+    const updateName = async () => {
+        if (!auth.currentUser) { return; }
 
-    
+        try {
+            const freshName = `${ (firstNameUI && firstNameUI !== "") ? firstNameUI : "" }^^${ (lastNameUI && lastNameUI !== "") ? lastNameUI : "" }`;
+            await updateProfile(auth.currentUser, { displayName:  freshName });
+            sendNotification({ type: "success", message: "Successfully updated name" });
 
-
-    
+        } catch (error) { console.error(error) }
+        
+    }
 </script>
 
 
@@ -161,6 +181,7 @@
                 type="h2"
                 placeholder="First Name"
                 editable={ true }
+                onFinishEdit={ () => updateName() }
             />
 
                 <Editable
@@ -168,6 +189,7 @@
                 type="h1"
                 placeholder="Last Name"
                 editable={ true }
+                onFinishEdit={ () => updateName() }
             />
 
             </div>
@@ -229,75 +251,31 @@
 
 
     <section id="user">
+        
 
-        <h3>Account</h3>
-
+        <h3>Reset Password</h3>
         <div id="info">
             <Textfield
-                editable={ emailEditable }
-                type="email"
-                bind:error={ emailError }
-                bind:value={ email } 
-                title="Email Address"
-                placeholder="name@institution.org"
+                editable={ confirmationPasswordEditable }
+                title="Current Password"
+                bind:error={ confirmationPasswordError }
+                bind:value={ confirmationPassword }
+                placeholder="Enter current correct password"
+                type={ showConfirmationPassword ? "text" : "password" }
                 required={ true }
-                requiredError="Enter your official email address"
-            >
-            <slot slot="action">
-                { #if emailEditable }
-                    <slot>
-                        <Icon handleClick={ () => updateEmailAddress() }>
-                            <svg viewBox="0 0 24 24" style="stroke: #00A644 !important" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18 7L9.42857 17L6 13" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </Icon>
-    
-                        <Icon handleClick={ () => { email = $user.email; emailEditable = false; emailError = ""; } }>
-                            <svg width="24" style="stroke: #DF3F5A !important" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
-                                </svg>
-                        </Icon>
-                    </slot> 
-                { :else }
-                    <Icon handleClick={ () => emailEditable = true }>
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M13.2603 3.59997L5.05034 12.29C4.74034 12.62 4.44034 13.27 4.38034 13.72L4.01034 16.96C3.88034 18.13 4.72034 18.93 5.88034 18.73L9.10034 18.18C9.55034 18.1 10.1803 17.77 10.4903 17.43L18.7003 8.73997C20.1203 7.23997 20.7603 5.52997 18.5503 3.43997C16.3503 1.36997 14.6803 2.09997 13.2603 3.59997Z" stroke="#292D32" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M11.8896 5.05005C12.3196 7.81005 14.5596 9.92005 17.3396 10.2" stroke="#292D32" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M3 22H21" stroke="#292D32" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>                                
-                    </Icon>
-                {/if }
-            </slot>
-
-            </Textfield>
-
-            <Textfield
-                editable={ passwordEditable }
-                title="Create a new password"
-                bind:error={ passwordError }
-                bind:value={ password }
-                placeholder="Enter new password"
-                type={ showPassword ? "text" : "password" }
-                required={ true }
-                requiredError="Enter a password you will use to sign in"
+                requiredError="Enter your correct sign in password"
             >   
             <slot slot="action">
-                { #if passwordEditable }
-                    <slot>
-                        <Icon handleClick={ () => updateUserPassword() }>
-                            <svg viewBox="0 0 24 24" style="stroke: #00A644 !important" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18 7L9.42857 17L6 13" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </Icon>
-    
-                        <Icon handleClick={ () => { password = ""; passwordEditable = false; passwordError = "" } }>
+                { #if confirmationPasswordEditable }
+                    <slot>    
+                        <Icon handleClick={ () => { confirmationPassword = ""; confirmationPasswordEditable = false; confirmationPasswordError = "" } }>
                             <svg width="24" style="stroke: #DF3F5A !important" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
                                 </svg>
                         </Icon>
         
-                        <Icon handleClick={ () => { showPassword = !showPassword } }>
-                            { #if showPassword }
+                        <Icon handleClick={ () => { showConfirmationPassword = !showConfirmationPassword } }>
+                            { #if showConfirmationPassword }
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M14.5299 9.46992L9.46992 14.5299C8.81992 13.8799 8.41992 12.9899 8.41992 11.9999C8.41992 10.0199 10.0199 8.41992 11.9999 8.41992C12.9899 8.41992 13.8799 8.81992 14.5299 9.46992Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M17.8198 5.76998C16.0698 4.44998 14.0698 3.72998 11.9998 3.72998C8.46984 3.72998 5.17984 5.80998 2.88984 9.40998C1.98984 10.82 1.98984 13.19 2.88984 14.6C3.67984 15.84 4.59984 16.91 5.59984 17.77" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -315,7 +293,7 @@
                         </Icon>
                     </slot> 
                 { :else }
-                    <Icon handleClick={ () => passwordEditable = true }>
+                    <Icon handleClick={ () => confirmationPasswordEditable = true }>
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M13.2603 3.59997L5.05034 12.29C4.74034 12.62 4.44034 13.27 4.38034 13.72L4.01034 16.96C3.88034 18.13 4.72034 18.93 5.88034 18.73L9.10034 18.18C9.55034 18.1 10.1803 17.77 10.4903 17.43L18.7003 8.73997C20.1203 7.23997 20.7603 5.52997 18.5503 3.43997C16.3503 1.36997 14.6803 2.09997 13.2603 3.59997Z" stroke="#292D32" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M11.8896 5.05005C12.3196 7.81005 14.5596 9.92005 17.3396 10.2" stroke="#292D32" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -325,13 +303,58 @@
                 {/if }
             </slot>
             </Textfield>
+
+            <Textfield
+                editable={ confirmationPasswordEditable }
+                title="Enter a new password"
+                bind:error={ newPasswordError }
+                bind:value={ newPassword }
+                placeholder="Create a new login password"
+                type={ showNewPassword ? "text" : "password" }
+                required={ true }
+                requiredError="Create a new login password"
+            >   
+            <slot slot="action">
+                { #if confirmationPasswordEditable }
+                    <slot>    
+                        <Icon handleClick={ () => { newPassword = ""; confirmationPasswordEditable = false; newPasswordError = "" } }>
+                            <svg width="24" style="stroke: #DF3F5A !important" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                        </Icon>
+        
+                        <Icon handleClick={ () => { showNewPassword = !showNewPassword } }>
+                            { #if showNewPassword }
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14.5299 9.46992L9.46992 14.5299C8.81992 13.8799 8.41992 12.9899 8.41992 11.9999C8.41992 10.0199 10.0199 8.41992 11.9999 8.41992C12.9899 8.41992 13.8799 8.81992 14.5299 9.46992Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M17.8198 5.76998C16.0698 4.44998 14.0698 3.72998 11.9998 3.72998C8.46984 3.72998 5.17984 5.80998 2.88984 9.40998C1.98984 10.82 1.98984 13.19 2.88984 14.6C3.67984 15.84 4.59984 16.91 5.59984 17.77" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8.41992 19.5302C9.55992 20.0102 10.7699 20.2702 11.9999 20.2702C15.5299 20.2702 18.8199 18.1902 21.1099 14.5902C22.0099 13.1802 22.0099 10.8102 21.1099 9.40018C20.7799 8.88018 20.4199 8.39018 20.0499 7.93018" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M15.5104 12.7002C15.2504 14.1102 14.1004 15.2602 12.6904 15.5202" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M9.47 14.5298L2 21.9998" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M22.0003 2L14.5303 9.47" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            { :else }
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.5799 11.9999C15.5799 13.9799 13.9799 15.5799 11.9999 15.5799C10.0199 15.5799 8.41992 13.9799 8.41992 11.9999C8.41992 10.0199 10.0199 8.41992 11.9999 8.41992C13.9799 8.41992 15.5799 10.0199 15.5799 11.9999Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M11.9998 20.2702C15.5298 20.2702 18.8198 18.1902 21.1098 14.5902C22.0098 13.1802 22.0098 10.8102 21.1098 9.40021C18.8198 5.80021 15.5298 3.72021 11.9998 3.72021C8.46984 3.72021 5.17984 5.80021 2.88984 9.40021C1.98984 10.8102 1.98984 13.1802 2.88984 14.5902C5.17984 18.1902 8.46984 20.2702 11.9998 20.2702Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                    
+                            {/if }
+                        </Icon>
+                    </slot> 
+                { :else }
+                    <slot></slot>
+                {/if }
+            </slot>
+            </Textfield>
+
+            <button on:click={ () => updateUserPassword() } disabled={ updatePasswordError } class="tertiary" style="z-index: 1; position: absolute; left: 50%; bottom: -2.8rem; transform: translate(-50%, 0%);">Update Password</button>
         </div>
 
         
 
         <div class="actions">
             <button on:click={() => { auth.signOut(); }} class="secondary">Sign Out</button>
-            <button on:click={() => { auth.signOut(); }} class="tertiary">Delete Account</button>
+            <button on:click={() => { auth.signOut(); }} class="">Delete Account</button>
         </div>
         
     </section>
@@ -499,17 +522,20 @@
         border-top: 1px dashed app.$color-midground;
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 0rem;
 
         h3 {
             margin-top: 1rem;
+            margin-bottom: 0.5rem;
         }
         
         div#info {
+            position: relative;
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr;
             gap: 1rem 1rem;
+            margin-bottom: 1.5rem;
             
             @media screen and (max-width: 480px) {
                 grid-template-rows: 1fr 1fr;
@@ -522,7 +548,7 @@
         }
 
         div.actions {
-            margin-top: 1rem;
+            margin-top: 5rem;
             display: flex;
             justify-content: center;
             gap: 1rem;
@@ -531,14 +557,14 @@
                 transition: all linear 300ms;
             }
 
-            button.tertiary {
-                color: app.$color-error;
-                border: 1px solid app.$color-error;
+            button:nth-child(2) {
+                color: app.$color-background;
+                // border: 1px solid app.$color-error;
+                background-color: app.$color-error;
 
 
                 &:hover {
-                    background-color: app.$color-error;
-                    color: white;
+                    color: black;
                 }
             }
         }
