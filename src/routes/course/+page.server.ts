@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ request }) => {
     const { institution, role, user } : { institution: string; role: string; user: string;  } = cookies;
 
     const allCourses = query(collection(database, "course"), where('campus', "==", institution));
-    const courses = (await getDocs(allCourses)).docs.map((doc) => {  return { id: doc.id, ...doc.data() }  });
+    const courses = (await getDocs(allCourses)).docs.map((doc) => {  return { courseID: doc.id, ...doc.data() }  });
 
     return {
         courses: courses

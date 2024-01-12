@@ -9,10 +9,11 @@
     import { updateUser, updateUserEmail, user, type UserProfile } from "$lib/utilities/authentication";
     import Usercard from "$lib/cards/usercard.svelte";
     import Layout from "../auth/+layout.svelte";
-    import { arrayRemove, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+    import { arrayRemove, deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
     import { auth, database } from "$lib/firebase/app";
-    import { EmailAuthCredential, EmailAuthProvider, getAuth, reauthenticateWithCredential, sendEmailVerification, sendSignInLinkToEmail, updateCurrentUser, updateEmail, updatePassword, updateProfile, verifyBeforeUpdateEmail } from "firebase/auth";
+    import { deleteUser, EmailAuthCredential, EmailAuthProvider, getAuth, reauthenticateWithCredential, sendEmailVerification, sendSignInLinkToEmail, updateCurrentUser, updateEmail, updatePassword, updateProfile, verifyBeforeUpdateEmail } from "firebase/auth";
     import { sendNotification } from "$lib/utilities/notifications";
+    import { goto } from "$app/navigation";
    
 
     interface UserRequest {
@@ -127,6 +128,23 @@
                 sendNotification({ type: "error", message: "Wrong password provided" }, 3000);
                 newPassword = "";
             }
+        }
+    }
+
+    const wipeUser = async () => {
+        try {
+            if (!auth.currentUser) { return; }
+
+            sendNotification({ type: "warning", message: "Permanently deleting your account!!" });
+            goto("/auth/register");
+
+            await deleteDoc(doc(database, "users", $user.email));
+            await deleteUser(auth.currentUser);
+
+            sendNotification({ type: "info", message: "Account deleted" });
+
+        } catch (error) {
+            console.error(error); 
         }
     }
 
@@ -353,8 +371,8 @@
         
 
         <div class="actions">
-            <button on:click={() => { auth.signOut(); }} class="secondary">Sign Out</button>
-            <button on:click={() => { auth.signOut(); }} class="">Delete Account</button>
+            <button on:click={ () => { auth.signOut(); }} class="secondary">Sign Out</button>
+            <button on:click={ () => wipeUser() } class="">Delete Account</button>
         </div>
         
     </section>

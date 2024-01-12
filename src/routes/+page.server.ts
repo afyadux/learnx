@@ -49,7 +49,7 @@ export const load: PageServerLoad = async ({ request }) => {
 
 
         const institutionalCoursesList = query(collection(database, "course"), where('campus', "==", institution), limit(20));
-        const institutionalCourses : CourseData[] = (await getDocs(institutionalCoursesList)).docs.map((doc) => {  return { id: doc.id, ...doc.data() }  }) as any; 
+        const institutionalCourses : CourseData[] = (await getDocs(institutionalCoursesList)).docs.map((doc) => {  return { courseID: doc.id, ...doc.data() }  }) as any; 
 
         return {
             courses: courses,

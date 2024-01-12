@@ -7,16 +7,17 @@
     import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import type { CourseData, lessonData } from "$lib/models/app";
+    import { user } from "$lib/utilities/authentication";
     import { Timestamp, addDoc, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 
     export let data: CourseData;
-    const { courseID, tag, title, objective, lessons, instructor } = data;
+    const { courseID, tag, title, objective, lessons, instructor, students } = data;
     const courseReference = doc(database, "course", courseID);
 
 
 
     let lessonsUI : lessonData[] = lessons;
-    $: students = Array(0); 
+    let studentsUI = students; 
 
     let tagUI: string = tag;
     let titleUI: string = title;
@@ -37,6 +38,10 @@
 
     async function onObjectiveEdit() {
         await updateDoc(courseReference, { objective: objectiveUI });
+    }
+
+    async function enrollInCourse() {
+
     }
 
 
@@ -135,7 +140,7 @@
                         </svg>                    
                     </Icon>
     
-                    <!-- <p>{ students.length } students</p> -->
+                    <p>{ students.length } students</p>
                 </div>
 
 
@@ -163,6 +168,10 @@
     
                     <p>Certificate included</p>
                 </div>
+
+                { #if $user.role === "student" }
+                <button class="secondary" on:click={ enrollInCourse } style="margin-top: 1rem;">Enroll in Course</button>
+                {/if }
             </div>
 
         </div>
@@ -189,7 +198,7 @@
         <h3>Students</h3>
 
         <div class="grid">
-            { #each students as _ }
+            { #each studentsUI as _ }
                 <Usercard />
             {/each }
         </div>

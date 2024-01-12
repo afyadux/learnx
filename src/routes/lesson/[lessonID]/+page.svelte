@@ -84,7 +84,9 @@
         <img class="background" src="/images/thunderhead.jpeg" alt="">
 
         <section class="info">
-            <img src="/images/thunderhead.jpeg" alt="">
+            <div class="cover fill">
+                <img src="/images/thunderhead.jpeg" alt="">
+            </div>
 
             <Editable
                 editable={ true }
@@ -271,6 +273,8 @@
                 z-index: 2;
                 padding: 2rem 5vw 1rem 5vw;
 
+
+
                 * { z-index: 2; color: app.$color-foreground; stroke: app.$color-foreground; }
 
                 :global(h1) {
@@ -282,12 +286,22 @@
                     z-index: 2;
                 }
 
-                > img {
-                    width: 9rem;
+                div.cover {
+                    width: 12rem;
                     height: 16rem;
-                    object-fit: contain;
+
+                    border-radius: 1rem;
+                    border: 1px dashed app.$color-midground;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+
+                    &.fill {
+                        border: none;
+                        justify-content: center;
+                    }
                 }
-    
 
     
                 div.detail {

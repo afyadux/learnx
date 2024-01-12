@@ -19,6 +19,7 @@ export interface CourseData extends PageData {
     tag: string;
     title: string;
     lessons: lessonData[],
+    students: string[],
     instructor: {
         name: string;
         pfp: string | null;

@@ -47,10 +47,12 @@
 
         <div class="choices">
         { #each choicesUI as _, index }
-            <button id="choice" on:click={ () => { } }>
-            <span>{ numberToAlpha(index) }</span>
+            <button id="choice">
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <span on:click={ () => { correctUI = index; update() }}>{ numberToAlpha(index) }</span>
             <Editable bind:value={ choicesUI[index] } editable={ $user.role !== "student" } onFinishEdit={ update } placeholder="Answer Choice { numberToAlpha(index) }"/>
-                { #if $user.role !== "student" && index === correct }
+                { #if $user.role !== "student" && index === correctUI }
                     <h6>Correct</h6>
                 {/if }
             </button>
@@ -121,30 +123,36 @@
             padding: 0.5rem 0.5rem;
             border: 1px solid app.$color-shade;
             border-radius: 0.5rem;
-            background-color: transparent;
-            border: none;
 
             display: grid;
             grid-template-columns: max-content auto max-content;
             grid-template-rows: 1fr;
             gap: 0px 0.8rem;
 
-            background-color: transparent;;
+            background-color: transparent;
+
+            width: 100%;
 
 
             span {
                 width: 1.5rem;
                 height: 1.5rem;
                 border-radius: 1.5rem;
-                border: 1px solid app.$color-shade;
+                border: 1px solid app.$color-midground;
+                color: app.$color-midground;
 
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 font-size: 80%;
+
+                &:hover {
+                    background-color: app.$color-info;
+                    color: white;
+                }
             }
 
-            p { padding-right: 1rem; text-align: left; }
+            :global(> p) { padding-right: 1rem; text-align: left; }
 
             h6 { background-color: app.$color-info;
                 color: white;

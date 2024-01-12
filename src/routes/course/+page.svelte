@@ -13,7 +13,7 @@
 
     export let data;
     const { courses } = data as { courses: CourseData[] };
-    let personalCourses = $user.courses.map((id) => courses.find((each) => each.id === id));
+    let personalCourses = $user.courses.map((id) => courses.find((each) => each.courseID === id));
 
     let institutionalCourses = courses;
 
@@ -58,6 +58,7 @@
                 objective: "",
                 title: courseName,
                 lessons: [],
+                students: [],
                 campus: $user.institution?.id,
 
                 instructor: {
@@ -73,12 +74,12 @@
             });
 
             personalCourses.push({
-                id: courseID,
+                courseID: courseID,
                 ... newCourse
             });
 
             institutionalCourses.push({
-                id: courseID,
+                courseID: courseID,
                 ... newCourse
             });
 

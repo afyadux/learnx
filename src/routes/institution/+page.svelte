@@ -11,7 +11,7 @@
     let request : Institution | undefined = undefined; 
     let schools : Institution[] = [
         { id: "caltech", pfp: "caltech.png", name: "California Institute of Technology" },
-        { id: "wunsche", pfp: "caltech.png", name: "Wunsche Institute of Pornography" },
+        { id: "caltech", pfp: "caltech.png", name: "Wunsche Institute of Pornography" },
         { id: "caltech", pfp: "caltech.png", name: "California Institute of Technology" },
     ];
 
