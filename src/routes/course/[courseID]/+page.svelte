@@ -8,13 +8,15 @@
     import Icon from "$lib/interface/Icon.svelte";
     import type { CourseData, lessonData } from "$lib/models/app";
     import { user } from "$lib/utilities/authentication";
-    import { Timestamp, addDoc, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+    import { sendNotification } from "$lib/utilities/notifications";
+    import { Timestamp, addDoc, arrayRemove, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 
     export let data: CourseData;
     const { courseID, tag, title, objective, lessons, instructor, students } = data;
     const courseReference = doc(database, "course", courseID);
 
 
+    console.log(data);
 
     let lessonsUI : lessonData[] = lessons;
     let studentsUI = students; 
@@ -24,9 +26,7 @@
     let objectiveUI: string = objective;
     // let cover: string = "/images/thunderhead.jpeg";
     let coverUI = ""; 
-
-    console.log(data)
-
+    $: enrolled = (studentsUI.findIndex((i) => i === $user.email) != -1);
 
     async function onTitleEdit() {
         await updateDoc(courseReference, { title: titleUI });
@@ -42,6 +42,48 @@
 
     async function enrollInCourse() {
 
+        const userID = $user.email; 
+
+        try {
+            const register = updateDoc(doc(database, "course", courseID), {
+                students: arrayUnion(userID)
+            });
+
+            const schedule = updateDoc(doc(database, "users", userID), {
+                courses: arrayUnion(courseID)
+            });
+
+            await Promise.all([register, schedule]);
+
+            studentsUI = [...studentsUI, userID];
+            sendNotification({ type: "success", message: ("Successfully enrolled in " + title) })
+
+        } catch (error) {
+            console.error(error);
+        }
+        
+    }
+
+    async function manageRegistration(action: "enroll" | "dropout") {
+        const userID = $user.email; 
+
+        try {
+            const register = updateDoc(doc(database, "course", courseID), {
+                students: (action === "enroll") ? arrayUnion(userID) : arrayRemove(userID)
+            });
+
+            const schedule = updateDoc(doc(database, "users", userID), {
+                courses: (action === "enroll") ? arrayUnion(courseID) : arrayRemove(courseID)
+            });
+
+            await Promise.all([register, schedule]);
+
+            studentsUI = (action === "enroll") ? [...studentsUI, userID] : [...studentsUI].filter((i) => i !== userID);
+            sendNotification({ type: "success", message: `Successfully ${ (action === "enroll") ? "enrolled in course" : "dropped out of course"  }` }, 3000)
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
 
@@ -140,7 +182,7 @@
                         </svg>                    
                     </Icon>
     
-                    <p>{ students.length } students</p>
+                    <p>{ studentsUI.length } students</p>
                 </div>
 
 
@@ -170,7 +212,7 @@
                 </div>
 
                 { #if $user.role === "student" }
-                <button class="secondary" on:click={ enrollInCourse } style="margin-top: 1rem;">Enroll in Course</button>
+                <button class={ enrolled ? "tertiary" : "secondary" } on:click={ () => manageRegistration((enrolled) ? "dropout" : "enroll") } style="margin-top: 1rem;">{ enrolled ? "Drop Out" : "Enroll in Course" }</button>
                 {/if }
             </div>
 
@@ -217,10 +259,10 @@
 
         <div class="grid">
             {#each lessonsUI as item, index }
-                <Lessoncard lesson={ item } index={ index }/>
+                <Lessoncard disabled={ !enrolled } lesson={ item } index={ index }/>
             {/each }
 
-            <button on:click={ addLesson } class="add lesson">
+            <button  on:click={ addLesson } class="add lesson">
                 <div class="icon">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M6.3033 16.9099L16.9099 6.30327M6.3033 6.30327L16.9099 16.9099" stroke="#363853" stroke-width="1.5" stroke-linecap="round"/>

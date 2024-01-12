@@ -7,6 +7,10 @@ import type { CourseData, lessonData } from "$lib/models/app";
 export const load: PageServerLoad = async ({ request }) => {
 
     try {
+
+        let courses : CourseData[] = [];
+        let lessons : lessonData[] = [];
+
         const cookieHeader = request.headers.get('cookie');
         const cookies: any = {};
         if (cookieHeader) {
@@ -19,35 +23,39 @@ export const load: PageServerLoad = async ({ request }) => {
         const { institution, role, user } : { institution: string; role: string; user: string;  } = cookies;
         if (!institution || institution == "" || !user || user == "") {
             return {
-                courses: [],
-                lessons: []
+                courses: courses,
+                lessons: lessons
             }
         }
 
         const { courses : courseList } =  (await getDoc(doc(database, "users", user))).data() as { courses: string[] };
 
-        const snapshots = query(collection(database, "course"), where(documentId(), "in", courseList));
-        const courses : CourseData[] = (await getDocs(snapshots)).docs.map((item) => {
+        if (courseList.length > 0) {
+            const snapshots = query(collection(database, "course"), where(documentId(), "in", courseList));
+            courses = (await getDocs(snapshots)).docs.map((item) => {
 
-            return {
-                courseID: item.id, 
-                ...item.data()
-            }
-            
-        }) as any; 
+                return {
+                    courseID: item.id, 
+                    ...item.data()
+                }
+                
+            }) as any; 
+        }
 
-        const lessonList : string[] = (courses.flatMap((c) => c.lessons)) as any;
-        const lessonSnapshots = query(collection(database, "lesson"), where(documentId(), "in", lessonList));
-        const lessons : lessonData[] = (await getDocs(lessonSnapshots)).docs.map((item) => {
-            return {
-                id: item.id,
-                ... item.data(),
-                postDate: (item.data().postDate as Timestamp).toDate()
-            }
-        }) as any; 
+        
+        let lessonList : string[] = (courses.flatMap((c) => c.lessons)) as any;
+        if (lessonList.length >  0) {
+            const lessonSnapshots = query(collection(database, "lesson"), where(documentId(), "in", lessonList));
+            lessons  = (await getDocs(lessonSnapshots)).docs.map((item) => {
+                return {
+                    id: item.id,
+                    ... item.data(),
+                    postDate: (item.data().postDate as Timestamp).toDate()
+                }
+            }) as any;
+        }
 
-
-
+    
         const institutionalCoursesList = query(collection(database, "course"), where('campus', "==", institution), limit(20));
         const institutionalCourses : CourseData[] = (await getDocs(institutionalCoursesList)).docs.map((doc) => {  return { courseID: doc.id, ...doc.data() }  }) as any; 
 

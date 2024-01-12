@@ -9,6 +9,7 @@
     export let data : { courses: CourseData[], lessons: lessonData[], institutional: CourseData[] }; 
     const { courses, lessons, institutional } = data;
 
+    console.log(data);
 
 </script>
 

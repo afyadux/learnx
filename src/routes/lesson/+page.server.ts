@@ -8,6 +8,9 @@ import type { CourseData, lessonData } from "$lib/models/app";
 export const load: PageServerLoad = async ({ request }) => {
 
     try {
+
+        let lessons: lessonData[] = [];
+
         const cookieHeader = request.headers.get('cookie');
         const cookies: any = {};
         if (cookieHeader) {
@@ -25,16 +28,19 @@ export const load: PageServerLoad = async ({ request }) => {
         const courses : CourseData[] = (await getDocs(allCourses)).docs.map((doc) => {  return { id: doc.id, ...doc.data() }  }) as any;
         const lessonIDs = courses.flatMap((course) => course.lessons) as any as string[];
 
-        const lessonQuery = query(collection(database, "lesson"), where(documentId(), "in", lessonIDs))
-        const fulfilledSnapshots = await getDocs(lessonQuery) as any;
+        if (lessonIDs.length > 0) {
+            const lessonQuery = query(collection(database, "lesson"), where(documentId(), "in", lessonIDs))
+            const fulfilledSnapshots = await getDocs(lessonQuery) as any;
 
-        const lessons : lessonData[] = fulfilledSnapshots.docs.map((snap: any) => { 
-            return {
-                id: snap.id,
-                ...snap.data(),
-                postDate: (snap.data().postDate as Timestamp).toDate()
-            }
-        })
+            lessons = fulfilledSnapshots.docs.map((snap: any) => { 
+                return {
+                    id: snap.id,
+                    ...snap.data(),
+                    postDate: (snap.data().postDate as Timestamp).toDate()
+                }
+            });
+        }
+
 
         return {
             lessons: lessons

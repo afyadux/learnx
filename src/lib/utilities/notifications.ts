@@ -10,7 +10,7 @@ interface INotification {
 
 export const notification = writable<INotification | undefined>(undefined);
 
-export function sendNotification(data: INotification, duration: number = 2000) {
+export function sendNotification(data: INotification, duration: number = 3000) {
     notification.update(() => data);
     setTimeout(() => {
         notification.update(() => undefined);

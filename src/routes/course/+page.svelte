@@ -63,12 +63,12 @@
 
                 instructor: {
                     name: `${ $user.firstName } ${ $user.lastName }`,
+                    email: $user.email,
                     pfp: $user.photoURL
                 }
             }
 
             await setDoc(doc(database, "course", courseID), newCourse);
-
             await updateDoc(doc(database, "users", $user.email!), {
                 courses: arrayUnion(courseID)
             });

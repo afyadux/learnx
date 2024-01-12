@@ -4,6 +4,8 @@
     import Editable from "$lib/interface/Editable.svelte";
     import type { lessonData } from "$lib/models/app";
 
+    export let disabled = false;
+
     export let index: number = 1;
     export let lesson: lessonData;
     export let consumer: boolean = true;
@@ -12,7 +14,7 @@
 </script>
 
 
-<a href="/lesson/{ id }" class="lesson">
+<a href="/lesson/{ id }" class={ disabled ? "disabled lesson" : "lesson" }>
 
     <div class="lead">
         
@@ -53,6 +55,11 @@
         transition-property: all;
         transition-duration: 150ms;
         transition-timing-function: ease-in;
+
+        &.disabled {
+            pointer-events: none;
+            cursor: pointer;
+        }
 
         &:hover {
             border: 1px dashed transparent;

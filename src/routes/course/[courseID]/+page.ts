@@ -13,7 +13,6 @@ export const load:PageLoad = async (data) => {
     const fetchLessons = IDs.map((id) => getDoc(doc(database, "lesson",  id)));
     const fetch = (await Promise.all(fetchLessons)).map((snap) => snap.data()!);
     const lessons = fetch.map((item, index) => {
-
         return {
             ... item,
             id: IDs[index]
