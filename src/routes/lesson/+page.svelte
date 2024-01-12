@@ -8,7 +8,6 @@
     let enrolledUI : lessonData[] = [];
     let availableUI: lessonData[] = lessons;
 
-    console.log(lessons)
 </script>
 
 <main>

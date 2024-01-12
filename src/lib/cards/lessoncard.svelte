@@ -9,10 +9,6 @@
     export let consumer: boolean = true;
     const { title, id } = lesson;
 
-    console.log(lesson);
-
-
-
 </script>
 
 

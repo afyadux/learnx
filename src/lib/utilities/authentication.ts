@@ -4,6 +4,7 @@ import { auth, database } from "$lib/firebase/app";
 import type { Institution } from "$lib/models/app";
 import { browser } from "$app/environment";
 import type { User } from "firebase/auth";
+import { wipeCookies } from "./cookies";
 
 
 
@@ -41,10 +42,11 @@ export async function updateUser(fresh: User | null) {
         console.warn("User has logged out!");
         user.set(nullUser);
         if (browser) {
+            wipeCookies();
+
             document.cookie = `institution=;`;
             document.cookie = `user=;`;
             document.cookie = `role=;`;
-            document.cookie = `sent=false;`;
         }
 
         return;

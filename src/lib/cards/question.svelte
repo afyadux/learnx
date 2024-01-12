@@ -3,6 +3,7 @@
 <script lang="ts">
     import Editable from "$lib/interface/Editable.svelte";
     import type { QuizQuestion } from "$lib/models/app";
+    import { user } from "$lib/utilities/authentication";
 
     export let question: QuizQuestion;
     export let index : number;
@@ -17,13 +18,14 @@
 
 
    
-    const { prompt, choices } = question;
+    const { prompt, choices, correct } = question;
 
     let promptUI: string = prompt;
     let choicesUI: string[] = choices;
+    let correctUI: number = correct;
 
     const update = () => {
-        updateQuestion({ prompt: promptUI, choices: choicesUI, type: "", correct: 0 }, index);
+        updateQuestion({ prompt: promptUI, choices: choicesUI, type: "text", correct: correctUI }, index);
     }
 </script>
 
@@ -37,7 +39,7 @@
         <p id="index">{ index + 1 }</p>
 
         <Editable
-            editable={ true }
+            editable={ $user.role !== "student" }
             bind:value={ promptUI }
             onFinishEdit={ update }
             placeholder="Question { index +1  } prompt ..."
@@ -45,11 +47,14 @@
 
         <div class="choices">
         { #each choicesUI as _, index }
-        <label for="">
+            <button id="choice" on:click={ () => { } }>
             <span>{ numberToAlpha(index) }</span>
-            <Editable bind:value={ choicesUI[index] } onFinishEdit={ update } placeholder="Answer Choice { numberToAlpha(index) }" editable={ true } />
-        </label>
-        {/each }
+            <Editable bind:value={ choicesUI[index] } editable={ $user.role !== "student" } onFinishEdit={ update } placeholder="Answer Choice { numberToAlpha(index) }"/>
+                { #if $user.role !== "student" && index === correct }
+                    <h6>Correct</h6>
+                {/if }
+            </button>
+        {/each}
         </div>
     </div>
 {/if}
@@ -112,15 +117,20 @@
         gap: 0.5rem;
 
 
-        label {
+        button#choice {
             padding: 0.5rem 0.5rem;
             border: 1px solid app.$color-shade;
             border-radius: 0.5rem;
+            background-color: transparent;
+            border: none;
 
             display: grid;
-            grid-template-columns: max-content auto;
+            grid-template-columns: max-content auto max-content;
             grid-template-rows: 1fr;
             gap: 0px 0.8rem;
+
+            background-color: transparent;;
+
 
             span {
                 width: 1.5rem;
@@ -134,7 +144,12 @@
                 font-size: 80%;
             }
 
-            p { padding-right: 1rem; }
+            p { padding-right: 1rem; text-align: left; }
+
+            h6 { background-color: app.$color-info;
+                color: white;
+                padding: 0.1rem 0.8rem;
+                border-radius: 1rem; }
         }
     }
 </style>

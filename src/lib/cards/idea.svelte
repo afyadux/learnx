@@ -4,6 +4,7 @@
 <script lang="ts">
     import Editable from "$lib/interface/Editable.svelte";
     import type { LessonIdea } from "$lib/models/app";
+    import { user } from "$lib/utilities/authentication";
 
     export let data: LessonIdea;
     export let index: number;
@@ -21,7 +22,7 @@
 <div class="idea" id={ index.toString() }>
 {#if type === "text" }
     <Editable
-        editable={ true }
+        editable={ $user.role !== "student" }
         bind:value={ valueUI }
         onFinishEdit={ update }
         placeholder="Lesson idea for the students to understand ..."

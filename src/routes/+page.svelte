@@ -2,22 +2,25 @@
 
     import Coursecard from "$lib/cards/coursecard.svelte";
     import Lessoncard from "$lib/cards/lessoncard.svelte";
+    import type { CourseData, lessonData } from "$lib/models/app";
     import Hero from "$lib/sections/hero.svelte";
+    import { user } from "$lib/utilities/authentication.js";
 
-    const getUserCourses = async () => {
-    }
-    
+    export let data : { courses: CourseData[], lessons: lessonData[], institutional: CourseData[] }; 
+    const { courses, lessons, institutional } = data;
+
+
 </script>
 
 <main>
-    <Hero/>
+    <Hero courses={ courses }/>
 
     <section id="lesson">
         <h4>Jump Back in. </h4>
 
         <div class="grid">
-            {#each Array(3) as _ }
-            <!-- <Lessoncard/> -->
+            {#each lessons as lesson }
+            <Lessoncard lesson={ lesson }  />
             {/each }
         </div>
     </section>
@@ -27,8 +30,8 @@
         <h4>Explore more courses. </h4>
 
         <div class="grid">
-            {#each Array(4) as _ }
-            <!-- <Coursecard/> -->
+            {#each institutional as item }
+            <Coursecard course={ item }/>
             {/each }
         </div>
 

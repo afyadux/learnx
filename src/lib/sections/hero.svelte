@@ -1,3 +1,73 @@
+
+
+<script lang="ts">
+    import Coursecard from "$lib/cards/coursecard.svelte";
+    import Icon from "$lib/interface/Icon.svelte";
+    import type { CourseData } from "$lib/models/app";
+
+
+    let autoToggle = true;
+    let focusIndex = 0;
+    let containerWidth : number = 0;
+
+    export let courses: CourseData[]; 
+
+</script>
+
+<section id="hero">
+
+    <div class="canvas">
+        <div class="info" >
+            <h1 id="title">Unlock Your Potential: Master <span>{ courses[focusIndex].tag ? courses[focusIndex].tag : "Learning" }</span>, Shape Your Future!</h1>
+            <p>Welcome to your journey of discovery and growth! Our courses, designed to be both engaging and enlightening, promises to transform the way you view and interact with the world around you. With a blend of interactive lessons, real-world examples, and innovative tools, we aim to ignite your passion for learning and personal development.</p>
+        </div>
+
+        <div class="graphic" bind:clientWidth={ containerWidth }>
+        <div class="content">
+            { #each courses as item,index }
+                <div class={ `container${ (index < focusIndex) ? " hidden" : "" }` }
+                    style={ `--displacement: ${ index < focusIndex ? -(containerWidth) * index : -(containerWidth) * focusIndex  };` }>
+                    <Coursecard course={ item }  />
+                </div>
+            {/each } 
+        </div>
+        </div>
+    </div>
+
+    <div class="controls">
+
+        <div class="pagination">
+        { #each courses as _, index }
+            <span class={ index === focusIndex ? "active" : "" }></span>
+        {/each }
+        </div>
+
+        <div class="cta">
+            <a href="/course" class="button secondary" id="cta">All Courses</a>
+            <a href="/lesson" class="button tertiary" id="cta">All Lessons</a>
+        </div>
+
+        <div class="arrows">
+            <Icon handleClick={ () => { focusIndex--; if (autoToggle) { autoToggle = false; } }} disabled={ focusIndex === 0 }>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.57 5.93005L3.5 12.0001L9.57 18.0701" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M20.5 12H3.66998" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </Icon>
+
+            <Icon handleClick={ () => { focusIndex++; if (autoToggle) { autoToggle = false;  }} } disabled={ focusIndex === courses.length -1 }>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.43 5.93005L20.5 12.0001L14.43 18.0701" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M3.5 12H20.33" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </Icon>
+        </div>
+
+
+    </div>
+</section>
+
+
 <style lang="scss">
     @use "$lib/interface/variables" as app;
 
@@ -12,8 +82,6 @@
             display: grid;
             grid-template-columns: 1fr;
             grid-template-rows: 1fr 1.5fr;
-
-
 
             gap: 1rem 2rem;
 
@@ -33,9 +101,8 @@
                 justify-content: center;
 
                 width: 100%;
-
-
-                gap: 0.5rem;
+                gap: 1rem;
+                padding-right: 2rem;
 
                 span { color: app.$color-brand; };
 
@@ -91,6 +158,17 @@
 
                     padding: 0px 0.5rem;
 
+                    width: calc(42vw - 4rem);
+                    height: 90%;
+
+                    transition-property: transform opacity;
+                    transition-duration: 300ms;
+                    transition-timing-function: ease-in;
+
+                    margin: 0px 0.5rem;
+                    opacity: 100%;
+                    transform: matrix(1, 0, 0, 1, var(--displacement), 0);
+
                     > :global(div) {
                         width: 90%;
                         height: 80%;
@@ -105,21 +183,49 @@
                        
                     }
 
+                    :global(#topic-icon) {
+                        width: 12vmax;
+                        max-width: 160px;
+                    }
+
+                    :global(.card) {
+                        gap: calc(2rem + 3vmax) 0px;
+                        margin-left: 5vw;
+                        transform: scale(1.15);
+                    }
+
+
+
                     @media screen and (min-width: 1200px) {
                         > :global(a) {
                         grid-template-rows: 16rem 5rem;
                         }
                     }
 
-                    width: calc(42vw - 4rem);
-                    height: 90%;
+                    @media screen and (min-width: 720px) {
+                        :global(.card) {
+                        transform: scale(1.15);
+                        }
+                    }
+
+                    
 
                     @media screen and (max-width: 540px) {
-                    width: calc(92vw - 2rem);
+                        width: calc(92vw - 2rem);
                         
                     }
 
 
+
+                    transition-property: transform opacity;
+                    transition-duration: 300ms;
+                    transition-timing-function: ease-in;
+
+                    margin: 0px 0.5rem;
+                    opacity: 100%;
+                    transform: matrix(1, 0, 0, 1, var(--displacement), 0);
+
+                
                     transition-property: transform opacity;
                     transition-duration: 300ms;
                     transition-timing-function: ease-in;
@@ -214,70 +320,3 @@
          box-shadow: 0 0 3px 0;
     }
 </style>
-
-
-<script lang="ts">
-    import Coursecard from "$lib/cards/coursecard.svelte";
-    import Icon from "$lib/interface/Icon.svelte";
-
-
-
-    let autoToggle = true;
-    let focusIndex = 0;
-
-    let containerWidth : number = 0;
-
-</script>
-
-<section id="hero">
-
-    <div class="canvas">
-        <div class="info" >
-            <h1 id="title">Turn Tables &middot; Turn Heads<br>Elevate your <span>Idea</span></h1>
-            <p >Dedicated to creating memorable experiences, we specialize in captivating audiences, marketing brands, and forging unforgettable memories through our unparalleled DJ services.</p>
-        </div>
-
-        <div class="graphic" bind:clientWidth={ containerWidth }>
-        <div class="content">
-            { #each Array(4) as _,index }
-                <div class={ `container${ (index < focusIndex) ? " hidden" : "" }` }
-                    style={ `--displacement: ${ index < focusIndex ? -(containerWidth) * index : -(containerWidth) * focusIndex  }; border: 1px solid gray;` }>
-                    <!-- <Coursecard /> -->
-                </div>
-            {/each } 
-        </div>
-        </div>
-    </div>
-
-    <div class="controls">
-
-        <div class="pagination">
-        { #each Array(4) as _, index }
-            <span class={ index === focusIndex ? "active" : "" }></span>
-        {/each }
-        </div>
-
-        <div class="cta">
-            <a href="/#services" class="button tertiary" id="cta">Our Services</a>
-            <a href="/#portfolio" class="button secondary" id="cta">See projects</a>
-        </div>
-
-        <div class="arrows">
-            <Icon handleClick={ () => { focusIndex--; if (autoToggle) { autoToggle = false; } }} disabled={ focusIndex === 0 }>
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.57 5.93005L3.5 12.0001L9.57 18.0701" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M20.5 12H3.66998" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-            </Icon>
-
-            <Icon handleClick={ () => { focusIndex++; if (autoToggle) { autoToggle = false;  }} } disabled={ focusIndex === 3 }>
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14.43 5.93005L20.5 12.0001L14.43 18.0701" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M3.5 12H20.33" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-            </Icon>
-        </div>
-
-
-    </div>
-</section>

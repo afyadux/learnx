@@ -7,7 +7,7 @@
 </script>
 
 
-<a href="/course/{ course.id }" class="course card">
+<a href="/course/{ course.courseID }" class="course card">
 
     <div id="header">
         <h3>{ course.title }</h3>
@@ -113,10 +113,10 @@
         border-radius: 0.5rem;
 
 
-        width: 8rem;
-        height: 13.6rem;
+        width: 40%;
+        height: max-content;
 
-        transform: translateX(24%) translateY(60%) rotateZ(-30deg);
+        transform: translateX(24%) translateY(40%) rotateZ(-30deg);
         padding: 1.5rem;
 
         img {

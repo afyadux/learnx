@@ -57,6 +57,7 @@
 
     }); 
 
+    console.log($page.route.id);
 </script>
 
 
@@ -66,14 +67,14 @@
     </a>
 
     <div class="links">
-        <a class={ $page.url.pathname === "/course" ? "highlight" : "" } href="/course">Courses</a>
-        <a class={ $page.url.pathname === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
-        <a class={ $page.url.pathname === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
+        <a class={ $page.route.id === "/course" ? "highlight" : "" } href="/course">Courses</a>
+        <a class={ $page.route.id === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
+        <a class={ $page.route.id === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
     </div>
 
     <span>
 
-        <button on:click={() => { auth.signOut(); }}>Enroll in a Course</button>
+        <a class="button" href="/course">{ $user.role === "student" ? "Enroll in a Course" : "Create Course" }</a>
 
         <a href="/profile" id="pfp">
             <img src={ $user.photoURL ? $user.photoURL : "/icons/anonymous.png" } alt="">
@@ -123,9 +124,9 @@
 <section class={ showNavbar ? "show" : "" } id="popup-nav" use:addToggleNavbar>
 
     <div class="links">
-        <a class={ $page.url.pathname === "/course" ? "highlight" : "" } href="/course">Courses</a>
-        <a class={ $page.url.pathname === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
-        <a class={ $page.url.pathname === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
+        <a class={ $page.route.id === "/course" ? "highlight" : "" } href="/course">Courses</a>
+        <a class={ $page.route.id === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
+        <a class={ $page.route.id === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
 
         <div class="cite">
             <p>Copy &copy; 2023</p>
