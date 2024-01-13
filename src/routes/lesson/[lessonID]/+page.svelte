@@ -6,21 +6,53 @@
     import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import Tabbar from "$lib/interface/Tabbar.svelte";
-    import type { LessonIdea, QuizQuestion, lessonData } from "$lib/models/app";
-    import { Timestamp, arrayUnion, doc, updateDoc } from "firebase/firestore";
+    import type { LessonIdea, QuizQuestion, StudentTest, lessonData } from "$lib/models/app";
+    import { Timestamp, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
     import type { PageData } from "../$types";
     import { page } from "$app/stores";
     import Idea from "$lib/cards/idea.svelte";
+    import { user } from "$lib/utilities/authentication";
+    import { text } from "@sveltejs/kit";
+    import { sendNotification } from "$lib/utilities/notifications";
 
     export let data: lessonData;
-    const { title, postDate, quiz, courseID, id, ideas } = data;
+    const { title, postDate, quiz, courseID, id, ideas, instructor, quizPublished } = data;
     const { lessonID } = $page.params;
 
     let ideasUI: LessonIdea[] = ideas;
     let titleUI: string = title;
-    let quizUI: QuizQuestion[] = quiz;
+    let quizUI: QuizQuestion[] = (!quizPublished && $user.role === "student") ? [] : quiz;
+    let test: StudentTest = { submitted: false, answers: [] }
+    let quizPublishedUI : boolean = quizPublished;
 
     let stageView: string = "lesson";
+
+    $: turnable = 
+        (test !== undefined) &&
+        (test.submitted == false) &&
+        (test.answers.includes(-1) == false);
+        
+
+
+    $: hasEmpty = 
+        [...quizUI.map((q) => q.prompt), ...quizUI.flatMap((q) => q.choices)]
+        .includes("");
+
+
+    const getAnswers = async () => {
+
+        if (!user) { return }
+
+        const submission = await getDoc(doc(database, "lesson", lessonID, "submissions", $user.email));
+        const { answers, submitted: turnedIn } = submission.data()! as any;
+        let answerValues = (quiz.map((_, index) => answers[index] ? answers[index] : -1 ))
+        let assessment = {
+            submitted: turnedIn,
+            answers: answerValues
+        }
+        
+        test = assessment
+    }
 
     async function addQuestion() {
         const updatedQuiz: QuizQuestion[] = [...quizUI, {
@@ -34,10 +66,23 @@
             quiz: updatedQuiz
         });
 
+
         quizUI = updatedQuiz;
     }
 
-    async function questionUpdate(value: QuizQuestion, index: number) {
+    async function questionUpdate(value: QuizQuestion, userAnswer: number, index: number) {
+
+        if ($user.role === "student") {
+            const updatedAnswers = [...test.answers.slice(0, index), userAnswer , ...test.answers.slice(index + 1)];
+            await updateDoc(doc(database, "lesson", lessonID, "submissions", $user.email), {
+                answers: updatedAnswers
+            });
+
+            test = {
+                ...test,
+                answers: updatedAnswers
+            }
+        }
 
         const updated = [...quizUI.slice(0, index), value , ...quizUI.slice(index + 1)];
         await updateDoc(doc(database, "lesson", lessonID), {
@@ -70,8 +115,45 @@
         });
     }
 
-    const submitForm = () => {
+    const quizSubmitAction = async () => {
 
+
+        try {
+                        
+            const notifyTeacher = updateDoc(doc(database, "users", instructor.email), {
+                notifications: arrayUnion({ read: false, text: `${ $user.firstName } ${ $user.lastName } (${ $user.email }) has submitted the quiz on ${ titleUI }`, title: "New submission" })
+            });
+
+            const submit = updateDoc(doc(database, "lesson", lessonID, "submissions", $user.email), {
+                submitted: true
+            });
+
+            await Promise.all([submit, notifyTeacher]);
+            sendNotification({ type: "success", message: "Successfully turned in assignment" }, 4000);
+
+            test = {
+                ...test,
+                submitted: true
+            }
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const publishSubmitAction = async () => {
+        try {
+            await updateDoc(doc(database, "lesson", lessonID), {
+                quizPublished: true
+            });
+
+            sendNotification({ type: "success", message: "Successfully published quiz to students" }, 4000);
+
+            quizPublishedUI = true;
+
+        } catch (error) {
+            console.error(error)
+        }
     }
 
 </script>
@@ -132,6 +214,9 @@
             <Idea updateIdea={ ideaUpdate } data={ idea } index={ index } />
         {/each }
 
+        
+
+        { #if $user.role !== "student" }
         <button on:click={ addIDea } class="add lesson">
             <div class="icon">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -140,14 +225,36 @@
             </div>
             <h5>Add new point</h5>
         </button>
+        {/if }
+
+
         </section>
 
 
         <section id="quiz" style="display: { (stageView === "quiz") ? "block" : "none" };">
-            { #each quizUI as question, index }
+            
+            { #if $user.role === "student" }
+                { #await getAnswers() }
+                    <p>Loading ...</p>
+                {:then _ } 
+                { #each quizUI as question, index }
+                <Question test={ test } updateQuestion={ questionUpdate } question={ question } index={ index } />
+                {/each }
+                {/await }
+            { :else }
+                { #each quizUI as question, index }
                 <Question updateQuestion={ questionUpdate } question={ question } index={ index } />
-            {/each }
+                {/each }
+            {/if }
 
+            { #if hasEmpty && $user.role !== "student" }
+            <div class="error">
+                <p>You must add text to all answer choices and prompts to publish quiz to students</p>
+            </div>
+            {/if }
+            
+
+            { #if $user.role !== "student" }
             <button class="add" on:click={ addQuestion }>
                 <div class="icon">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -157,10 +264,26 @@
 
                 <h5>Add Question</h5>
             </button>
+            {/if }
+
+            { #if !quizPublishedUI && $user.role === "student" }
+            <div class="empty">
+                <div class="thumbnail"><img src="/images/empty/test.png" alt=""></div>
+                <h3>There is no published quiz for this lesson</h3>
+                <p>You can still learn the material anyway, and wait for the instructor to add a quiz</p>
+            </div> 
+            { /if }
+
+
 
             <div class="submit">
-                <button>Submit Quiz</button>
+            { #if $user.role === "student" }
+                <button style={ `display: ${ quizPublishedUI ? "inline" : "none" }` } disabled={ !turnable } on:click={ () => quizSubmitAction() }>{ (test?.submitted) ? "Already turned in" : "Submit" }</button>
+            { :else }
+                <button disabled={ hasEmpty || quizPublishedUI } on:click={ () => publishSubmitAction() }>{ (quizPublishedUI) ? "Already published quiz" : "Publish Quiz" }</button>
+            {/if }
             </div>
+        
         </section>
 
     </article>
@@ -367,13 +490,24 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin: 2rem 0px 8rem 0px;
+                margin: 1rem 0px 8rem 0px;
             }
 
             button.add {
                 margin: 0px auto;
                 width: 100%;
                 max-width: 500px;
+            }
+
+            
+            div.error {
+                margin: 0rem auto 2rem auto;
+                max-width: 840px;
+                display: flex;
+                justify-content: center;
+                transform: translateY(-1.5rem);
+
+                p { color: app.$color-error }
             }
         }
     }

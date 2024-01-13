@@ -81,6 +81,7 @@
             const writeAuth = await updateProfile(userSnapshot.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
             const writeData = setDoc(doc(database, "users", email), {
                 courses: [], 
+                notifications: [],
                 request: null,
                 role: role,
                 institution: (role === "admin") ? institutionUsername : null

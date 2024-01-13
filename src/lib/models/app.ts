@@ -13,7 +13,7 @@ export interface IEvent {
 }
 
 
-export interface CourseData extends PageData {
+export interface CourseData {
     courseID: string;
     objective: string;
     tag: string;
@@ -27,7 +27,7 @@ export interface CourseData extends PageData {
     }
 }
 
-export interface lessonData extends PageData {
+export interface lessonData {
     id: string;
     courseID: string;
     title: string;
@@ -35,7 +35,17 @@ export interface lessonData extends PageData {
     postDate: Timestamp;
     ideas: LessonIdea[];
     quiz: QuizQuestion[];
+    quizPublished: boolean;
+    instructor: {
+        name: string;
+        email: string,
+        pfp: string | null;
+    }
 } 
+
+export interface StudentTest {
+    submitted: boolean; answers: number[]
+}
 
 export interface LessonIdea {
     type: "text" | "video",

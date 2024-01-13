@@ -16,24 +16,24 @@
 
     $: color = () => { 
 
-    if ($notification === undefined) { return "transparent"; }
+        if ($notification === undefined) { return "transparent"; }
 
-    switch ($notification.type) {
-        case "info":
-            return "#3361FF";
+        switch ($notification.type) {
+            case "info":
+                return "#3361FF";
 
-        case "error":
-            return "#FF5E6E";
+            case "error":
+                return "#FF5E6E";
 
-        case "warning":
-            return "#FF8800";
+            case "warning":
+                return "#FF8800";
 
-        case "success":
-            return "#2BD84E";
+            case "success":
+                return "#2BD84E";
 
-        default:
-            return "#3361FF";
-    }
+            default:
+                return "#3361FF";
+        }
     }
 
     let showNavbar: boolean = false;
@@ -56,8 +56,6 @@
     onMount(async () => {
 
     }); 
-
-    console.log($page.route.id);
 </script>
 
 
@@ -74,6 +72,7 @@
 
     <span>
 
+        
         <a class="button" href="/course">{ $user.role === "student" ? "Enroll in a Course" : "Create Course" }</a>
 
         <a href="/profile" id="pfp">
@@ -90,6 +89,9 @@
 
 { #if ($user.id === "" && $page.url.pathname.startsWith("/auth") === false) }
     <main id="auth">
+
+        <h2>Make an account or sign in to get started</h2>
+
         <div>
             <img src="/images/empty/auth.png" alt="">
         </div>
@@ -410,7 +412,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-
+        
         div {
             max-width: 800px;
             margin: 0px auto;
@@ -418,7 +420,11 @@
             padding: 0px 3rem;
         }
 
-        > div:first-child {
+        h2 {
+            margin: 0px auto;
+        };
+
+        > div:nth-child(2) {
             height: 40%;
 
             display: flex;

@@ -95,7 +95,12 @@
             subtitle: "",
             ideas: [],
             quiz: [],
-            postDate: Timestamp.fromDate(new Date())
+            postDate: Timestamp.fromDate(new Date()),
+            instructor: {
+                name: `${ $user.firstName } ${ $user.lastName }`,
+                email: $user.email,
+                pfp: $user.photoURL
+            }
         }
 
         const lessonRef = await addDoc(collection(database, "lesson"), newLesson);

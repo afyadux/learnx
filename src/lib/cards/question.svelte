@@ -2,12 +2,13 @@
 
 <script lang="ts">
     import Editable from "$lib/interface/Editable.svelte";
-    import type { QuizQuestion } from "$lib/models/app";
+    import type { QuizQuestion, StudentTest } from "$lib/models/app";
     import { user } from "$lib/utilities/authentication";
 
+    export let test: StudentTest | undefined = undefined;
     export let question: QuizQuestion;
     export let index : number;
-    export let updateQuestion : (_question: QuizQuestion, _index: number) => Promise<void>;
+    export let updateQuestion : (_question: QuizQuestion, _answer: number, _index: number) => Promise<void>;
 
     const numberToAlpha = (index: number) => {
         if (index === 3) { return "D" }
@@ -15,17 +16,17 @@
         if (index === 1) { return "B" }
         else { return "A" }
     }
-
-
-   
+    
     const { prompt, choices, correct } = question;
 
     let promptUI: string = prompt;
     let choicesUI: string[] = choices;
     let correctUI: number = correct;
 
+    let answer: number = test ? test.answers[index] : -1;
+
     const update = () => {
-        updateQuestion({ prompt: promptUI, choices: choicesUI, type: "text", correct: correctUI }, index);
+        updateQuestion({ prompt: promptUI, choices: choicesUI, type: "text", correct: correctUI }, answer, index);
     }
 </script>
 
@@ -47,7 +48,7 @@
 
         <div class="choices">
         { #each choicesUI as _, index }
-            <button id="choice">
+            <button class={ answer === index ? "chosen" : "" } id="choice" on:click={ () => { if ($user.role === "student") { answer = index; update() }}}>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <span on:click={ () => { correctUI = index; update() }}>{ numberToAlpha(index) }</span>
@@ -132,6 +133,14 @@
             background-color: transparent;
 
             width: 100%;
+
+            &.chosen {
+                background-color: app.$color-foreground;
+                *, :global(p) {
+                    color: app.$color-background !important;
+                    stroke: app.$color-background !important;
+                }
+            }
 
 
             span {

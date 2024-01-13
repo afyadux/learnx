@@ -3,5 +3,6 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit()], 
-	server: { port: 8080 }
+	server: { port: 8080 },
+	optimizeDeps: { exclude: ["fsevents"] }
 });

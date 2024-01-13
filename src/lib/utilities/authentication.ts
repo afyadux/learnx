@@ -16,10 +16,11 @@ export interface UserProfile {
     lastName: string,
     photoURL: string | null,
     role: "admin" | "teacher" | "student",
-    courses: string[];
+    courses: string[],
+    notifications: { read: false, text: string, title: string }[],
 
     request: Institution | undefined,
-    institution: Institution | undefined;
+    institution: Institution | undefined
 }
 
 const nullUser: UserProfile = {
@@ -30,6 +31,7 @@ const nullUser: UserProfile = {
     photoURL: "",
     role: "student",
     courses: [],
+    notifications: [],
     request: undefined,
     institution: undefined
 }
@@ -57,7 +59,7 @@ export async function updateUser(fresh: User | null) {
     const [first, last] = profile.displayName ? profile.displayName.split("^^") : ["", ""];
 
     const snap = await getDoc(doc(database, "users", profile.email!));
-    const { role, institution, request, courses } = (snap.data() as any);
+    const { role, institution, request, courses, notifications } = (snap.data() as any);
 
     let fetchCampus = undefined;
     let fetchRequest = undefined;
@@ -89,6 +91,7 @@ export async function updateUser(fresh: User | null) {
         lastName: last,
         photoURL: profile.photoURL,
         courses: courses,
+        notifications: notifications,
 
         role: role,
         request: fetchRequest,
