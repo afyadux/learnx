@@ -20,6 +20,11 @@
         email: string, name: string, pfp: string 
     }
 
+    let dashboard : { title: string, count: number }[] = [
+        { title: "Notifications", count: 0 },
+        { title: "Courses", count: 0 },
+    ]
+
     let institutionalName: string = $user.institution?.name ? $user.institution.name : "No Institution Joined";
     let firstNameUI: string = $user ? $user.firstName : "";
     let lastNameUI: string = $user ? $user.lastName : "";
@@ -215,10 +220,10 @@
         </div>
 
         <div class="progress">
-        { #each Array(4) as _ }
+        { #each dashboard as item }
             <div>
-                <h4>Lessons</h4>
-                <h2>12</h2>
+                <h4>{ item.title }</h4>
+                <h2>{ item.count }</h2>
             </div>
         {/each }
         </div>

@@ -32,7 +32,7 @@ export interface lessonData {
     courseID: string;
     title: string;
     subtitle: string;
-    postDate: Timestamp;
+    postDate: Date;
     ideas: LessonIdea[];
     quiz: QuizQuestion[];
     quizPublished: boolean;
@@ -60,10 +60,19 @@ export interface QuizQuestion {
 }
 
 
-export interface Institution {
+export interface MiniInstitution {
     id: string;
     pfp: string;
     name: string;
+}
+
+export interface Institution extends MiniInstitution {
+    
+    admin: string;
+    instructors: number;
+    students: number;
+    tutorials: number; 
+    courses: string[];
 }
 
 export interface InstitutionRequest {

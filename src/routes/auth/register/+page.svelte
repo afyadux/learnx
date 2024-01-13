@@ -77,9 +77,7 @@
                 });
             }  
 
-            const userSnapshot = await createUserWithEmailAndPassword(auth, email, password);
-            const writeAuth = await updateProfile(userSnapshot.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
-            const writeData = setDoc(doc(database, "users", email), {
+            const writeData = await setDoc(doc(database, "users", email), {
                 courses: [], 
                 notifications: [],
                 request: null,
@@ -87,6 +85,9 @@
                 institution: (role === "admin") ? institutionUsername : null
             });
 
+            const userSnapshot = await createUserWithEmailAndPassword(auth, email, password);
+            const writeAuth = await updateProfile(userSnapshot.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
+            
             await Promise.all([writeAuth, writeData]);
             goto("/");
 

@@ -4,7 +4,7 @@
     import Coursecard from "$lib/cards/coursecard.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import type { CourseData } from "$lib/models/app";
-
+    import { user } from "$lib/utilities/authentication.js";
 
     let autoToggle = true;
     let focusIndex = 0;
@@ -18,12 +18,20 @@
 
     <div class="canvas">
         <div class="info" >
-            <h1 id="title">Unlock Your Potential: Master <span>{ courses[focusIndex].tag ? courses[focusIndex].tag : "Learning" }</span>, Shape Your Future!</h1>
+            <h1 id="title">Unlock Your Potential: Master <span>{ courses[focusIndex]?.tag ? courses[focusIndex].tag : "Learning" }</span>, Shape Your Future!</h1>
             <p>Welcome to your journey of discovery and growth! Our courses, designed to be both engaging and enlightening, promises to transform the way you view and interact with the world around you. With a blend of interactive lessons, real-world examples, and innovative tools, we aim to ignite your passion for learning and personal development.</p>
         </div>
 
         <div class="graphic" bind:clientWidth={ containerWidth }>
         <div class="content">
+            { #if courses.length === 0 }
+                <div class="empty">
+                    <div class="thumbnail"><img src="/images/empty/class.png" alt=""></div>
+                    <h3>You are not { $user.role === "student" ? "enrolled in" : "teaching" } any courses</h3>
+                    <p style="text-align: center;">{ $user.institution ? `Check out ${ $user.institution.name }'s tutorials by clicking "courses" above'` : "" }</p>
+                </div>
+            {/if }
+
             { #each courses as item,index }
                 <div class={ `container${ (index < focusIndex) ? " hidden" : "" }` }
                     style={ `--displacement: ${ index < focusIndex ? -(containerWidth) * index : -(containerWidth) * focusIndex  };` }>
@@ -55,7 +63,7 @@
                 </svg>
             </Icon>
 
-            <Icon handleClick={ () => { focusIndex++; if (autoToggle) { autoToggle = false;  }} } disabled={ focusIndex === courses.length -1 }>
+            <Icon handleClick={ () => { focusIndex++; if (autoToggle) { autoToggle = false;  }} } disabled={ focusIndex >= courses.length -1 }>
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M14.43 5.93005L20.5 12.0001L14.43 18.0701" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
                     <path d="M3.5 12H20.33" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -148,6 +156,11 @@
 
                     @media screen and (max-width: 960px) {
                         top: 0vh;
+                    }
+
+                    div.empty {
+                        margin: auto 0px;
+                        gap: 1rem 0px;
                     }
                 }
 

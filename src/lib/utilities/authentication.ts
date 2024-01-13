@@ -61,20 +61,18 @@ export async function updateUser(fresh: User | null) {
     const snap = await getDoc(doc(database, "users", profile.email!));
     const { role, institution, request, courses, notifications } = (snap.data() as any);
 
-    let fetchCampus = undefined;
-    let fetchRequest = undefined;
+    let fetchCampus : any = undefined;
+    let fetchRequest : any = undefined;
 
 
     if (institution != null) {
         const req = await getDoc(doc(database, "institution", institution));
-        const data = req.data() as any;
-        fetchCampus = { id: req.id, name: data.name, pfp: data.pfp }
+        fetchCampus = { id: req.id, ...req.data() }
     }
 
     if (request != null) {
         const req = await getDoc(doc(database, "institution", request));
-        const data = req.data() as any;
-        fetchRequest = { id: req.id, name: data.name, pfp: data.pfp }
+        fetchRequest = { id: req.id, ...req.data() }
     }
 
     if (browser) {

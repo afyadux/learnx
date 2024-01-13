@@ -1,6 +1,7 @@
 <script lang="ts">
     import Lessoncard from "$lib/cards/lessoncard.svelte";
     import type { CourseData, lessonData } from "$lib/models/app";
+    import { user } from "$lib/utilities/authentication.js";
 
     export let data; 
     const { lessons } = data;
@@ -18,8 +19,8 @@
             <div class="empty">
                 <div class="thumbnail"><img src="/images/empty/tutorial.png" alt=""></div>
                 <div class="msg">
-                    <h3>You are not enrolled in any classes that offer lessons</h3>
-                    <p>Check out the available classes from the <a href="/course">courses</a> page & start learning</p>
+                    <h3 style="text-align: center;">{ $user.role === "student" ? "You are not enrolled in any courses that offer tutorial lessons" : "You are not eaching any courses with tutorial lessons" }</h3>
+                    <p>Check out the available classes from the <a href="/course">courses</a> page & start { $user.role === "student" ? "learning" : "teaching" }</p>
                 </div>
             </div>
         {:else}

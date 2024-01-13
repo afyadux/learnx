@@ -8,6 +8,7 @@
     import Textfield from "$lib/interface/Textfield.svelte";
     import type { CourseData } from "$lib/models/app.js";
     import { user } from "$lib/utilities/authentication";
+    import { sendNotification } from "$lib/utilities/notifications.js";
     import { getDoc, doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 
@@ -51,6 +52,8 @@
 
     const createCourse = async () => {
         try {
+
+            sendNotification({ type: "info", message: "Creating new course ..." }, 4000)
 
             const newCourse = {
                 tag: "",
@@ -131,18 +134,15 @@
         <h3>{ $user.role === "student" ? "Courses you are enrolled in" : ($user.role === "teacher" ? "Courses you are teaching" : "Your Courses") }</h3>
         { #if personalCourses.length === 0 }
         <div class="empty">
-            <div class="thumbnail"><img src="/images/empty/class.png" alt=""></div>
+            <div class="thumbnail"><img src="/images/empty/teach.png" alt=""></div>
 
             
-            {#if $user.role === "admin" }
-            <h4>Your institution does not offer any courses</h4>
-            <p>Create a new course to teach above for students to enroll in</p>
-            {:else if $user.role === "teacher" }
-            <h4>You are not teaching any courses</h4>
-            <p>Create a new course to teach above for students to enroll in</p>
+            {#if $user.role === "student" }
+                <h4>You are not enrolled in any courses</h4>
+                <p>Check out the available course listings below</p>
             {:else}
-            <h4>You are not enrolled in any courses</h4>
-            <p>Check out the available course listings below</p>
+                <h4>You are not teaching any courses</h4>
+                <p>Create a new course to teach above for students to enroll in</p>
             {/if}
         </div>
         { :else }
@@ -159,11 +159,33 @@
     <section id="institution">
         <h3>{ $user.role === "student" ? "Available courses to enroll in" : ($user.role === "teacher" ? "Other institutional courses" : `${ $user.institution?.name }'s Courses`) }</h3>
     
-        <div class="grid">
-            { #each institutionalCourses as course }
-            <Coursecard course={ course } />
-            {/each }
+        { #if institutionalCourses.length === 0 }
+        <div class="empty">
+            <div class="thumbnail"><img src="/images/empty/chill.png" alt=""></div>
+
+            {#if $user.role === "student" }
+                <h4>{ $user.institution ? `${ $user.institution.name } does not offer any courses with tutorials currently` : "Join an institution to enroll in their courses" }</h4>
+
+                { #if $user.institution }
+                    <p>Wait for a teacher on your institution to create courses for you to join</p>
+                { :else }
+                    <p>Look for institutions to join <a href="/institution">here</a></p>
+                {/if }
+            {:else}
+                <h4>Your institution does not offer any courses</h4>
+                <p>Create a new course to teach above for students to enroll in</p>
+            {/if}
+
         </div>
+        { :else }
+            <div class="grid">
+                { #each institutionalCourses as course }
+                { #if course}
+                    <Coursecard course={ course } /> 
+                {/if }
+                {/each }
+            </div>
+        {/if }
         
     </section>
 

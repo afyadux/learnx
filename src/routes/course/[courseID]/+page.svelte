@@ -95,7 +95,8 @@
             subtitle: "",
             ideas: [],
             quiz: [],
-            postDate: Timestamp.fromDate(new Date()),
+            quizPublished: false, 
+            postDate: new Date(),
             instructor: {
                 name: `${ $user.firstName } ${ $user.lastName }`,
                 email: $user.email,
@@ -264,7 +265,7 @@
 
         <div class="grid">
             {#each lessonsUI as item, index }
-                <Lessoncard disabled={ !enrolled } lesson={ item } index={ index }/>
+                <Lessoncard disabled={ !enrolled && $user.role === 'student' } lesson={ item } index={ index }/>
             {/each }
 
             <button  on:click={ addLesson } class="add lesson">
@@ -344,15 +345,6 @@
             }
         }
 
-        div.chip {
-            fill: transparent;
-            stroke: app.$color-foreground;
-
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 0.5rem;
-        }
 
         > * {
             width: 100%;

@@ -5,6 +5,10 @@
     import { goto } from "$app/navigation";
     import { signInWithEmailAndPassword } from "firebase/auth";
     import { auth } from "$lib/firebase/app";
+    import { sendNotification } from "$lib/utilities/notifications";
+
+
+
 
 
     let email: string = "";
@@ -19,8 +23,26 @@
         (password !== "") && (passwordError === "");
 
     const submitLoginForm = async () => {
-        await signInWithEmailAndPassword(auth, email, password);
-        goto("/profile");
+        
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            goto("/profile");   
+
+        } catch (error: any) {
+
+            const { code } = error as { code: string };
+
+            switch (code) {
+                case "auth/invalid-credential":
+                    sendNotification({ type: "error", message: "No account with that email & password exist" })
+                    break;  
+            
+                default:
+                    break;
+            }
+
+            console.error({ ...error })
+        }
     }
 </script>
 

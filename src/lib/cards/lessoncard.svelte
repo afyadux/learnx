@@ -3,13 +3,19 @@
 <script lang="ts">
     import Editable from "$lib/interface/Editable.svelte";
     import type { lessonData } from "$lib/models/app";
+    import { DateTime } from "luxon";
+
 
     export let disabled = false;
-
     export let index: number = 1;
     export let lesson: lessonData;
     export let consumer: boolean = true;
-    const { title, id } = lesson;
+    const { title, id, quiz, postDate } = lesson;
+
+
+    
+    const dt = DateTime.fromJSDate(postDate).toRelative();
+
 
 </script>
 
@@ -30,8 +36,8 @@
 
     <div class="trail">
         <Editable type="h4" value={title} editable={false} placeholder="Lesson Title ..." />
-        <p>2 min read</p>
-        <p>5 Questions</p>
+        <p style="line">{ dt }</p>
+        <p>{ quiz.length } Questions</p>
     </div>
 </a>
 

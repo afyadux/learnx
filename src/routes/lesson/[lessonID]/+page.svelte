@@ -14,10 +14,14 @@
     import { user } from "$lib/utilities/authentication";
     import { text } from "@sveltejs/kit";
     import { sendNotification } from "$lib/utilities/notifications";
+    import { DateTime } from "luxon";
 
     export let data: lessonData;
     const { title, postDate, quiz, courseID, id, ideas, instructor, quizPublished } = data;
     const { lessonID } = $page.params;
+
+
+    const dt = DateTime.fromJSDate((postDate as any).toDate()).toLocaleString(DateTime.DATE_HUGE);
 
     let ideasUI: LessonIdea[] = ideas;
     let titleUI: string = title;
@@ -196,7 +200,7 @@
                         </svg>                    
                     </Icon>
         
-                    <p>Posted { postDate.toDate().toLocaleString() }</p>
+                    <p>Posted { dt }</p>
                 </div>
             </div>
         </section>
