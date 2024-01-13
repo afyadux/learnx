@@ -1,7 +1,7 @@
 <script lang="ts">
     import Lessoncard from "$lib/cards/lessoncard.svelte";
     import type { CourseData, lessonData } from "$lib/models/app";
-    import { user } from "$lib/utilities/authentication.js";
+    import { user } from "$lib/functions/authentication.js";
 
     export let data; 
     const { lessons } = data;

@@ -4,7 +4,7 @@ import { auth, database } from "$lib/firebase/app";
 import type { Institution } from "$lib/models/app";
 import { browser } from "$app/environment";
 import type { User } from "firebase/auth";
-import { wipeCookies } from "./cookies";
+import { wipeCookies } from "../utilities/cookies";
 
 
 
@@ -17,7 +17,7 @@ export interface UserProfile {
     photoURL: string | null,
     role: "admin" | "teacher" | "student",
     courses: string[],
-    notifications: { read: false, text: string, title: string }[],
+    notifications: { read: false, message: string, title: string }[],
 
     request: Institution | undefined,
     institution: Institution | undefined

@@ -7,7 +7,7 @@
     import { database } from "$lib/firebase/app";
     import Textfield from "$lib/interface/Textfield.svelte";
     import type { CourseData } from "$lib/models/app.js";
-    import { user } from "$lib/utilities/authentication";
+    import { user } from "$lib/functions/authentication.js";
     import { sendNotification } from "$lib/utilities/notifications.js";
     import { getDoc, doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 

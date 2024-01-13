@@ -12,7 +12,7 @@
     import { onAuthStateChanged, signInWithEmailAndPassword, type User } from "firebase/auth";
     import { auth, database } from "$lib/firebase/app";
     import { doc, getDoc } from "firebase/firestore";
-    import { updateUser, user } from "$lib/utilities/authentication";
+    import { updateUser, user } from "$lib/functions/authentication";
 
     $: color = () => { 
 
@@ -68,6 +68,7 @@
         <a class={ $page.route.id === "/course" ? "highlight" : "" } href="/course">Courses</a>
         <a class={ $page.route.id === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
         <a class={ $page.route.id === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
+        <a class={ $page.route.id === "/notifications" ? "highlight" : "" } href="/notifications">Notifications</a>
     </div>
 
     <span>
@@ -129,6 +130,7 @@
         <a class={ $page.route.id === "/course" ? "highlight" : "" } href="/course">Courses</a>
         <a class={ $page.route.id === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
         <a class={ $page.route.id === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
+        <a class={ $page.route.id === "/Notifications" ? "highlight" : "" } href="/notifications">Notifications</a>
 
         <div class="cite">
             <p>Copy &copy; 2023</p>

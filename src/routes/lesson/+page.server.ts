@@ -2,6 +2,7 @@ import { Timestamp, collection, doc, documentId, getDoc, getDocs, query, where }
 import type { PageServerLoad } from "./$types";
 import { database } from "$lib/firebase/app";
 import type { CourseData, lessonData } from "$lib/models/app";
+import { getCookies } from "$lib/utilities/cookies";
 
 
 
@@ -10,16 +11,8 @@ export const load: PageServerLoad = async ({ request }) => {
     try {
 
         let lessons: lessonData[] = [];
-
-        const cookieHeader = request.headers.get('cookie');
-        const cookies: any = {};
-        if (cookieHeader) {
-            cookieHeader.split(';').forEach(cookie => {
-            const [name, value] = cookie.split('=').map(c => c.trim());
-            cookies[name] = value;
-            });
-        }
-
+        
+        const cookies = getCookies(request);
         if (!cookies.institution) { return { lessons: [] }}
 
         const { institution, role, user } : { institution: string; role: string; user: string;  } = cookies;

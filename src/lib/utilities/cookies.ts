@@ -17,5 +17,19 @@ export const wipeCookies = () => {
 }
 
 
+export const getCookies = (request: Request) => {
+    const cookieHeader = request.headers.get('cookie');
+    const cookies: any = {};
+    if (cookieHeader) {
+        cookieHeader.split(';').forEach(cookie => {
+        const [name, value] = cookie.split('=').map(c => c.trim());
+        cookies[name] = value;
+        });
+    }
+
+    return cookies;
+}
+
+
 
 

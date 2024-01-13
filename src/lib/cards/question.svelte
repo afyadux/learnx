@@ -3,7 +3,7 @@
 <script lang="ts">
     import Editable from "$lib/interface/Editable.svelte";
     import type { QuizQuestion, StudentTest } from "$lib/models/app";
-    import { user } from "$lib/utilities/authentication";
+    import { user } from "$lib/functions/authentication";
 
     export let test: StudentTest | undefined = undefined;
     export let question: QuizQuestion;

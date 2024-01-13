@@ -11,7 +11,7 @@
     import type { PageData } from "../$types";
     import { page } from "$app/stores";
     import Idea from "$lib/cards/idea.svelte";
-    import { user } from "$lib/utilities/authentication";
+    import { user } from "$lib/functions/authentication";
     import { text } from "@sveltejs/kit";
     import { sendNotification } from "$lib/utilities/notifications";
     import { DateTime } from "luxon";
@@ -218,7 +218,6 @@
             <Idea updateIdea={ ideaUpdate } data={ idea } index={ index } />
         {/each }
 
-        
 
         { #if $user.role !== "student" }
         <button on:click={ addIDea } class="add lesson">
@@ -230,8 +229,6 @@
             <h5>Add new point</h5>
         </button>
         {/if }
-
-
         </section>
 
 

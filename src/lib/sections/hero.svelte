@@ -4,7 +4,7 @@
     import Coursecard from "$lib/cards/coursecard.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import type { CourseData } from "$lib/models/app";
-    import { user } from "$lib/utilities/authentication.js";
+    import { user } from "$lib/functions/authentication.js";
 
     let autoToggle = true;
     let focusIndex = 0;

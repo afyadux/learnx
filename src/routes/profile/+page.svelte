@@ -6,7 +6,7 @@
     import Icon from "$lib/interface/Icon.svelte";
     import AuthSection from "$lib/sections/authSection.svelte";
     import Editable from "$lib/interface/Editable.svelte";
-    import { updateUser, updateUserEmail, user, type UserProfile } from "$lib/utilities/authentication";
+    import { updateUser, updateUserEmail, user, type UserProfile } from "$lib/functions/authentication";
     import Usercard from "$lib/cards/usercard.svelte";
     import Layout from "../auth/+layout.svelte";
     import { arrayRemove, deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";

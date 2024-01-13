@@ -3,7 +3,7 @@
     import { database } from "$lib/firebase/app";
     import Icon from "$lib/interface/Icon.svelte";
     import type { Institution, InstitutionRequest, MiniInstitution } from "$lib/models/app";
-    import { user } from "$lib/utilities/authentication";
+    import { user } from "$lib/functions/authentication";
     import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
     import { onMount } from "svelte";
 

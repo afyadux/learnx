@@ -4,7 +4,7 @@
     import Lessoncard from "$lib/cards/lessoncard.svelte";
     import type { CourseData, lessonData } from "$lib/models/app";
     import Hero from "$lib/sections/hero.svelte";
-    import { user } from "$lib/utilities/authentication";
+    import { user } from "$lib/functions/authentication";
 
     export let data : { courses: CourseData[], lessons: lessonData[], institutional: CourseData[] }; 
     const { courses, lessons, institutional } = data;

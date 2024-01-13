@@ -4,7 +4,8 @@
 <script lang="ts">
     import Editable from "$lib/interface/Editable.svelte";
     import type { LessonIdea } from "$lib/models/app";
-    import { user } from "$lib/utilities/authentication";
+    import { user } from "$lib/functions/authentication";
+    import { toRomanNumerals } from "$lib/utilities/math";
 
     export let data: LessonIdea;
     export let index: number;
@@ -19,7 +20,7 @@
     }
 </script>
 
-<div class="idea" id={ index.toString() }>
+<div class="idea" style={ `--index: "${ toRomanNumerals(index + 1) }"` } id={ index.toString() }>
 {#if type === "text" }
     <Editable
         editable={ $user.role !== "student" }
@@ -45,8 +46,20 @@
     }
 
     div.idea {
+        position: relative;
         max-width: 800px;
         width: 100%;
+
+        &::before {
+            position: absolute;
+            top: 0.2rem;
+            left: -3rem;
+            content: var(--index);
+            height: 1.5em;
+            opacity: 50%;
+            text-align: end;
+            width: 2rem;
+        }
     }
 
     div.idea video {

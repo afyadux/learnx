@@ -7,16 +7,13 @@
     import Editable from "$lib/interface/Editable.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import type { CourseData, lessonData } from "$lib/models/app";
-    import { user } from "$lib/utilities/authentication";
+    import { user } from "$lib/functions/authentication";
     import { sendNotification } from "$lib/utilities/notifications";
     import { Timestamp, addDoc, arrayRemove, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 
     export let data: CourseData;
     const { courseID, tag, title, objective, lessons, instructor, students } = data;
     const courseReference = doc(database, "course", courseID);
-
-
-    console.log(data);
 
     let lessonsUI : lessonData[] = lessons;
     let studentsUI = students; 
