@@ -20,7 +20,7 @@
 </script>
 
 
-<a href="/lesson/{ id }" class={ disabled ? "disabled lesson" : "lesson" }>
+<a href="/lesson/{ id }" class={ disabled ? "disabled lesson drop-shadow" : "lesson drop-shadow" }>
 
     <div class="lead">
         
@@ -55,7 +55,6 @@
         border: 1px solid orange;
         border-radius: 0.8rem;
 
-        background-color: app.$color-background;
         border: 1px solid app.$color-shade;
 
         transition-property: all;
@@ -67,10 +66,7 @@
             cursor: pointer;
         }
 
-        &:hover {
-            border: 1px dashed transparent;
-            box-shadow: 0 0 1.5rem #282a3614;
-        }
+        
 
         div.lead {
             display: grid;

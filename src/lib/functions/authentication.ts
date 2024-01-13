@@ -56,7 +56,7 @@ export async function updateUser(fresh: User | null) {
 
 
     const profile = fresh!;
-    const [first, last] = profile.displayName ? profile.displayName.split("^^") : ["", ""];
+    const [first, last] = profile.displayName ? profile.displayName.split(" ") : ["", ""];
 
     const snap = await getDoc(doc(database, "users", profile.email!));
     const { role, institution, request, courses, notifications } = (snap.data() as any);

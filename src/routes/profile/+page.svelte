@@ -157,7 +157,7 @@
         if (!auth.currentUser) { return; }
 
         try {
-            const freshName = `${ (firstNameUI && firstNameUI !== "") ? firstNameUI : "" }^^${ (lastNameUI && lastNameUI !== "") ? lastNameUI : "" }`;
+            const freshName = `${ (firstNameUI && firstNameUI !== "") ? firstNameUI : "" } ${ (lastNameUI && lastNameUI !== "") ? lastNameUI : "" }`;
             await updateProfile(auth.currentUser, { displayName:  freshName });
             sendNotification({ type: "success", message: "Successfully updated name" });
 
@@ -176,7 +176,7 @@
         <div class="profile">
 
             <div class="icons">
-                <div class=""><img src={  $user?.photoURL ? $user.photoURL : "/icons/edit-pfp.png"  } alt=""></div>
+                <div class="pfp"><img src={  $user?.photoURL ? $user.photoURL : "/icons/edit-pfp.png"  } alt=""></div>
 
                 <div>
                 <Icon>
@@ -453,6 +453,9 @@
             div.icons > div:nth-child(3) { 
                 border-radius: 5rem;
                 border: 1px solid app.$color-shade;
+                overflow: hidden;
+
+                img { width: 100%; height: 100%; }
             }
 
             div.icons > div:nth-child(2) {

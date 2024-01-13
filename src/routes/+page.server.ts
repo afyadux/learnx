@@ -10,6 +10,7 @@ export const load: PageServerLoad = async ({ request }) => {
 
         let courses : CourseData[] = [];
         let lessons : lessonData[] = [];
+        let institutional: CourseData[] = [];
 
         const cookieHeader = request.headers.get('cookie');
         const cookies: any = {};
@@ -24,7 +25,8 @@ export const load: PageServerLoad = async ({ request }) => {
         if (!institution || institution == "" || !user || user == "") {
             return {
                 courses: courses,
-                lessons: lessons
+                lessons: lessons,
+                institutional: institutional
             }
         }
 
@@ -57,12 +59,12 @@ export const load: PageServerLoad = async ({ request }) => {
 
     
         const institutionalCoursesList = query(collection(database, "course"), where('campus', "==", institution), limit(20));
-        const institutionalCourses : CourseData[] = (await getDocs(institutionalCoursesList)).docs.map((doc) => {  return { courseID: doc.id, ...doc.data() }  }) as any; 
+        institutional = (await getDocs(institutionalCoursesList)).docs.map((doc) => {  return { courseID: doc.id, ...doc.data() }  }) as any; 
 
         return {
             courses: courses,
             lessons: lessons,
-            institutional: institutionalCourses.filter((i) => (i !== null && i !== undefined))
+            institutional: institutional.filter((i) => (i !== null && i !== undefined))
         }
 
     } catch (error) { console.log(error); return {  } }

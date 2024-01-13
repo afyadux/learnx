@@ -7,9 +7,10 @@
     import SocialAuth from "$lib/interface/SocialAuth.svelte";
     import Tabbar from "$lib/interface/Tabbar.svelte";
     import Textfield from "$lib/interface/Textfield.svelte";
-    import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+    import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
     import { doc, getDoc, setDoc } from "firebase/firestore"; 
-    import { onMount, type ComponentProps, SvelteComponent } from "svelte";
+    import { GoogleAuthProvider } from "firebase/auth";
+    import { sendNotification } from "$lib/utilities/notifications";
 
     let role: string = "";
     let roleError = "";
@@ -30,18 +31,22 @@
     let showPassword = false;
     let passwordError : string = "";
 
-
-    $: formValid = 
+    $: socialFormValid = 
         (role === "admin" ?
             (
                 (institutionName !== "") && (institutionNameError === "") &&
                 (institutionUsername !== "") && (institutionUsernameError === "")
             ) : true) &&
+            (role !== "") && (roleError === "");
 
+
+    $: formValid = 
+        (socialFormValid) &&
         (name !== "") && (nameError === "") &&
         (email !== "") && (emailError === "") &&
-        (password !== "") && (passwordError === "") &&
-        (role !== "") && (roleError === "");
+        (password !== "") && (passwordError === "")
+        ;
+
 
     const onRoleChange = () => {
         if (roleError.length > 0) { roleError = ""; }
@@ -61,40 +66,66 @@
         institutionUsernameError = "A school with that username is already registered";
     }
 
-    const submitForm = async () => {
-        try {
-
-            const [firstName, surname] = name.split(" ");
-
-            if (role === "admin") {
-                await setDoc(doc(database, "institution", institutionUsername.toLocaleLowerCase()), {
-                    name: institutionName,
-                    admin: email,
-                    pfp: null,
+    const seedAuthenticationDatabase = async (auth: { email: string }, school?: { username: string, name: string }) => {
+        if (school) {
+                await setDoc(doc(database, "institution", school.username.toLocaleLowerCase()), {
+                    name: school.name,
+                    admin: auth.email,
                     courses: [],
                     popularCourses: [],
                     joinRequests: []
                 });
             }  
 
-            const writeData = await setDoc(doc(database, "users", email), {
+            await setDoc(doc(database, "users", auth.email), {
                 courses: [], 
                 notifications: [],
                 request: null,
                 role: role,
-                institution: (role === "admin") ? institutionUsername : null
+                institution: (school) ? school.username : null
             });
+    }
 
+    const submitForm = async () => {
+        try {
+
+            const [firstName, surname] = name.split(" ");
+
+            await seedAuthenticationDatabase({ email: email }, (role === "admin") ? { username: institutionUsername, name: institutionName } : undefined);
             const userSnapshot = await createUserWithEmailAndPassword(auth, email, password);
-            const writeAuth = await updateProfile(userSnapshot.user, { displayName: `${ firstName }^^${ surname ? surname : "" }` });
+            await updateProfile(userSnapshot.user, { displayName: `${ firstName } ${ surname ? surname : "" }` });
             
-            await Promise.all([writeAuth, writeData]);
             goto("/");
 
         } catch (error) {
             console.error(error);
         }
     }
+
+    const socialRegister = async (type: "google") => {
+
+        const google = new GoogleAuthProvider();
+
+        try {
+            const googleUserCredential = await signInWithPopup(auth, google);
+            const { user } = googleUserCredential;
+            if (!user) {
+                throw new Error("Problem setting hooking up to the Google Flow");
+            }
+
+            await seedAuthenticationDatabase({ email: user.email! }, (role === "admin") ? { username: institutionUsername, name: institutionName } : undefined);
+            goto("/");
+
+        } catch (error: any) {
+
+            if (error.code == "auth/popup-closed-by-user") {
+                sendNotification({ type: "warning", message: "Sign in with google by choosing an account" })
+            }
+
+            console.error({ ...error })
+        }
+    }
+
 
     setTimeout(() => {
         if (role) { return } 
@@ -208,8 +239,8 @@
 
     </div>
 
-    <SocialAuth socialIcon={ "/icons/google.webp" } text={ "Continue with Google" } />
-    <SocialAuth socialIcon={ "/icons/apple.svg" } text={ "Continue with Apple" } />
+    <SocialAuth disabled={ !socialFormValid } socialIcon="/icons/google.webp" text="Continue with Google" onClickAction={ () => socialRegister("google") } />
+    <!-- <SocialAuth socialIcon={ "/icons/apple.svg" } text={ "Continue with Apple" } /> -->
 
     <p style="font-size: 14px; margin-top:1rem">Already have an Account?<a href="/auth/login" style="cursor: pointer;"> <label for="" style="color: rgb(26,115,232); margin-left: 5px">Sign in</label></a>  </p>
 </form>

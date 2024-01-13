@@ -3,7 +3,7 @@
     import Textfield from "$lib/interface/Textfield.svelte";
     import Icon from "$lib/interface/Icon.svelte";
     import { goto } from "$app/navigation";
-    import { signInWithEmailAndPassword } from "firebase/auth";
+    import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
     import { auth } from "$lib/firebase/app";
     import { sendNotification } from "$lib/utilities/notifications";
 
@@ -39,6 +39,29 @@
             
                 default:
                     break;
+            }
+
+            console.error({ ...error })
+        }
+    }
+
+    const socialSignIn = async (type: "google") => {
+        const google = new GoogleAuthProvider();
+
+        try {
+            const googleUserCredential = await signInWithPopup(auth, google);
+            const { user } = googleUserCredential;
+            if (!user) {
+                throw new Error("Problem setting hooking up to the Google Flow");
+            }
+
+
+            goto("/");
+
+        } catch (error: any) {
+
+            if (error.code == "auth/popup-closed-by-user") {
+                sendNotification({ type: "warning", message: "Sign in with google by choosing an account" })
             }
 
             console.error({ ...error })
@@ -99,8 +122,7 @@
         <span class="border"></span>
     </div>
 
-    <SocialAuth socialIcon={ "/icons/google.webp" } text={ "Continue with Google" } />
-    <SocialAuth socialIcon={ "/icons/apple.svg" } text={ "Continue with Apple" } />
+    <SocialAuth socialIcon="/icons/google.webp" text="Continue with Google" onClickAction={ () => socialSignIn("google") } />
 
     <p style="font-size: 14px; margin-top:1rem">Don't have an account? <a style="color: rgb(26,115,232); cursor: pointer;" href="/auth/register">Sign up</a></p>
 

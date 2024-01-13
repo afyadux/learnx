@@ -187,6 +187,19 @@ div.empty > div.thumbnail {
     
 }
 
+*.drop-shadow {
+    background-color: app.$color-background;
+
+    transition-property: all;
+    transition-duration: 150ms;
+    transition-timing-function: ease-in;
+
+    &:hover {
+        border: 1px dashed transparent;
+        box-shadow: 0 0 1.5rem #282a3614;
+    }
+}
+
 
 div.chip {
     fill: transparent;

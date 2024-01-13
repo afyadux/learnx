@@ -245,6 +245,7 @@
             border: 1px solid app.$color-shade;
             border-radius: 2rem;
             transition: box-shadow 240ms ease-in-out;
+            overflow: hidden;
 
 
             &:hover {

@@ -2,6 +2,9 @@
 
 <style lang="scss">
 
+    @use "$lib/interface/variables" as app;
+
+
     .social {
         width: 100%;
         margin-top: 15px;
@@ -17,11 +20,16 @@
         border-radius: .5rem;
 
 
-    }
+        &:disabled {
+            background-color: app.$color-shade;
+        }
 
-    .social:hover {
-        background-color: lightgray;
-        transition: 140ms all ease-in-out;
+        &:hover {
+            background-color: app.$color-foreground;
+            color: app.$color-background;
+
+        }
+
     }
 
     .social img {
@@ -33,10 +41,12 @@
 <script lang="ts">
     export let socialIcon: string;
     export let text: string;
+    export let disabled = false;
+    export let onClickAction: () => void;
 </script>
 
 
-<button class="social">
+<button on:click={ onClickAction } disabled={ disabled } class="social drop-shadow">
     <img src={ socialIcon } alt="">
     {  text }
 </button>
