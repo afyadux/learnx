@@ -208,7 +208,7 @@
             position: absolute;
             left: 50%;
 
-            @media screen and (min-width: 640px) {
+            @media screen and (min-width: 940px) {
                 display: flex;
             }
 
@@ -234,7 +234,7 @@
             justify-content: flex-end;
             gap: 0.8rem; 
 
-            @media screen and (min-width: 640px) {
+            @media screen and (min-width: 940px) {
                 > :global(button#dropdown) { display: none }
             }
         };
@@ -327,7 +327,7 @@
 
     section#popup-nav {
 
-        @media screen and (max-width: 640px) {
+        @media screen and (max-width: 940px) {
             &.show {
                 opacity: 100%;
 
