@@ -9,7 +9,7 @@
     export let user : undefined | {
         email: string;
         name: string;
-        pfp: string;
+        pfp: string | null;
     } = undefined;
 
     export let onApprove: () => void = () => {};
@@ -59,11 +59,14 @@
     div.image {
         border-radius: 4rem;
         border: 1px solid app.$color-shade;
+        overflow: hidden;
     }
 
     div.name {
         padding-right: 2rem;
     }
+
+    div.name p { opacity: 70%; }
 
     div.approvals {
         position: absolute;

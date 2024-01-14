@@ -12,18 +12,19 @@
     import { Timestamp, addDoc, arrayRemove, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 
     export let data: CourseData;
-    const { courseID, tag, title, objective, lessons, instructor, students } = data;
+    const { courseID, tag, title, objective, lessons, instructor, students, cover } = data;
     const courseReference = doc(database, "course", courseID);
 
     let lessonsUI : lessonData[] = lessons;
     let studentsUI = students; 
 
+
     let tagUI: string = tag;
     let titleUI: string = title;
     let objectiveUI: string = objective;
-    // let cover: string = "/images/thunderhead.jpeg";
-    let coverUI = ""; 
-    $: enrolled = (studentsUI.findIndex((i) => i === $user.email) != -1);
+    let coverUI = cover; 
+    $: enrolled = (studentsUI.findIndex((i) => i.email === $user.email) != -1);
+
 
     async function onTitleEdit() {
         await updateDoc(courseReference, { title: titleUI });
@@ -37,45 +38,31 @@
         await updateDoc(courseReference, { objective: objectiveUI });
     }
 
-    async function enrollInCourse() {
-
-        const userID = $user.email; 
-
-        try {
-            const register = updateDoc(doc(database, "course", courseID), {
-                students: arrayUnion(userID)
-            });
-
-            const schedule = updateDoc(doc(database, "users", userID), {
-                courses: arrayUnion(courseID)
-            });
-
-            await Promise.all([register, schedule]);
-
-            studentsUI = [...studentsUI, userID];
-            sendNotification({ type: "success", message: ("Successfully enrolled in " + title) })
-
-        } catch (error) {
-            console.error(error);
-        }
-        
-    }
 
     async function manageRegistration(action: "enroll" | "dropout") {
         const userID = $user.email; 
 
+        const studentProfile = { name: `${ $user.firstName } ${ $user.lastName }`, email: userID, pfp: $user.photoURL };
+
         try {
             const register = updateDoc(doc(database, "course", courseID), {
-                students: (action === "enroll") ? arrayUnion(userID) : arrayRemove(userID)
+                students: (action === "enroll") ? arrayUnion(studentProfile) : arrayRemove(studentProfile)
             });
 
             const schedule = updateDoc(doc(database, "users", userID), {
                 courses: (action === "enroll") ? arrayUnion(courseID) : arrayRemove(courseID)
             });
 
-            await Promise.all([register, schedule]);
+            // lessonsUI.map((ls) => setDoc(doc(database, "lesson", ls.id, "submissions", $user.email));
 
-            studentsUI = (action === "enroll") ? [...studentsUI, userID] : [...studentsUI].filter((i) => i !== userID);
+            const updates = lessonsUI.map((ls) => setDoc(doc(database, "lesson", ls.id, "submissions", userID), {
+                answers: [], 
+                submitted: false
+            }));
+
+            await Promise.all([register, schedule, ...updates]);
+
+            studentsUI = (action === "enroll") ? [...studentsUI, studentProfile] : [...studentsUI].filter((i) => i.email !== userID);
             sendNotification({ type: "success", message: `Successfully ${ (action === "enroll") ? "enrolled in course" : "dropped out of course"  }` }, 3000)
 
         } catch (error) {
@@ -88,6 +75,7 @@
 
         const newLesson = {
             courseID: courseID,
+            cover: coverUI,
             title: "",
             subtitle: "",
             ideas: [],
@@ -243,12 +231,12 @@
         <h3>Students</h3>
 
         <div class="grid">
-            { #each studentsUI as _ }
-                <Usercard />
+            { #each studentsUI as student }
+                <Usercard user={ student } />
             {/each }
         </div>
 
-        { #if [].length === 0 }
+        { #if studentsUI.length === 0 }
             <div class="empty">
                 <img src="/images/community.png" alt="">
                 <h4>No students enrolled</h4>
@@ -275,6 +263,10 @@
                 <h5>Add Lesson</h5>
             </button>
         </div>
+
+        { #if !enrolled && $user.role === "student" }
+            <p style="color: #DF3F5A; opacity: 80%; margin: 1rem auto 0px auto;">You must be enrolled in this course to view its lessons</p>
+        { /if }
     </article>
 
 </main>
@@ -514,7 +506,7 @@
         article#students {
             div.grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
                 margin-top: 1rem;
                 gap: 1rem 1rem;
             }

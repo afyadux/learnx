@@ -237,9 +237,9 @@
             <div class="empty">
                 <div class="thumbnail"><img src="/images/empty/community.png" alt=""></div>
 
-            <div style="display: flex; flex-direction: column; align-items: center">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem">
                 <h3>You are all caught up</h3>
-                <p>You have no new members requesting to join your institution</p>
+                <p style="text-align: center">You have no new members requesting to join your institution</p>
             </div>
             </div>
         { :else }
@@ -437,7 +437,7 @@
 
         @media screen and (max-width: 960px) {
             grid-template-columns: 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-rows: 1fr max-content;
         }
 
         div.profile {

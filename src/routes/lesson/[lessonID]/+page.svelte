@@ -15,32 +15,47 @@
     import { text } from "@sveltejs/kit";
     import { sendNotification } from "$lib/utilities/notifications";
     import { DateTime } from "luxon";
+    import { onMount } from "svelte";
 
-    export let data: lessonData;
-    const { title, postDate, quiz, courseID, id, ideas, instructor, quizPublished } = data;
+    interface LessonPageData extends lessonData {
+        test: StudentTest
+    }
+
+    export let data: LessonPageData;
+    const { title, postDate, quiz, courseID, id, ideas, instructor, quizPublished, cover, test } = data;
     const { lessonID } = $page.params;
+    console.log(data);
 
-
-    const dt = DateTime.fromJSDate((postDate as any).toDate()).toLocaleString(DateTime.DATE_HUGE);
+    const dt = DateTime.fromJSDate(postDate).toLocaleString(DateTime.DATE_HUGE);
 
     let ideasUI: LessonIdea[] = ideas;
     let titleUI: string = title;
-    let quizUI: QuizQuestion[] = (!quizPublished && $user.role === "student") ? [] : quiz;
-    let test: StudentTest = { submitted: false, answers: [] }
+    let quizUI: QuizQuestion[] = (quizPublished === false && $user.role === "student") ? [] : quiz;
+    let testUI: StudentTest = test;
     let quizPublishedUI : boolean = quizPublished;
 
     let stageView: string = "lesson";
 
     $: turnable = 
-        (test !== undefined) &&
-        (test.submitted == false) &&
-        (test.answers.includes(-1) == false);
+        (testUI !== undefined) &&
+        (testUI.answers.length > 0) &&
+        (testUI.submitted == false) &&
+        (testUI.answers.includes(-1) == false);
         
 
 
     $: hasEmpty = 
         [...quizUI.map((q) => q.prompt), ...quizUI.flatMap((q) => q.choices)]
         .includes("");
+
+    $: grade = 
+        (testUI.answers.length > 0) ?
+        ((testUI.answers.map((answer, index) => (answer === quizUI[index].correct) ? 1 : 0) as number[])
+        .reduce((acc, current) => acc + current) / testUI.answers.length)
+        : 0;
+    
+
+
 
 
     const getAnswers = async () => {
@@ -55,8 +70,15 @@
             answers: answerValues
         }
         
-        test = assessment
+        testUI = assessment
     }
+
+    onMount(() => {
+
+        if ($user.role === "student") {
+        getAnswers();
+        }
+    })
 
     async function addQuestion() {
         const updatedQuiz: QuizQuestion[] = [...quizUI, {
@@ -77,13 +99,13 @@
     async function questionUpdate(value: QuizQuestion, userAnswer: number, index: number) {
 
         if ($user.role === "student") {
-            const updatedAnswers = [...test.answers.slice(0, index), userAnswer , ...test.answers.slice(index + 1)];
+            const updatedAnswers = [...testUI.answers.slice(0, index), userAnswer , ...testUI.answers.slice(index + 1)];
             await updateDoc(doc(database, "lesson", lessonID, "submissions", $user.email), {
                 answers: updatedAnswers
             });
 
-            test = {
-                ...test,
+            testUI = {
+                ...testUI,
                 answers: updatedAnswers
             }
         }
@@ -135,8 +157,8 @@
             await Promise.all([submit, notifyTeacher]);
             sendNotification({ type: "success", message: "Successfully turned in assignment" }, 4000);
 
-            test = {
-                ...test,
+            testUI = {
+                ...testUI,
                 submitted: true
             }
 
@@ -167,11 +189,11 @@
 <main>
 
     <article id="hero">
-        <img class="background" src="/images/thunderhead.jpeg" alt="">
+        <img class="background" src={ cover === "" ? "/images/empty/book.png" : cover } alt="">
 
         <section class="info">
             <div class="cover fill">
-                <img src="/images/thunderhead.jpeg" alt="">
+                <img src={ cover === "" ? "/images/empty/book.png" : cover } alt="">
             </div>
 
             <Editable
@@ -183,6 +205,18 @@
             />
 
             <div class="detail">
+
+                <div class="chip">
+                    <Icon frame={[1.5,1.5]}>
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10.7499 2.44995C11.4499 1.85995 12.5799 1.85995 13.2599 2.44995L14.8399 3.79995C15.1399 4.04995 15.7099 4.25995 16.1099 4.25995H17.8099C18.8699 4.25995 19.7399 5.12995 19.7399 6.18995V7.88995C19.7399 8.28995 19.9499 8.84995 20.1999 9.14995L21.5499 10.7299C22.1399 11.4299 22.1399 12.5599 21.5499 13.2399L20.1999 14.8199C19.9499 15.1199 19.7399 15.6799 19.7399 16.0799V17.7799C19.7399 18.8399 18.8699 19.7099 17.8099 19.7099H16.1099C15.7099 19.7099 15.1499 19.9199 14.8499 20.1699L13.2699 21.5199C12.5699 22.1099 11.4399 22.1099 10.7599 21.5199L9.17988 20.1699C8.87988 19.9199 8.30988 19.7099 7.91988 19.7099H6.16988C5.10988 19.7099 4.23988 18.8399 4.23988 17.7799V16.0699C4.23988 15.6799 4.03988 15.1099 3.78988 14.8199L2.43988 13.2299C1.85988 12.5399 1.85988 11.4199 2.43988 10.7299L3.78988 9.13995C4.03988 8.83995 4.23988 8.27995 4.23988 7.88995V6.19995C4.23988 5.13995 5.10988 4.26995 6.16988 4.26995H7.89988C8.29988 4.26995 8.85988 4.05995 9.15988 3.80995L10.7499 2.44995Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8.5 15.9401L12 8.06006L15.5 15.9401" stroke="#292D32" stroke-width="1.5" stroke-linejoin="bevel"/>
+                            <path d="M13.75 13.3101H10.25" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>                                          
+                    </Icon>
+        
+                    <p>Grade: { testUI.submitted ? `${ (grade * 100).toFixed(0) }%` : "Not submitted" }</p>
+                </div>
         
                 <div class="chip">
                     <Icon frame={[1.2,1.2]}>
@@ -234,19 +268,9 @@
 
         <section id="quiz" style="display: { (stageView === "quiz") ? "block" : "none" };">
             
-            { #if $user.role === "student" }
-                { #await getAnswers() }
-                    <p>Loading ...</p>
-                {:then _ } 
-                { #each quizUI as question, index }
-                <Question test={ test } updateQuestion={ questionUpdate } question={ question } index={ index } />
-                {/each }
-                {/await }
-            { :else }
-                { #each quizUI as question, index }
-                <Question updateQuestion={ questionUpdate } question={ question } index={ index } />
-                {/each }
-            {/if }
+            { #each quizUI as question, index }
+            <Question test={ testUI } updateQuestion={ questionUpdate } question={ question } index={ index } />
+            {/each }
 
             { #if hasEmpty && $user.role !== "student" }
             <div class="error">
@@ -267,7 +291,7 @@
             </button>
             {/if }
 
-            { #if !quizPublishedUI && $user.role === "student" }
+            { #if (!quizPublishedUI || testUI.answers.length <= 0) && $user.role === "student" }
             <div class="empty">
                 <div class="thumbnail"><img src="/images/empty/test.png" alt=""></div>
                 <h3>There is no published quiz for this lesson</h3>
@@ -279,7 +303,7 @@
 
             <div class="submit">
             { #if $user.role === "student" }
-                <button style={ `display: ${ quizPublishedUI ? "inline" : "none" }` } disabled={ !turnable } on:click={ () => quizSubmitAction() }>{ (test?.submitted) ? "Already turned in" : "Submit" }</button>
+                <button style={ `display: ${ quizPublishedUI ? "inline" : "none" }` } disabled={ !turnable } on:click={ () => quizSubmitAction() }>{ (testUI?.submitted) ? "Already turned in" : "Submit" }</button>
             { :else }
                 <button disabled={ hasEmpty || quizPublishedUI } on:click={ () => publishSubmitAction() }>{ (quizPublishedUI) ? "Already published quiz" : "Publish Quiz" }</button>
             {/if }
@@ -404,8 +428,8 @@
                 :global(h1) {
                     font-size: 210%;
                     font-family: app.$typeface-heading;
-                    margin-bottom: 0.5rem;
-                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                    margin-top: 2rem;
 
                     z-index: 2;
                 }

@@ -48,7 +48,7 @@
 
         <div class="choices">
         { #each choicesUI as _, index }
-            <button class={ answer === index ? "chosen" : "" } id="choice" on:click={ () => { if ($user.role === "student") { answer = index; update() }}}>
+            <button class={ answer === index ? "chosen" : "" } id="choice" on:click={ () => { if ($user.role === "student" && !test?.submitted) { answer = index; update() }}}>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <span on:click={ () => { correctUI = index; update() }}>{ numberToAlpha(index) }</span>

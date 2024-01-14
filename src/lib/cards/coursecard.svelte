@@ -14,12 +14,12 @@
     </div>
 
     <div id="members">
-        <img src="/icons/profile.png" alt=""> <img src="/icons/profile.png" alt=""> <img src="/icons/profile.png" alt="">
-        <p>&middot; { course.lessons.length } lessons</p>
+        <img src="/icons/anonymous.png" alt=""> <img src="/icons/anonymous.png" alt=""> <img src="/icons/anonymous.png" alt="">
+        <p>&middot; { course.students.length } students</p>
     </div>
 
     <div id="topic-icon">
-            <img src={`/images/outsiders.jpeg` } alt="">
+        <img src={ course.cover ? course.cover : `/images/empty/book.png` } alt="">
     </div>
 </a>
 
@@ -86,6 +86,7 @@
         height: 1.5rem; 
         z-index: 1; 
         
+        background-color: white;
         border: 3px solid rgb(193, 241, 255);
         border-radius: 3rem;
 

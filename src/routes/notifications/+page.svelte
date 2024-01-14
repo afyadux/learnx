@@ -1,8 +1,10 @@
 
 <script lang="ts">
     import { user } from "$lib/functions/authentication";
+    import type { UserNotification } from "$lib/functions/authentication";
 
-    let notifications : { title: string, message: string }[] = $user.notifications;
+    let notifications : UserNotification[] = $user.notifications;
+    console.log(notifications)
 
 </script>
 
@@ -21,8 +23,8 @@
 
         { #each notifications as notif }
             <div class="notif">
-                <h4>Heading</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. In temporibus ad aliquid dicta unde? Delectus aut maiores exercitationem eos facilis voluptates cum repellendus corrupti.</p>
+                <h4>{ notif.title }</h4>
+                <p>{ notif.text }</p>
             </div>
         {/each }
     </section>

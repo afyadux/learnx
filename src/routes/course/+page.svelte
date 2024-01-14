@@ -53,7 +53,7 @@
     const createCourse = async () => {
         try {
 
-            sendNotification({ type: "info", message: "Creating new course ..." }, 4000)
+            sendNotification({ type: "info", message: "Creating new course ..." }, 4000);
 
             const newCourse = {
                 tag: "",
@@ -86,6 +86,7 @@
                 ... newCourse
             });
 
+            sendNotification({ type: "success", message: "Course created" }, 4000);
             goto(`/course/${ courseID }`);
 
         } catch (error) {

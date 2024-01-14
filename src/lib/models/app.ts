@@ -19,7 +19,8 @@ export interface CourseData {
     tag: string;
     title: string;
     lessons: lessonData[],
-    students: string[],
+    students: { name: string, email: string, pfp: string | null }[],
+    cover: string,
     instructor: {
         name: string;
         email: string,
@@ -30,6 +31,7 @@ export interface CourseData {
 export interface lessonData {
     id: string;
     courseID: string;
+    cover: string;
     title: string;
     subtitle: string;
     postDate: Date;

@@ -8,6 +8,9 @@ import { wipeCookies } from "../utilities/cookies";
 
 
 
+export interface UserNotification {
+    read: boolean, text: string, title: string
+}
 
 export interface UserProfile {
     id: string,
@@ -17,7 +20,7 @@ export interface UserProfile {
     photoURL: string | null,
     role: "admin" | "teacher" | "student",
     courses: string[],
-    notifications: { read: false, message: string, title: string }[],
+    notifications: UserNotification[],
 
     request: Institution | undefined,
     institution: Institution | undefined

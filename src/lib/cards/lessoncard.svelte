@@ -4,6 +4,8 @@
     import Editable from "$lib/interface/Editable.svelte";
     import type { lessonData } from "$lib/models/app";
     import { DateTime } from "luxon";
+    import type { Timestamp } from "firebase/firestore";
+
 
 
     export let disabled = false;
@@ -13,9 +15,9 @@
     const { title, id, quiz, postDate } = lesson;
 
 
-    
-    const dt = DateTime.fromJSDate(postDate).toRelative();
 
+    const { nanoseconds } = postDate as any;    
+    const dt = (nanoseconds) ?  DateTime.fromJSDate((postDate as any).toDate()).toRelative() : DateTime.fromJSDate(postDate).toRelative();
 
 </script>
 
