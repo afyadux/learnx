@@ -5,6 +5,7 @@ import type { Institution } from "$lib/models/app";
 import { browser } from "$app/environment";
 import type { User } from "firebase/auth";
 import { wipeCookies } from "../utilities/cookies";
+import crypto from "crypto";
 
 
 
@@ -39,60 +40,60 @@ const nullUser: UserProfile = {
     institution: undefined
 }
 
-// export class Cypher {
+export class Cypher {
 
 
-//     static encryptionKey = () => {
-//         return Buffer.from("eebef23b4975a62d804ff4081ad0c873a8a8f4b3a2280ef7e4f2188ef65ed0cb", 'hex');
-//     }
+    static encryptionKey = () => {
+        return Buffer.from("eebef23b4975a62d804ff4081ad0c873a8a8f4b3a2280ef7e4f2188ef65ed0cb", 'hex');
+    }
     
 
-//     static splitEncryptedText( encryptedText: string ) {
-//         return {
-//             ivString: encryptedText.slice( 0, 32 ),
-//             encryptedDataString: encryptedText.slice( 32 ),
-//         }
-//     }
+    static splitEncryptedText( encryptedText: string ) {
+        return {
+            ivString: encryptedText.slice( 0, 32 ),
+            encryptedDataString: encryptedText.slice( 32 ),
+        }
+    }
 
-//     static encrypt( plaintext: string) {
+    static encrypt( plaintext: string) {
 
-//         try {
-//             const iv = crypto.randomBytes( 16 );
-//             const cipher = crypto.createCipheriv( 'aes-256-cbc', Cypher.encryptionKey(), iv );
+        try {
+            const iv = crypto.randomBytes( 16 );
+            const cipher = crypto.createCipheriv( 'aes-256-cbc', Cypher.encryptionKey(), iv );
 
-//             const encrypted = Buffer.concat( [
-//                 cipher.update(
-//                     plaintext, 'utf-8'
-//                 ),
-//                 cipher.final(),
-//             ] );
+            const encrypted = Buffer.concat( [
+                cipher.update(
+                    plaintext, 'utf-8'
+                ),
+                cipher.final(),
+            ] );
 
-//             return iv.toString( 'hex' ) + encrypted.toString( 'hex' );
+            return iv.toString( 'hex' ) + encrypted.toString( 'hex' );
 
-//         } catch (e) {
-//             console.error( e );
-//         }
-//     };
+        } catch (e) {
+            console.error( e );
+        }
+    };
 
-//     static decrypt( cipherText: string) {
-//         const {
-//             encryptedDataString,
-//             ivString,
-//         } = Cypher.splitEncryptedText( cipherText );
+    static decrypt( cipherText: string) {
+        const {
+            encryptedDataString,
+            ivString,
+        } = Cypher.splitEncryptedText( cipherText );
 
-//         try {
-//             const iv = Buffer.from( ivString, 'hex' );
-//             const encryptedText = Buffer.from( encryptedDataString, 'hex');
+        try {
+            const iv = Buffer.from( ivString, 'hex' );
+            const encryptedText = Buffer.from( encryptedDataString, 'hex');
 
-//             const decipher = crypto.createDecipheriv( 'aes-256-cbc', Cypher.encryptionKey(), iv );
+            const decipher = crypto.createDecipheriv( 'aes-256-cbc', Cypher.encryptionKey(), iv );
 
-//             const decrypted = decipher.update( encryptedText );
-//             return Buffer.concat( [ decrypted, decipher.final() ] ).toString();
-//         } catch (e) {
-//             console.error( e );
-//         }
-//     }
-// }
+            const decrypted = decipher.update( encryptedText );
+            return Buffer.concat( [ decrypted, decipher.final() ] ).toString();
+        } catch (e) {
+            console.error( e );
+        }
+    }
+}
 
 export const user = writable<UserProfile>(nullUser);
 
