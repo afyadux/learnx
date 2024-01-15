@@ -119,8 +119,8 @@
     </div>
     
     <div id="trail">
-        <p>Carl Wunsche Sr. High &middot; <br>Carl Omondi &middot; Jean-Paul Metoyer</p>
-        <p><br> SpringISD 02-0924</p>
+        <p>Carl Wunsche Sr. High &middot; <br> SpringISD 02-0924 </p>
+        <p><br>Carl Omondi &middot; Jean-Paul Metoyer</p>
     </div>
 </footer>
 

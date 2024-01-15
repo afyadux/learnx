@@ -146,11 +146,11 @@
 
             if (!testUI) { throw Error("No test ui") }
                         
-            const notifyTeacher = updateDoc(doc(database, "users", instructor.email), {
+            const notifyTeacher = updateDoc(doc(database, "users", instructor.id), {
                 notifications: arrayUnion({ read: false, text: `${ $user.firstName } ${ $user.lastName } (${ $user.email }) has submitted the quiz on ${ titleUI }`, title: "New submission" })
             });
 
-            const submit = updateDoc(doc(database, "lesson", lessonID, "submissions", $user.email), {
+            const submit = updateDoc(doc(database, "lesson", lessonID, "submissions", $user.id), {
                 submitted: true
             });
 
