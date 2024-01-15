@@ -22,6 +22,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
     if (cookies.user && cookies.role === "student") {
 
         const submission = await getDoc(doc(database, "lesson", lessonID, "submissions", cookies.user));
+
         if (submission.exists()) {
             const { answers, submitted: turnedIn } = submission.data()! as any;
             assessment = {

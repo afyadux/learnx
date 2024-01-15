@@ -145,16 +145,20 @@
         try {
 
             if (!testUI) { throw Error("No test ui") }
+
+
                         
-            const notifyTeacher = updateDoc(doc(database, "users", instructor.id), {
-                notifications: arrayUnion({ read: false, text: `${ $user.firstName } ${ $user.lastName } (${ $user.email }) has submitted the quiz on ${ titleUI }`, title: "New submission" })
-            });
+            // const notifyTeacher = updateDoc(doc(database, "users", instructor.id), {
+            //     notifications: arrayUnion({ read: false, text: `${ $user.firstName } ${ $user.lastName } (${ $user.email }) has submitted the quiz on ${ titleUI }`, title: "New submission" })
+            // });
+
+            console.log(instructor.id);
 
             const submit = updateDoc(doc(database, "lesson", lessonID, "submissions", $user.id), {
                 submitted: true
             });
 
-            await Promise.all([submit, notifyTeacher]);
+            await Promise.all([submit]);
             sendNotification({ type: "success", message: "Successfully turned in assignment" }, 4000);
 
             testUI = {

@@ -113,6 +113,8 @@ export async function updateUser(fresh: User | null) {
         return;
     }
 
+    wipeCookies();
+
     const profile = fresh!;
     const [first, last] = profile.displayName ? profile.displayName.split(" ") : ["", ""];
 
