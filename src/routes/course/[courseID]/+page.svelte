@@ -257,6 +257,7 @@
                 <Lessoncard disabled={ !enrolled && $user.role === 'student' } lesson={ item } index={ index }/>
             {/each }
 
+            { #if $user.role !== "student" && (instructor.email === $user.email || $user.role === "admin") }
             <button  on:click={ addLesson } class="add lesson">
                 <div class="icon">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -266,6 +267,7 @@
 
                 <h5>Add Lesson</h5>
             </button>
+            {/if }
         </div>
 
         { #if !enrolled && $user.role === "student" }
@@ -343,6 +345,7 @@
             width: 100%;
             max-width: app.$max-width;
             margin: 0px auto;
+            padding: 0px 5vw;
 
         }
 
@@ -366,6 +369,8 @@
                 // border: 1px solid blue;
                 flex-grow: 1;
             }
+
+            
 
             // Information section
             > div:nth-child(1) {
@@ -492,6 +497,31 @@
 
                 -webkit-text-stroke-width: 1px;
                 -webkit-text-stroke-color: app.$color-shade;
+            }
+
+            @media (max-width: 640px) {
+                grid-template-columns: 1fr;
+                grid-template-rows: max-content max-content max-content;
+                gap: 1rem 0px;
+
+                > div {
+                    flex-grow: 1;
+                }
+
+                > div:nth-child(1) {
+                    gap: 0.8rem;
+                    margin-top: 1.5rem;
+                    margin-bottom: 1rem;
+                }
+
+                > div:nth-child(2) {
+                    grid-row: 1 / 2;
+                }
+
+                // > div:nth-child(3) {
+                //     grid-row: 3 / 4;
+                //     grid-column: 1 / 2;
+                // }
             }
 
 

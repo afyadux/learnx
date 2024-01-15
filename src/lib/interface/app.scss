@@ -136,6 +136,7 @@ button, a {
 
 button:disabled {
     background-color: app.$color-shade;
+    color: app.$color-midground;
     cursor: not-allowed !important;
     pointer-events: none !important;
 }
@@ -184,17 +185,22 @@ div.empty > div.thumbnail {
 
     display: flex;
     justify-content: center;
+
+
+    @media screen and (max-width: 640px) {
+        height: 10rem;
+    }
     
 }
 
 *.drop-shadow {
     background-color: app.$color-background;
 
-    transition-property: all;
+    transition-property: box-shadow;
     transition-duration: 150ms;
     transition-timing-function: ease-in;
 
-    &:hover {
+    &:hover, &.show {
         border: 1px dashed transparent;
         box-shadow: 0 0 1.5rem #282a3614;
     }

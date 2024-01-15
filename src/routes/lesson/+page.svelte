@@ -2,23 +2,41 @@
     import Lessoncard from "$lib/cards/lessoncard.svelte";
     import type { CourseData, lessonData } from "$lib/models/app";
     import { user } from "$lib/functions/authentication.js";
+    import Textfield from "$lib/interface/Textfield.svelte";
 
     export let data; 
     const { lessons } = data;
 
 
-    console.log(data);
-
     let enrolledUI : lessonData[] = [];
     let availableUI: lessonData[] = lessons;
+
+    let searchName: string = "";
+    let searchError: string  = "";
+
+    $: filtered = availableUI.filter((lesson) => lesson.title.toUpperCase().includes(searchName.toUpperCase()));
+    
 
 </script>
 
 <main>
     <section>
         <h3>Lessons</h3>
+
+        { #if  availableUI.length > 0 }
+        <div class="search">
+            <Textfield
+                type="text"
+                bind:error={ searchError }
+                bind:value={ searchName } 
+                placeholder="Search through your available lessons ..."
+                required={ false }
+                requiredError="Enter a search string"
+                ></Textfield>
+        </div>
+        { /if }
         
-        {#if availableUI.length === 0 }
+        {#if filtered.length === 0 }
             <div class="empty">
                 <div class="thumbnail"><img src="/images/empty/tutorial.png" alt=""></div>
                 <div class="msg">
@@ -28,7 +46,7 @@
             </div>
         {:else}
         <div class="grid enrolled">
-            {#each availableUI as item }
+            {#each filtered as item, index }
             <Lessoncard lesson={ item } />
             {/each }
         </div>
@@ -45,7 +63,7 @@
     main {
         padding-top: 5rem;
         padding-bottom: 8rem;
-        min-height: calc(100vh - 12rem);
+        min-height: calc(100vh - 10rem);
 
         div.grid {
             margin-bottom: 4rem;
@@ -58,5 +76,11 @@
 
     main > section {
         margin: 0px 8vw;
+    }
+
+    section {
+        div.search {
+            margin: 1rem 0px 2rem 0px;
+        }
     }
 </style>

@@ -19,7 +19,7 @@
     <div class="canvas">
         <div class="info" >
             <h1 id="title">Unlock Your Potential: Master <span>{ courses[focusIndex]?.tag ? courses[focusIndex].tag : "Learning" }</span>, Shape Your Future!</h1>
-            <p>Welcome to your journey of discovery and growth! Our courses, designed to be both engaging and enlightening, promises to transform the way you view and interact with the world around you. With a blend of interactive lessons, real-world examples, and innovative tools, we aim to ignite your passion for learning and personal development.</p>
+            <p>Welcome to your journey of discovery and growth! Our courses, designed to be both engaging and enlightening, promise to transform the way you view and interact with the world, and ignite your passion for learning and personal development.</p>
         </div>
 
         <div class="graphic" bind:clientWidth={ containerWidth }>
@@ -110,7 +110,7 @@
 
                 width: 100%;
                 gap: 1rem;
-                padding-right: 2rem;
+                // padding-right: 2rem;
 
                 span { color: app.$color-brand; };
 
@@ -199,12 +199,19 @@
                     :global(#topic-icon) {
                         width: 12vmax;
                         max-width: 160px;
+                        @media screen and (max-width: 640px) {
+                            padding: 0.2rem;
+                        }
                     }
 
                     :global(.card) {
                         gap: calc(2rem + 3vmax) 0px;
                         margin-left: 5vw;
                         transform: scale(1.15);
+
+                        &:nth-child(1) {
+                            margin-left: 0px;
+                        }
                     }
 
 

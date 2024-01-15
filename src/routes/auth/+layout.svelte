@@ -17,12 +17,22 @@
 
 
     main {
-        min-height: calc(100vh - 12rem);
+        min-height: calc(100vh - 10rem);
         display: flex;
         justify-content: center;
         align-items: center;
 
         padding-top: 4rem;  
+
+        @media screen and (max-width: 640px) {
+            padding: 4rem 5vw 0px 5vw;
+
+            #prompt {
+                padding: 0rem 0rem;
+                margin: 3rem 0px 2rem 0px;
+                border: none;
+            }
+        }
     }
 
 
@@ -75,9 +85,8 @@
 
         :global(#other) {
             margin-top: 15px;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             width: 100%;
             gap: 1rem;
         }
@@ -85,7 +94,6 @@
         :global(#other > span.border) {
             position: relative;
             bottom: 12px;
-            width: 35%;
             border-bottom: 1px solid lightgrey;
         }
 

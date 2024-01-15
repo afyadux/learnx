@@ -11,6 +11,7 @@
     import { doc, getDoc, setDoc } from "firebase/firestore"; 
     import { GoogleAuthProvider } from "firebase/auth";
     import { sendNotification } from "$lib/utilities/notifications";
+    import { page } from "$app/stores";
 
     let role: string = "";
     let roleError = "";
@@ -66,6 +67,15 @@
         institutionUsernameError = "A school with that username is already registered";
     }
 
+    const onEmailChanged = async () => {
+
+        const snap = await getDoc(doc(database, "users", email.toLocaleLowerCase()));
+        if (!snap.exists()) { return; }
+
+        emailError = "Account is already registered";
+    }
+
+
     const seedAuthenticationDatabase = async (auth: { email: string }, school?: { username: string, name: string }) => {
         if (school) {
                 await setDoc(doc(database, "institution", school.username.toLocaleLowerCase()), {
@@ -90,7 +100,7 @@
     }
 
     const submitForm = async () => {
-        try {
+try {
 
             const [firstName, surname] = name.split(" ");
 
@@ -100,8 +110,8 @@
             
             goto("/");
 
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            console.error({ ...error });
         }
     }
 
@@ -199,6 +209,7 @@
         placeholder="name@institution.org"
         required={ true }
         requiredError="Enter your official email address"
+        onEdit={ onEmailChanged }
     ></Textfield>
 
     <br>
@@ -245,7 +256,7 @@
     <SocialAuth disabled={ !socialFormValid } socialIcon="/icons/google.webp" text="Continue with Google" onClickAction={ () => socialRegister("google") } />
     <!-- <SocialAuth socialIcon={ "/icons/apple.svg" } text={ "Continue with Apple" } /> -->
 
-    <p style="font-size: 14px; margin-top:1rem">Already have an Account?<a href="/auth/login" style="cursor: pointer;"> <label for="" style="color: rgb(26,115,232); margin-left: 5px">Sign in</label></a>  </p>
+    <p style="font-size: 14px; margin:1rem auto 0px auto; text-align: center">Already have an Account?<a href="/auth/login" style="cursor: pointer; color: rgb(26,115,232); margin-left: 5px">Sign in</a></p>
 </form>
 
 

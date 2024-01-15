@@ -21,8 +21,8 @@
     }
 
     let dashboard : { title: string, count: number }[] = [
-        { title: "Notifications", count: 0 },
-        { title: "Courses", count: 0 },
+        { title: "Notifications", count: $user.notifications.length },
+        { title: "Courses", count: $user.courses.length },
     ]
 
     let institutionalName: string = $user.institution?.name ? $user.institution.name : "No Institution Joined";
@@ -35,9 +35,6 @@
     let emailError : string = "";
     let emailEditable: boolean = false;
 
-    let password: string = "";
-    let showPassword = false;
-    let passwordError : string = "";
 
     let confirmationPassword: string = "";
     let showConfirmationPassword = false;
@@ -81,7 +78,6 @@
                 joinRequests: arrayRemove(person),
                 students: increment(1)
             });
-
 
             requestsUI = requestsUI.filter((item) => item.email !== person.email);
 
@@ -371,7 +367,7 @@
             </slot>
             </Textfield>
 
-            <button on:click={ () => updateUserPassword() } disabled={ updatePasswordError } class="tertiary" style="z-index: 1; position: absolute; left: 50%; bottom: -2.8rem; transform: translate(-50%, 0%);">Update Password</button>
+            <button on:click={ () => updateUserPassword() } disabled={ updatePasswordError } class="tertiary" style="z-index: 1; position: absolute; left: 50%; bottom: -3.8rem; transform: translate(-50%, 0%);">Update Password</button>
         </div>
 
         
@@ -392,7 +388,7 @@
     main {
         padding-top: 5rem;
         padding-bottom: 8rem;
-        min-height: calc(100vh - 12rem);
+        min-height: calc(100vh - 10rem);
     }
 
     main > section {
@@ -405,7 +401,7 @@
         align-items: center;
         justify-content: flex-start;
 
-        margin-top: 3rem;
+        margin-top: 2rem;
         margin-bottom: 1rem;
 
         p {
@@ -542,6 +538,7 @@
             justify-content: center;
 
             margin-bottom: 2rem;
+
         }
     }
 

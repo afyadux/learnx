@@ -119,6 +119,8 @@
 
         transform: translateX(24%) translateY(40%) rotateZ(-30deg);
         padding: 1.5rem;
+        
+
 
         img {
             max-width: 100%;

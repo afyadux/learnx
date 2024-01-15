@@ -9,7 +9,7 @@
     import type { CourseData } from "$lib/models/app.js";
     import { user } from "$lib/functions/authentication.js";
     import { sendNotification } from "$lib/utilities/notifications.js";
-    import { getDoc, doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+    import { getDoc, doc, setDoc, updateDoc, arrayUnion, increment } from "firebase/firestore";
 
 
     export let data;
@@ -30,13 +30,12 @@
     $: institutionID = $user.institution? $user.institution!.id : "";
 
     $: formValid = 
-        ($user.role !== "student" ?
+        $user.role !== "student" ?
             (
+                ($user.institution) &&
                 (courseName !== "") && (courseNameError === "") &&
                 (courseID !== "") && (courseIDError === "")
-            ) : true) &&
-
-        true;
+            ) : true;
 
     const onCourseIDChanged = async () => {
 
@@ -81,6 +80,10 @@
             await setDoc(doc(database, "course", courseID), newCourse);
             await updateDoc(doc(database, "users", $user.email!), {
                 courses: arrayUnion(courseID)
+            });
+
+            await updateDoc(doc(database, "institution", $user.institution!.id), {
+                courseCount: increment(1)
             });
 
             personalCourses.push({
@@ -133,7 +136,7 @@
             </div>
 
             <div class="cta">
-                <button  disabled={ !formValid } on:click={ () => createCourse() }>Create Course</button>
+                <button  disabled={ !formValid } on:click={ () => createCourse() }>{ $user.institution ? "Create Course" : "Join an institution to create a course" }</button>
             </div>
         </form>
     { /if }
@@ -220,7 +223,7 @@
     main {
         padding-top: 5rem;
         padding-bottom: 8rem;
-        min-height: calc(100vh - 12rem);
+        min-height: calc(100vh - 10rem);
     }
 
     main > * {

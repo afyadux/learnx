@@ -43,7 +43,7 @@
 
     main#certification {
         padding: 6rem 8vw 12rem 8vw;
-        min-height: calc(100vh - 12rem);
+        min-height: calc(100vh - 10rem);
     }
 
     section.certs {

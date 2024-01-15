@@ -13,7 +13,7 @@
 
     <section id="frame">
         <div class="imgs">
-            <img src="/icons/dummylogo.png" alt="">
+            <img src="/icons/logo.png" alt="">
         </div>
 
         <h4 class="desc">Proudly Confers on</h4>
@@ -34,7 +34,7 @@
     
 
     main#certification {
-        height: calc(100vh - 12rem);
+        height: calc(100vh - 10rem);
         padding: 4rem 8vw 0px 8vw;
 
 

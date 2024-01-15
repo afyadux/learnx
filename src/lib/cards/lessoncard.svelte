@@ -6,24 +6,17 @@
     import { DateTime } from "luxon";
     import type { Timestamp } from "firebase/firestore";
 
-
-
     export let disabled = false;
     export let index: number = 1;
     export let lesson: lessonData;
     export let consumer: boolean = true;
-    const { title, id, quiz, postDate } = lesson;
 
-
-
-    const { nanoseconds } = postDate as any;    
-    const dt = (nanoseconds) ?  DateTime.fromJSDate((postDate as any).toDate()).toRelative() : DateTime.fromJSDate(postDate).toRelative();
-
+    const { nanoseconds } = lesson.postDate as any;    
+    const dt = (nanoseconds) ?  DateTime.fromJSDate((lesson.postDate as any).toDate()).toRelative() : DateTime.fromJSDate(lesson.postDate).toRelative();
 </script>
 
 
-<a href="/lesson/{ id }" class={ disabled ? "disabled lesson drop-shadow" : "lesson drop-shadow" }>
-
+<a href="/lesson/{ lesson.id }" class={ disabled ? "disabled lesson drop-shadow" : "lesson drop-shadow" }>
     <div class="lead">
         
         {#if consumer }
@@ -37,9 +30,9 @@
     </div>
 
     <div class="trail">
-        <Editable type="h4" value={title} editable={false} placeholder="Lesson Title ..." />
+        <Editable type="h4" value={lesson.title} editable={false} placeholder="Lesson Title ..." />
         <p style="line">{ dt }</p>
-        <p>{ quiz.length } Questions</p>
+        <p>{ lesson.quiz.length } Questions</p>
     </div>
 </a>
 

@@ -43,6 +43,7 @@
         (testUI.answers.includes(-1) == false);
         
 
+    $: isEmpty = quizUI.length === 0;
 
     $: hasEmpty = 
         [...quizUI.map((q) => q.prompt), ...quizUI.flatMap((q) => q.choices)]
@@ -221,7 +222,7 @@
                 </div>
         
                 <div class="chip">
-                    <Icon frame={[1.2,1.2]}>
+                    <Icon frame={[1.5,1.5]}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M8 2V5"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M16 2V5"  stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -277,12 +278,12 @@
 
             { #if hasEmpty && $user.role !== "student" }
             <div class="error">
-                <p>You must add text to all answer choices and prompts to publish quiz to students</p>
+                <p style="text-align: center">You must add text to all answer choices and prompts to publish quiz to students</p>
             </div>
             {/if }
             
 
-            { #if $user.role !== "student" }
+            { #if $user.role !== "student" && $user.email === instructor.email && quizPublishedUI === false }
             <button class="add" on:click={ addQuestion }>
                 <div class="icon">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -308,7 +309,7 @@
             { #if $user.role === "student" }
                 <button style={ `display: ${ quizPublishedUI ? "inline" : "none" }` } disabled={ !turnable } on:click={ () => quizSubmitAction() }>{ (testUI?.submitted) ? "Already turned in" : "Submit" }</button>
             { :else }
-                <button disabled={ hasEmpty || quizPublishedUI } on:click={ () => publishSubmitAction() }>{ (quizPublishedUI) ? "Already published quiz" : "Publish Quiz" }</button>
+                <button disabled={ hasEmpty || quizPublishedUI || isEmpty } on:click={ () => publishSubmitAction() }>{ (quizPublishedUI) ? "Already published quiz" : "Publish Quiz" }</button>
             {/if }
             </div>
         
@@ -324,6 +325,8 @@
 
     main {
 
+        gap: 0px;
+
         div.chip {
             fill: transparent;
             stroke: app.$color-foreground;
@@ -332,6 +335,11 @@
             align-items: center;
             justify-content: flex-start;
             gap: 0.5rem;
+
+            @media screen and (max-width: 640px) {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
 
         > * {
@@ -488,7 +496,7 @@
 
             display: flex;
             flex-direction: row;
-            padding-top: 2rem;
+            padding: 2rem 5vw 0px 5vw;
 
             section {
                 transition-property: transform;
@@ -504,9 +512,19 @@
                 align-items: center;
                 gap: 2vmax;
 
-                padding-bottom: 6rem;
-                padding-top: 1rem;
+                padding: 1rem 0px 6rem 1.5rem;
 
+                :global(button.add.lesson) {
+                    margin-top: 1rem;
+                }
+
+
+
+                @media screen and (max-width: 640px) {
+                    :global(button.add.lesson) {
+                        transform: translateX(-0.75rem);
+                    }
+                }
                 
             }
         }

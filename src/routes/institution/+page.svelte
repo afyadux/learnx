@@ -9,8 +9,14 @@
     import { sendNotification } from "$lib/utilities/notifications";
 
     
-
+    export let data;
+    const { schools } = data;
     let request : Institution | undefined = undefined;
+
+    $: filtered = 
+        (request) ? 
+            schools.filter((inst) => inst.id !== request!.id)
+        : schools; 
     
 
     onMount(() => {
@@ -58,18 +64,6 @@
         
         request = undefined;
     }
-
-    async function fetchSchools() : Promise<Institution[]> {
-        const schoolQuery = query(collection(database, "institution"), limit(20))
-        const values : any = (await getDocs(schoolQuery)).docs.map((doc) => { 
-            return {
-                id: doc.id,
-                ...doc.data()
-            }
-        });
-
-        return values;
-    }
 </script>
     
 <main>
@@ -80,7 +74,7 @@
 
             <div class={ request ? "grid request" : "grid" } >
                 { #if request !== undefined }
-                    <button class="campus select" style="margin-bottom: 4rem;">
+                    <button class="campus select drop-shadow show" style="margin-bottom: 0rem;">
                         <div class="pfp"><img src={ request.pfp ? request.pfp : "/icons/institution.png" } alt=""></div>
                         <div class="info">
                             <h5>{ request.name }</h5>
@@ -89,33 +83,30 @@
 
                         <button on:click={ () => { revokeRequest(request) }} class="secondary">Cancel</button>
                     </button>
-                    
-                    <span></span>
-                    <span></span>
                 {/if }
 
-                {#await fetchSchools() }
-                    <p>Loading schools</p>
-                {:then schools }
-                    { #each schools as campus }
-                    <button class="campus" >
-                        <div class="pfp"><img src={ campus.pfp ? campus.pfp : "/icons/institution.png" } alt=""></div>
-                        <div class="info">
-                            <h5>{ campus.name }</h5>
-                            <h6>@{ campus.id }</h6>
-                        </div>
+                { #each filtered as campus }
+                <button class="campus" >
+                    <div class="pfp"><img src={ campus.pfp ? campus.pfp : "/icons/institution.png" } alt=""></div>
+                    <div class="info">
+                        <h5>{ campus.name }</h5>
+                        <h6>@{ campus.id }</h6>
+                    </div>
 
-                        { #if request == undefined }
-                        <button on:click={ () => { sendRequest(campus) }} class="tertiary">Join</button>
-                        { :else }
-                        <span></span>
-                        {/if }
-                    </button>
-                    {/each }                    
-                {/await}
-
+                    { #if request == undefined }
+                    <button on:click={ () => { sendRequest(campus) }} class="tertiary">Join</button>
+                    { :else }
+                    <span></span>
+                    {/if }
+                </button>
+                {/each }                    
 
             </div>
+
+            { #if request }
+                <div style="margin: 2rem 0px 0px 0px"><p style="text-align: center;">Waiting for { request.name }'s administration to approve your request to join</p></div>
+            { /if }
+
         </section>
     { :else }
 
@@ -196,7 +187,7 @@
     main {
         padding-top: 4rem;
         
-        min-height: calc(100vh - 12rem);
+        min-height: calc(100vh - 10rem);
 
         display: flex;
         flex-direction: column;
@@ -207,7 +198,7 @@
             margin-bottom: 3rem;
             align-self: center;
            
-            width: 84vw;
+            padding: 0px 5vw 0px 0px;
             margin-top: 5rem;
             display: flex;
             flex-direction: row;
@@ -235,7 +226,7 @@
                 }
 
                 h1 {
-                    font-size: 3rem;
+                    font-size: 2rem;
                     font-family: app.$typeface-heading;
                 }
 
@@ -248,63 +239,73 @@
 
                 img {
                     width: 100%;
-                    border-radius: 2rem;
+                    border-radius: 1.5rem;
                     position: relative;
                     z-index: 1;
                     margin-top: 1rem;
 
+                    transform: translate(0%, 10%);
+
                 }
             }
                 div#backdrop {
-                    border-radius: 2rem;
+                    border-radius: 1.5rem;
                     width: 100%;
                     height: 90%;
                     bottom: 15%;
-                    left: 9%;
+                    left: 10%;
                     position: absolute;
                     z-index: -1;
                     background-color: app.$color-brand;
                     opacity: 10%;
+
                 }
             }
             @media screen and (max-width: 1180px) {
-            section#hero {
-                flex-direction:column-reverse;
-                margin-bottom: 3rem;
-                align-self: center;
-                align-items: center;
-                width: 84vw;
-                margin-top: 5rem;
-                display: flex;
-                gap: 3rem;
-
-                div#graphic {
-
-                    width: 80%;
-                    
-                    img {
-                        width: 100%;
-                        border-radius: 3rem;
-                        position: relative;
-                        z-index: 1;
+                section#hero {
+                    flex-direction:column-reverse;
+                    margin-bottom: 3rem;
+                    align-self: center;
+                    align-items: center;
+                    margin-top: 1rem;
+                    display: flex;
+                    gap: 3rem;
+                    padding: 0px 5vw 0px 5vw;
 
 
+
+                    div#graphic {
+
+                        margin-bottom: 3rem;
+                        
+                        img {
+                            width: 100%;
+                            position: relative;
+                            z-index: 1;
+
+                        }
+
+                        div#backdrop {
+                            width: 100%;
+                            height: 90%;
+                            position: absolute;
+                            z-index: -1;
+                            background-color: app.$color-brand;
+                            opacity: 50%;
+
+                            filter: blur(1rem);
+
+                            left: 0px;
+                            bottom: -5%;
+                            transform: scale(1.1);
+                            background-image: url("/images/school.webp");
+
+
+                        }
                     }
 
-                    div#backdrop {
-                        border-radius: 3rem;
-                        width: 100%;
-                        height: 90%;
-                        position: absolute;
-                        z-index: -1;
-                        background-color: app.$color-brand;
-                        opacity: 20%;
-
-                    }
                 }
-
             }
-        }
 
         
 
@@ -336,6 +337,7 @@
 
                         position: relative;
                         &::after {
+                            display: none;
                             position: absolute;
                             top: -2.5rem;
                             content: "Other Institutions";
@@ -353,7 +355,7 @@
                         gap: 1rem; 
 
                         border-radius: 1.2rem;
-                        background-color: app.$color-background;
+                        background-color: app.$color-elevate;
                         border: 1px solid app.$color-shade;
 
                         transition-property: all;
@@ -365,6 +367,11 @@
 
                         text-align: start;
 
+                        &.select {
+                            background-color: app.$color-elevate;
+                            border: none !important;
+
+                        }
                         
 
                         &:hover {

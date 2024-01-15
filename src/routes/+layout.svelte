@@ -16,7 +16,7 @@
 
     $: color = () => { 
 
-        if ($notification === undefined) { return "transparent"; }
+        if ($notification === undefined) { return ""; }
 
         switch ($notification.type) {
             case "info":
@@ -39,10 +39,6 @@
     let showNavbar: boolean = false;
     const toggleNavbar = () => { showNavbar = !showNavbar };
 
-    interface profile {
-        role: string
-    }
-
     function addToggleNavbar(node: HTMLElement) {
         node.addEventListener(("click"), toggleNavbar);
     }
@@ -61,15 +57,13 @@
 
 <nav>
     <a href="/" id="logo">
-        <img src="/icons/dummylogo.png" alt="">
+        <img src="/icons/logo.png" alt="">
     </a>
 
     <div class="links">
         <a class={ $page.route.id === "/course" ? "highlight" : "" } href="/course">Courses</a>
         <a class={ $page.route.id === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
         <a class={ $page.route.id === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
-        <a class={ $page.route.id === "/certification" ? "highlight" : "" } href="/certification">Certifications</a>
-        <!-- <a class={ $page.route.id === "/certification" ? "highlight" : "" } href="/certification">Certifications</a> -->
         <a class={ $page.route.id === "/notifications" ? "highlight" : "" } href="/notifications">Notifications</a>
     </div>
 
@@ -104,9 +98,9 @@
             <h5>Sign in to securely access your classes & lessons</h5>
         </div>
 
-        <div style="display: flex; gap: 1rem;">
-            <a href="/auth/register" class="button">Create Account</a>
-            <a href="/auth/login" class="button secondary">Sign In</a>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0px 1rem;">
+            <a style="flex-grow: 1;" href="/auth/register" class="button">Create Account</a>
+            <a style="width: 100%;" href="/auth/login" class="button secondary">Sign In</a>
         </div>
 
     </main>
@@ -117,7 +111,7 @@
 <footer>
 
     <div id="logo">
-        <img src="/icons/dummylogo.png" alt="">
+        <img src="/icons/logo.png" alt="">
     </div>
     
     <div id="trail">
@@ -266,28 +260,19 @@
         left: 0px;
         right: 0px;
         height: 100dvh;
-
-        background-color: transparent;
         pointer-events: none;
 
-        @keyframes showNotification {
+        @keyframes show {
             0% {
                 bottom: -20%;
             }
-            10% {
-                bottom: 0%;
-            }
-            100% {
-                bottom: 3rem;
-            }
-        }
 
-        @keyframes hideNotification {
-            0% {
-                bottom: 3rem;
+            20% {
+                bottom: 2rem;
             }
-            50% {
-                bottom: 0%;
+
+            90% {
+                bottom: 2rem;
             }
             100% {
                 bottom: -20%;
@@ -305,11 +290,6 @@
 
             text-align: center;
 
-            animation-name: hideNotification;
-            animation-duration: 1200ms;
-            animation-timing-function: linear;
-            animation-fill-mode: forwards;
-
             color: app.$color-background;
             box-shadow: 0rem 0rem 1.5rem rgba(40, 42, 54, 0.08);
 
@@ -317,10 +297,8 @@
             border-radius: 2rem;
 
             &.show {
-                bottom: 3rem;
-
-                animation-name: showNotification;
-                animation-duration: 600ms;
+                animation-name: show;
+                animation-duration: 4000ms;
                 animation-timing-function: linear;
                 animation-fill-mode: forwards;
             }
@@ -411,18 +389,23 @@
     }
 
     main#auth {
-        height: calc(100vh - 12rem);
+        height: calc(100vh - 10rem);
         padding-top: 4rem;
 
         display: flex;
         flex-direction: column;
         justify-content: center;
+
+        @media screen and (max-width: 640px) {
+            padding: 4rem 5vw 0px 5vw;
+            gap: 0.5rem;
+        }
+
+        * { text-align: center; }
         
         div {
             max-width: 800px;
             margin: 0px auto;
-
-            padding: 0px 3rem;
         }
 
         h2 {
@@ -445,40 +428,42 @@
             align-items: center;
             gap: 0.5rem;
 
-            > * { text-align: center; }
+            > * { text-align: center; width: 100%; }
         }
     }
 
     footer {
-        background-color: app.$color-brand;
-        padding: 2rem 4vw;
-        height: 12rem;
+        background-color: #D3D7F5;
+        padding: 2rem 4vw 2rem 4vw;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        gap: 2rem;
+        gap: 1rem;
+        height: 10rem;
+
+        #logo {
+            height: 3rem;
+        }
+
+        #logo img {
+            max-height: 100%;
+            max-width: 100%;
+        }
+
+        #trail {
+            margin: 0rem 0px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #trail p {
+            color: app;
+            font-size: .8rem;
+        }
        
     }
 
-    #logo {
-        height: 4rem;
-    }
-
-    #logo img {
-        max-height: 100%;
-        max-width: 100%;
-    }
-
-    #trail {
-        margin: 0rem 0px;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    #trail p {
-        color: white;
-        font-size: .8rem;
-    }
+    
 </style>
 
 

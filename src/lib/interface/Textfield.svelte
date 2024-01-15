@@ -19,7 +19,7 @@
     export let onEdit: () => void = () => {  };
 
     const onEditTextfield = () => {
-
+        onEdit()
     }
 
     const onFinishEdit = () => {

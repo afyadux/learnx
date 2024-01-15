@@ -14,7 +14,7 @@
     
 
     main#error {
-        min-height: calc(100vh - 12rem);
+        min-height: calc(100vh - 10rem);
         padding: 4rem 8vw 0px 8vw;
     }
 </style>
