@@ -298,7 +298,7 @@
 
             &.show {
                 animation-name: show;
-                animation-duration: 4000ms;
+                animation-duration: 6000ms;
                 animation-timing-function: linear;
                 animation-fill-mode: forwards;
             }

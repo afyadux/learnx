@@ -7,11 +7,10 @@
     import SocialAuth from "$lib/interface/SocialAuth.svelte";
     import Tabbar from "$lib/interface/Tabbar.svelte";
     import Textfield from "$lib/interface/Textfield.svelte";
-    import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
+    import { createUserWithEmailAndPassword, signInWithPopup, updateProfile, type User } from "firebase/auth";
     import { doc, getDoc, setDoc } from "firebase/firestore"; 
     import { GoogleAuthProvider } from "firebase/auth";
     import { sendNotification } from "$lib/utilities/notifications";
-    import { page } from "$app/stores";
 
     let role: string = "";
     let roleError = "";
@@ -67,16 +66,8 @@
         institutionUsernameError = "A school with that username is already registered";
     }
 
-    const onEmailChanged = async () => {
 
-        const snap = await getDoc(doc(database, "users", email.toLocaleLowerCase()));
-        if (!snap.exists()) { return; }
-
-        emailError = "Account is already registered";
-    }
-
-
-    const seedAuthenticationDatabase = async (auth: { email: string }, school?: { username: string, name: string }) => {
+    const seedAuthenticationDatabase = async (auth: User, school?: { username: string, name: string }) => {
         if (school) {
                 await setDoc(doc(database, "institution", school.username.toLocaleLowerCase()), {
                     name: school.name,
@@ -86,11 +77,12 @@
                     instructors: 0,
                     lessons: 0,
                     popularCourses: [],
-                    joinRequests: []
+                    joinRequests: [],
+                    icon: ""
                 });
             }  
 
-            await setDoc(doc(database, "users", auth.email), {
+            await setDoc(doc(database, "users", auth.uid), {
                 courses: [], 
                 notifications: [],
                 request: null,
@@ -100,14 +92,17 @@
     }
 
     const submitForm = async () => {
-try {
+            try {
 
+            sendNotification({ type: "info", message: "Creating your account..." });
             const [firstName, surname] = name.split(" ");
 
-            await seedAuthenticationDatabase({ email: email }, (role === "admin") ? { username: institutionUsername, name: institutionName } : undefined);
             const userSnapshot = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(userSnapshot.user, { displayName: `${ firstName } ${ surname ? surname : "" }` });
-            
+
+            await seedAuthenticationDatabase(userSnapshot.user, (role === "admin") ? { username: institutionUsername, name: institutionName } : undefined);
+            sendNotification({ type: "success", message: "Account created successfully" });
+
             goto("/");
 
         } catch (error: any) {
@@ -126,7 +121,7 @@ try {
                 throw new Error("Problem setting hooking up to the Google Flow");
             }
 
-            await seedAuthenticationDatabase({ email: user.email! }, (role === "admin") ? { username: institutionUsername, name: institutionName } : undefined);
+            await seedAuthenticationDatabase(user, (role === "admin") ? { username: institutionUsername, name: institutionName } : undefined);
             goto("/");
 
         } catch (error: any) {
@@ -209,7 +204,6 @@ try {
         placeholder="name@institution.org"
         required={ true }
         requiredError="Enter your official email address"
-        onEdit={ onEmailChanged }
     ></Textfield>
 
     <br>

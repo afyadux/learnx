@@ -4,20 +4,19 @@
 <script lang="ts">
     import Textfield from "$lib/interface/Textfield.svelte";
     import Icon from "$lib/interface/Icon.svelte";
-    import AuthSection from "$lib/sections/authSection.svelte";
     import Editable from "$lib/interface/Editable.svelte";
-    import { updateUser, updateUserEmail, user, type UserProfile } from "$lib/functions/authentication";
+    import { updateUser, updateUserEmail, user } from "$lib/functions/authentication";
     import Usercard from "$lib/cards/usercard.svelte";
     import Layout from "../auth/+layout.svelte";
     import { arrayRemove, deleteDoc, doc, getDoc, getDocs, increment, updateDoc } from "firebase/firestore";
-    import { auth, database } from "$lib/firebase/app";
+    import { auth, database, uploadProfilePhoto } from "$lib/firebase/app";
     import { deleteUser, EmailAuthCredential, EmailAuthProvider, getAuth, reauthenticateWithCredential, sendEmailVerification, sendSignInLinkToEmail, updateCurrentUser, updateEmail, updatePassword, updateProfile, verifyBeforeUpdateEmail } from "firebase/auth";
     import { sendNotification } from "$lib/utilities/notifications";
     import { goto } from "$app/navigation";
    
 
     interface UserRequest {
-        email: string, name: string, pfp: string 
+        id: string, email: string, name: string, pfp: string 
     }
 
     let dashboard : { title: string, count: number }[] = [
@@ -31,9 +30,8 @@
 
     let requestsUI : UserRequest[] = [];
 
-    let email: string = $user.email;
-    let emailError : string = "";
-    let emailEditable: boolean = false;
+    let pfpUI = $user.photoURL ? $user.photoURL : "/icons/edit-pfp.png";
+    let campusUI = $user.institution?.icon === "" ? "/icons/institution.png" : $user.institution?.icon;
 
 
     let confirmationPassword: string = "";
@@ -69,7 +67,7 @@
             const institutionID = $user.institution?.id;
             if (!institutionID || institutionID === "") { return; }
 
-            await updateDoc(doc(database, "users", person.email), {
+            await updateDoc(doc(database, "users", person.id), {
                 institution: institutionID,
                 request: null
             });
@@ -85,23 +83,94 @@
 
     }
 
-    const updateEmailAddress = async () => {
-        if (emailError !== "") { email = $user.email; emailError = ""; emailEditable = false; }
-        if (auth.currentUser == null) { return }
 
+    const onFilePicked = async (event: Event, type: "campus" | "pfp") => {
         try {
-            // const response = await verifyBeforeUpdateEmail(auth.currentUser, email);
-            // await sendSignInLinkToEmail(auth, email, { handleCodeInApp: false, url: "https://google.com" });
+            if (!event.target || !$user.institution) { return; }
 
-            // sendNotification({
-            //     message: `We sent a confirmation email to : ${ email } `,
-            //     type: "info"
-            // }, 3000);
+            const filePicker = event.target as HTMLInputElement;
+            const file = filePicker.files![0];
 
-            // updateUserEmail(email);
-            // console.log(response);
+            if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
 
-        } catch (error) { console.log(error); }
+                reader.onload = () => {
+                    if (type === "campus") {
+                        campusUI = reader.result as string;
+                        
+                    } 
+                    else {
+                        pfpUI = reader.result as string;
+                        
+                    }
+                }
+
+                sendNotification({ type: "info", message: "Uploading new profile picture" }, 5000);
+
+
+                if (type === "campus") {
+                    await uploadProfilePhoto(file, undefined, $user.institution!.id);
+                } 
+                else {
+                    await await uploadProfilePhoto(file, auth.currentUser!, $user.institution!.id);
+                }
+
+                sendNotification({ type: "success", message: "Cover image uploaded" }, 5000);
+
+            } else {
+                sendNotification({ type: "error", message: "Only image files are allowed" }, 5000);
+            }
+
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+        
+    }
+
+    const onDropHandle = async (event: DragEvent, type: "campus" | "pfp")  => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const files = event.dataTransfer!.files;
+        const file = files[0];
+
+        if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = () => {
+
+                if (type === "campus") {
+                    campusUI = reader.result as string;
+                } 
+                else {
+                    pfpUI = reader.result as string;
+                }
+            }
+
+            if (type === "campus") {
+                await uploadProfilePhoto(file, undefined, $user.institution!.id);
+            } 
+            else {
+                await uploadProfilePhoto(file, auth.currentUser!, $user.institution!.id);
+            }
+
+            sendNotification({ type: "success", message: "Cover image uploaded" }, 5000);
+
+        } else {
+            sendNotification({ type: "error", message: "Only image files are allowed" }, 5000);
+        }
+    }
+
+    const onOpenFilePicker = (event: MouseEvent, type: "campus" | "pfp") => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const filePicker = document.getElementById(`${ type }Picker`) as HTMLInputElement;
+        filePicker.click();
     }
 
     const updateUserPassword = async () => {
@@ -140,7 +209,7 @@
             sendNotification({ type: "warning", message: "Permanently deleting your account!!" });
             goto("/auth/register");
 
-            await deleteDoc(doc(database, "users", $user.email));
+            await deleteDoc(doc(database, "users", auth.currentUser.uid));
             await deleteUser(auth.currentUser);
 
             sendNotification({ type: "info", message: "Account deleted" });
@@ -173,7 +242,9 @@
         <div class="profile">
 
             <div class="icons">
-                <div class="pfp"><img src={  $user?.photoURL ? $user.photoURL : "/icons/edit-pfp.png"  } alt=""></div>
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <div on:drop={ (ev) => onDropHandle(ev, "pfp") } on:dragover={ (event) => event.preventDefault() } on:click={ (ev) => onOpenFilePicker(ev, "pfp") } class="pfp"><img src={  pfpUI  } alt=""></div>
 
                 <div>
                 <Icon>
@@ -184,7 +255,9 @@
                 </Icon>
                 </div>
 
-                <div class=""><img src="/icons/institution.png" alt=""></div>
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <div on:drop={ (ev) => onDropHandle(ev, "campus") } on:dragover={ (event) => event.preventDefault() } on:click={ (ev) => onOpenFilePicker(ev, "campus") } class="pfp"><img src={  campusUI  } alt=""></div>
 
                 <Editable
                 bind:value={ institutionalName }
@@ -192,6 +265,9 @@
                 placeholder="Institution Name"
                 editable={ $user.role === "admin" } 
                 />
+
+                <input id="pfpPicker" type="file" style="display: none;" on:change={ (event) => onFilePicked(event, "pfp") } accept="image/*"/>
+                <input id="campusPicker" type="file" style="display: none;" on:change={ (event) => onFilePicked(event, "campus") } accept="image/*"/>
             </div>
 
 

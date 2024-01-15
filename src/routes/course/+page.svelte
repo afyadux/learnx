@@ -78,7 +78,7 @@
             }
 
             await setDoc(doc(database, "course", courseID), newCourse);
-            await updateDoc(doc(database, "users", $user.email!), {
+            await updateDoc(doc(database, "users", $user.id), {
                 courses: arrayUnion(courseID)
             });
 

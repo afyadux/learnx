@@ -19,13 +19,6 @@
         (email !== "") && (emailError === "") &&
         (password !== "") && (passwordError === "");
 
-    const onEmailChanged = async () => {
-
-        const snap = await getDoc(doc(database, "users", email.toLocaleLowerCase()));
-        if (snap.exists()) { return; }
-
-        emailError = "No account exists with that email";
-    }
 
     const submitLoginForm = async () => {
         
@@ -86,7 +79,6 @@
     bind:value={ email } 
     title="Email Address"
     placeholder="name@institution.org"
-    onEdit={ onEmailChanged }
    ></Textfield>
 
     <br>

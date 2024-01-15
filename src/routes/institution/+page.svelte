@@ -25,13 +25,13 @@
 
     async function sendRequest(school: Institution) {
         try {
-            const userID = $user.email;
+            const userID = $user.id;
             const updateUser = updateDoc(doc(database, "users", userID), {
                 request: school.id
             });
 
             const updateInstitution = updateDoc(doc(database, "institution", school.id), {
-                joinRequests: arrayUnion({ email: $user.email, pfp: $user.photoURL, name: ($user.firstName + " " + $user.lastName) })
+                joinRequests: arrayUnion({ id: $user.id, email: $user.email, pfp: $user.photoURL, name: ($user.firstName + " " + $user.lastName) })
             });
 
             await Promise.all([updateUser, updateInstitution]);
@@ -51,13 +51,13 @@
 
         if (!school) { return; }
 
-        const userID = $user.email;
+        const userID = $user.id;
         const updateUser = updateDoc(doc(database, "users", userID), {
             request: null
         });
 
         const updateInstitution = updateDoc(doc(database, "institution", school.id), {
-            joinRequests: arrayRemove({ email: $user.email, pfp: $user.photoURL, name: ($user.firstName + " " + $user.lastName) })
+            joinRequests: arrayRemove({ id: $user.id, email: $user.email, pfp: $user.photoURL, name: ($user.firstName + " " + $user.lastName) })
         });
 
         await Promise.all([updateUser, updateInstitution]);
@@ -185,7 +185,7 @@
     @use "$lib/interface/variables" as app;
 
     main {
-        padding-top: 4rem;
+        padding: 4rem 5vw 2rem 5vw;
         
         min-height: calc(100vh - 10rem);
 

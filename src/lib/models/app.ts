@@ -76,6 +76,7 @@ export interface Institution extends MiniInstitution {
     tutorials: number; 
     courses: string[];
     courseCount: number;
+    icon: string;
 }
 
 export interface InstitutionRequest {
