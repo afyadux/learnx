@@ -68,6 +68,8 @@
         <a class={ $page.route.id === "/course" ? "highlight" : "" } href="/course">Courses</a>
         <a class={ $page.route.id === "/lesson" ? "highlight" : "" } href="/lesson">Lessons</a>
         <a class={ $page.route.id === "/institution" ? "highlight" : "" } href="/institution">Institution</a>
+        <a class={ $page.route.id === "/certification" ? "highlight" : "" } href="/certification">Certifications</a>
+        <!-- <a class={ $page.route.id === "/certification" ? "highlight" : "" } href="/certification">Certifications</a> -->
         <a class={ $page.route.id === "/notifications" ? "highlight" : "" } href="/notifications">Notifications</a>
     </div>
 

@@ -30,8 +30,8 @@
 
     let ideasUI: LessonIdea[] = ideas;
     let titleUI: string = title;
-    let quizUI: QuizQuestion[] = (quizPublished === false && $user.role === "student") ? [] : quiz;
-    let testUI: StudentTest = test;
+    let quizUI: QuizQuestion[] = ((quizPublished === false && $user.role === "student") || !test) ? [] : quiz;
+    let testUI: StudentTest | undefined = test;
     let quizPublishedUI : boolean = quizPublished;
 
     let stageView: string = "lesson";
@@ -49,7 +49,7 @@
         .includes("");
 
     $: grade = 
-        (testUI.answers.length > 0) ?
+        (testUI) ?
         ((testUI.answers.map((answer, index) => (answer === quizUI[index].correct) ? 1 : 0) as number[])
         .reduce((acc, current) => acc + current) / testUI.answers.length)
         : 0;
@@ -60,10 +60,10 @@
 
     const getAnswers = async () => {
 
-        if (!user) { return }
-
         const submission = await getDoc(doc(database, "lesson", lessonID, "submissions", $user.email));
-        const { answers, submitted: turnedIn } = submission.data()! as any;
+        if (!user || !submission.exists()) { return }
+
+        const { answers, submitted: turnedIn } = submission.data()!;
         let answerValues = (quiz.map((_, index) => answers[index] ? answers[index] : -1 ))
         let assessment = {
             submitted: turnedIn,
@@ -98,7 +98,7 @@
 
     async function questionUpdate(value: QuizQuestion, userAnswer: number, index: number) {
 
-        if ($user.role === "student") {
+        if ($user.role === "student" && testUI) {
             const updatedAnswers = [...testUI.answers.slice(0, index), userAnswer , ...testUI.answers.slice(index + 1)];
             await updateDoc(doc(database, "lesson", lessonID, "submissions", $user.email), {
                 answers: updatedAnswers
@@ -145,6 +145,8 @@
 
 
         try {
+
+            if (!testUI) { throw Error("No test ui") }
                         
             const notifyTeacher = updateDoc(doc(database, "users", instructor.email), {
                 notifications: arrayUnion({ read: false, text: `${ $user.firstName } ${ $user.lastName } (${ $user.email }) has submitted the quiz on ${ titleUI }`, title: "New submission" })
@@ -215,7 +217,7 @@
                             </svg>                                          
                     </Icon>
         
-                    <p>Grade: { testUI.submitted ? `${ (grade * 100).toFixed(0) }%` : "Not submitted" }</p>
+                    <p>Grade: { testUI?.submitted ? `${ (grade * 100).toFixed(0) }%` : "Not submitted" }</p>
                 </div>
         
                 <div class="chip">
@@ -268,6 +270,7 @@
 
         <section id="quiz" style="display: { (stageView === "quiz") ? "block" : "none" };">
             
+            
             { #each quizUI as question, index }
             <Question test={ testUI } updateQuestion={ questionUpdate } question={ question } index={ index } />
             {/each }
@@ -291,7 +294,7 @@
             </button>
             {/if }
 
-            { #if (!quizPublishedUI || testUI.answers.length <= 0) && $user.role === "student" }
+            { #if (!quizPublishedUI || !testUI) && $user.role === "student" }
             <div class="empty">
                 <div class="thumbnail"><img src="/images/empty/test.png" alt=""></div>
                 <h3>There is no published quiz for this lesson</h3>

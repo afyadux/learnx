@@ -6,6 +6,9 @@
     export let data; 
     const { lessons } = data;
 
+
+    console.log(data);
+
     let enrolledUI : lessonData[] = [];
     let availableUI: lessonData[] = lessons;
 

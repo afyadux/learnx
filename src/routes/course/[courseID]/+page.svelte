@@ -9,7 +9,7 @@
     import type { CourseData, lessonData } from "$lib/models/app";
     import { user } from "$lib/functions/authentication";
     import { sendNotification } from "$lib/utilities/notifications";
-    import { Timestamp, addDoc, arrayRemove, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+    import { Timestamp, addDoc, arrayRemove, arrayUnion, collection, doc, increment, setDoc, updateDoc } from "firebase/firestore";
 
     export let data: CourseData;
     const { courseID, tag, title, objective, lessons, instructor, students, cover } = data;
@@ -94,6 +94,10 @@
         await updateDoc(courseReference, {
             lessons: arrayUnion(lessonRef.id)
         });
+
+        await updateDoc(doc(database, "institution", $user.institution!.id), {
+            lessons: increment(1)
+        })
 
         lessonsUI = [...lessonsUI, { ...newLesson, id: lessonRef.id }];
 
@@ -221,7 +225,7 @@
         <h3>Objective</h3>
 
         <Editable
-            editable={ true }
+            editable={ $user.role !== "student" }
             placeholder="Enter course objective here ..." 
             onFinishEdit={ onObjectiveEdit } 
             bind:value={ objectiveUI }/>

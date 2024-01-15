@@ -16,17 +16,17 @@ export const load: PageServerLoad = async ({ params, request }) => {
     const ps = (pointer.data()!.postDate as Timestamp).toDate();
 
     const cookies = getCookies(request);
-    let assessment = {
-        submitted: false,
-        answers: []
-    }
+    let assessment = undefined;
 
     if (cookies.user && cookies.role === "student") {
+
         const submission = await getDoc(doc(database, "lesson", lessonID, "submissions", cookies.user));
-        const { answers, submitted: turnedIn } = submission.data()! as any;
-        assessment = {
-            submitted: turnedIn,
-            answers: answers
+        if (submission.exists()) {
+            const { answers, submitted: turnedIn } = submission.data()! as any;
+            assessment = {
+                submitted: turnedIn,
+                answers: answers
+            }
         }
 
     }

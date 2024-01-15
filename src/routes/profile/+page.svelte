@@ -9,7 +9,7 @@
     import { updateUser, updateUserEmail, user, type UserProfile } from "$lib/functions/authentication";
     import Usercard from "$lib/cards/usercard.svelte";
     import Layout from "../auth/+layout.svelte";
-    import { arrayRemove, deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+    import { arrayRemove, deleteDoc, doc, getDoc, getDocs, increment, updateDoc } from "firebase/firestore";
     import { auth, database } from "$lib/firebase/app";
     import { deleteUser, EmailAuthCredential, EmailAuthProvider, getAuth, reauthenticateWithCredential, sendEmailVerification, sendSignInLinkToEmail, updateCurrentUser, updateEmail, updatePassword, updateProfile, verifyBeforeUpdateEmail } from "firebase/auth";
     import { sendNotification } from "$lib/utilities/notifications";
@@ -78,7 +78,8 @@
             });
 
             await updateDoc(doc(database, "institution", institutionID), {
-                joinRequests: arrayRemove(person)
+                joinRequests: arrayRemove(person),
+                students: increment(1)
             });
 
 

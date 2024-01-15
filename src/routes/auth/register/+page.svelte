@@ -72,6 +72,9 @@
                     name: school.name,
                     admin: auth.email,
                     courses: [],
+                    students: 0,
+                    instructors: 0,
+                    lessons: 0,
                     popularCourses: [],
                     joinRequests: []
                 });
