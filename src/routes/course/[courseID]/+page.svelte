@@ -80,7 +80,7 @@
             }
 
             sendNotification({ type: "info", message: "Uploading cover image" }, 5000);
-            await uploadCourseCoverImage(file, $user.institution!.id, courseID);
+            uploadCourseCoverImage(file, $user.institution!.id, courseID);
 
             sendNotification({ type: "success", message: "Cover image uploaded" }, 5000);
 

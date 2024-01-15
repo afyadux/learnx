@@ -41,7 +41,7 @@
 
         const regexPattern = /^[a-z\-]+$/
         if (regexPattern.test(courseID) === false) {
-            courseIDError = "IDs must be lowercase, and can only contain hyphens";
+            courseIDError = "IDs must be lowercase letters, and can only contain hyphens";
             return;
         };
 

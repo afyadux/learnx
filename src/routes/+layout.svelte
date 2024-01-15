@@ -54,6 +54,10 @@
     }); 
 </script>
 
+<svelte:head>
+  <title>LearnX</title>
+</svelte:head>
+
 
 <nav>
     <a href="/" id="logo">
@@ -115,8 +119,8 @@
     </div>
     
     <div id="trail">
-        <p>Copyright © LearnX, BPA</p>
-        <p>All Rights Reserved</p>
+        <p>Carl Wunsche Sr. High &middot; <br>Carl Omondi &middot; Jean-Paul Metoyer</p>
+        <p><br> SpringISD 02-0924</p>
     </div>
 </footer>
 

@@ -50,13 +50,10 @@
         .includes("");
 
     $: grade = 
-        (testUI) ?
+        (testUI && testUI.answers.length > 0) ?
         ((testUI.answers.map((answer, index) => (answer === quizUI[index].correct) ? 1 : 0) as number[])
         .reduce((acc, current) => acc + current) / testUI.answers.length)
         : 0;
-    
-
-
 
 
     const getAnswers = async () => {

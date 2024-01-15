@@ -1,0 +1,81 @@
+IEvent:
+  organization: string
+  date: number
+  location: string
+  thumbnail: string
+  backgroundColor: string
+  description: string
+
+CourseData:
+  courseID: string
+  objective: string
+  tag: string
+  title: string
+  lessons: 
+    - lessonData
+  students: 
+    id: string
+    name: string
+    email: string
+    pfp: string | null
+
+lessonData:
+  id: string
+  courseID: string
+  cover: string
+  title: string
+  subtitle: string
+  postDate: Date
+  ideas: 
+    - LessonIdea
+  quiz: 
+    - QuizQuestion
+  quizPublished: boolean
+  instructor: 
+    name: string
+    email: string
+    pfp: string | null
+
+StudentTest:
+  submitted: boolean
+  answers: 
+    - number
+
+LessonIdea:
+  type: '"text" | "video"'
+  value: string
+
+QuizQuestion:
+  prompt: string
+  type: string
+  choices: 
+    - string
+  correct: number
+
+MiniInstitution:
+  id: string
+  pfp: string
+  name: string
+
+InstitutionRequest:
+  type: '"teacher" | "student"'
+  email: string
+
+UserNotification:
+  read: boolean
+  text: string
+  title: string
+
+UserProfile:
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  photoURL: string | null
+  role: '"admin" | "teacher" | "student"'
+  courses: 
+    - string
+  notifications: 
+    - UserNotification
+  request: Institution | undefined
+  institution: Institution | undefined

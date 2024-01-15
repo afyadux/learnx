@@ -11,6 +11,10 @@
 
 </script>
 
+<svelte:head>
+  <title>LearnX</title>
+</svelte:head>
+
 <main>
     <Hero courses={ courses }/>
 

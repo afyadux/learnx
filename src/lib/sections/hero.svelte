@@ -209,8 +209,10 @@
                         margin-left: 5vw;
                         transform: scale(1.15);
 
+                        margin: 0px 1.5rem;
+
                         &:nth-child(1) {
-                            margin-left: 0px;
+                            margin: 0px 2.5rem 0px 0px;
                         }
                     }
 
@@ -315,8 +317,7 @@
                 gap: 1rem;
 
                 position: absolute;
-                
-                top: -150%;
+                top: -0.5rem;
                 transform: translateY(-50%) translateX(-50%);
                 left: 50%;
 
