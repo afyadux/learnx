@@ -69,26 +69,26 @@
 
     const seedAuthenticationDatabase = async (auth: User, school?: { username: string, name: string }) => {
         if (school) {
-                await setDoc(doc(database, "institution", school.username.toLocaleLowerCase()), {
-                    name: school.name,
-                    admin: auth.email,
-                    courses: [],
-                    students: 0,
-                    instructors: 0,
-                    lessons: 0,
-                    popularCourses: [],
-                    joinRequests: [],
-                    icon: ""
-                });
-            }  
-
-            await setDoc(doc(database, "users", auth.uid), {
-                courses: [], 
-                notifications: [],
-                request: null,
-                role: role,
-                institution: (school) ? school.username : null
+            await setDoc(doc(database, "institution", school.username.toLocaleLowerCase()), {
+                name: school.name,
+                admin: auth.email,
+                courses: [],
+                students: 0,
+                instructors: 0,
+                lessons: 0,
+                popularCourses: [],
+                joinRequests: [],
+                icon: ""
             });
+        }  
+
+        await setDoc(doc(database, "users", auth.uid), {
+            courses: [], 
+            notifications: [],
+            request: null,
+            role: role,
+            institution: (school) ? school.username : null
+        });
     }
 
     const submitForm = async () => {
