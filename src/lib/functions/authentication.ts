@@ -5,7 +5,7 @@ import type { Institution } from "$lib/models/app";
 import { browser } from "$app/environment";
 import type { User } from "firebase/auth";
 import { wipeCookies } from "../utilities/cookies";
-import { goto } from "$app/navigation";
+import { page } from '$app/stores';
 
 
 
@@ -113,7 +113,6 @@ export async function updateUser(fresh: User | null) {
         return;
     }
 
-
     const profile = fresh!;
     const [first, last] = profile.displayName ? profile.displayName.split(" ") : ["", ""];
 
@@ -154,10 +153,6 @@ export async function updateUser(fresh: User | null) {
         request: fetchRequest,
         institution: fetchCampus
     });
-
-    if (browser) {
-        goto("/");
-    }
 }
 
 export function updateUserEmail(newEmail: string) {

@@ -25,7 +25,6 @@
         try {
             await signInWithEmailAndPassword(auth, email, password);
             sendNotification({ type: "success", message: "Signed in successfully" })
-            goto("/profile");   
 
         } catch (error: any) {
 
@@ -53,7 +52,6 @@
             if (!user) {
                 throw new Error("Problem setting hooking up to the Google Flow");
             }
-
 
             goto("/");
 

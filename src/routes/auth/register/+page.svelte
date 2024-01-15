@@ -11,6 +11,7 @@
     import { doc, getDoc, setDoc } from "firebase/firestore"; 
     import { GoogleAuthProvider } from "firebase/auth";
     import { sendNotification } from "$lib/utilities/notifications";
+    import { browser } from "$app/environment";
 
     let role: string = "";
     let roleError = "";
@@ -103,8 +104,9 @@
             await seedAuthenticationDatabase(userSnapshot.user, (role === "admin") ? { username: institutionUsername, name: institutionName } : undefined);
             sendNotification({ type: "success", message: "Account created successfully" });
 
-            goto("/");
+            
 
+            goto("/");
         } catch (error: any) {
             console.error({ ...error });
         }
@@ -120,8 +122,12 @@
             if (!user) {
                 throw new Error("Problem setting hooking up to the Google Flow");
             }
-
             await seedAuthenticationDatabase(user, (role === "admin") ? { username: institutionUsername, name: institutionName } : undefined);
+
+            if (browser) {
+                window.location.assign(window.location.origin);
+            }
+
             goto("/");
 
         } catch (error: any) {
