@@ -24,6 +24,9 @@
     let courseID: string = "";
     let courseIDError: string = "";
 
+    let searchName: string = "";
+    let searchError: string  = ""; 
+
     $: institutionID = $user.institution? $user.institution!.id : "";
 
     $: formValid = 
@@ -48,6 +51,10 @@
 
         courseIDError = "A course is already registered under that ID";
     }
+
+
+    $: filtered = 
+        institutionalCourses.filter((course) => course.title.toLocaleLowerCase().includes(searchName.toLocaleLowerCase()));
 
 
     const createCourse = async () => {
@@ -159,6 +166,20 @@
 
     <section id="institution">
         <h3>{ $user.role === "student" ? "Available courses to enroll in" : ($user.role === "teacher" ? "Other institutional courses" : `${ $user.institution?.name }'s Courses`) }</h3>
+
+        { #if  institutionalCourses.length > 0 }
+        <div class="search">
+            <Textfield
+                type="text"
+                bind:error={ searchError }
+                bind:value={ searchName } 
+                placeholder="Search through your institutions catalogue"
+                required={ false }
+                requiredError="Enter a search string"
+                ></Textfield>
+        </div>
+        { /if }
+
     
         { #if institutionalCourses.length === 0 }
         <div class="empty">
@@ -180,7 +201,7 @@
         </div>
         { :else }
             <div class="grid">
-                { #each institutionalCourses as course }
+                { #each filtered as course }
                 { #if course}
                     <Coursecard course={ course } /> 
                 {/if }
@@ -238,6 +259,12 @@
     section#courses {
         div.empty a { color: app.$color-brand; }
 
+    }
+
+    section#institution {
+        div.search {
+            margin: 1rem 0px 2rem 0px;
+        }
     }
 </style>
 
