@@ -23,9 +23,11 @@
     let titleUI: string = title;
     let objectiveUI: string = objective;
     let coverUI = cover; 
-    $: enrolled = (studentsUI.findIndex((i) => i.email === $user.email) != -1);
 
-    $: hasEditAccess = $user.role !== "student" && (instructor.email === $user.email || $user.role === "admin")
+    $: enrolled = studentsUI.findIndex((i) => i.id === $user.id) !== -1;
+
+
+    $: hasEditAccess = $user.role !== "student" && (instructor.id === $user.id || $user.role === "admin")
 
     const onFilePicked = async (event: Event) => {
 
@@ -114,7 +116,7 @@
     async function manageRegistration(action: "enroll" | "dropout") {
         const userID = $user.id; 
 
-        const studentProfile = { name: `${ $user.firstName } ${ $user.lastName }`, email: userID, pfp: $user.photoURL };
+        const studentProfile = { name: `${ $user.firstName } ${ $user.lastName }`, email: $user.email!, pfp: $user.photoURL, id: $user.id };
 
         try {
             const register = updateDoc(doc(database, "course", courseID), {
@@ -155,6 +157,7 @@
             quizPublished: false, 
             postDate: new Date(),
             instructor: {
+                id: $user.id,
                 name: `${ $user.firstName } ${ $user.lastName }`,
                 email: $user.email,
                 pfp: $user.photoURL
@@ -316,10 +319,10 @@
 
         <div class="grid">
             {#each lessonsUI as item, index }
-                <Lessoncard disabled={ !enrolled && $user.role === 'student' } lesson={ item } index={ index }/>
+                <Lessoncard disabled={ (enrolled === false) && $user.role === 'student' } lesson={ item } index={ index }/>
             {/each }
 
-            { #if $user.role !== "student" && (instructor.email === $user.email || $user.role === "admin") }
+            { #if $user.role !== "student" && (instructor.id === $user.id || $user.role === "admin") }
             <button  on:click={ addLesson } class="add lesson">
                 <div class="icon">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

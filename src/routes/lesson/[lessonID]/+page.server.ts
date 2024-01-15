@@ -15,6 +15,7 @@ export const load: PageServerLoad = async ({ params, request }) => {
     const pointer = await getDoc(doc(database, "lesson", lessonID));
     const ps = (pointer.data()!.postDate as Timestamp).toDate();
 
+    
     const cookies = getCookies(request);
     let assessment = undefined;
 

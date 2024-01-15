@@ -19,9 +19,10 @@ export interface CourseData {
     tag: string;
     title: string;
     lessons: lessonData[],
-    students: { name: string, email: string, pfp: string | null }[],
+    students: { id: string; name: string, email: string, pfp: string | null }[],
     cover: string,
     instructor: {
+        id: string;
         name: string;
         email: string,
         pfp: string | null;
@@ -39,6 +40,7 @@ export interface lessonData {
     quiz: QuizQuestion[];
     quizPublished: boolean;
     instructor: {
+        id: string;
         name: string;
         email: string,
         pfp: string | null;

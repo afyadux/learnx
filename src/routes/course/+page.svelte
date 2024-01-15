@@ -72,6 +72,7 @@
 
                 instructor: {
                     name: `${ $user.firstName } ${ $user.lastName }`,
+                    id: $user.id,
                     email: $user.email,
                     pfp: $user.photoURL
                 }

@@ -61,7 +61,7 @@
 
     const getAnswers = async () => {
 
-        const submission = await getDoc(doc(database, "lesson", lessonID, "submissions", $user.email));
+        const submission = await getDoc(doc(database, "lesson", lessonID, "submissions", $user.id));
         if (!user || !submission.exists()) { return }
 
         const { answers, submitted: turnedIn } = submission.data()!;
@@ -101,7 +101,7 @@
 
         if ($user.role === "student" && testUI) {
             const updatedAnswers = [...testUI.answers.slice(0, index), userAnswer , ...testUI.answers.slice(index + 1)];
-            await updateDoc(doc(database, "lesson", lessonID, "submissions", $user.email), {
+            await updateDoc(doc(database, "lesson", lessonID, "submissions", $user.id), {
                 answers: updatedAnswers
             });
 
@@ -283,7 +283,7 @@
             {/if }
             
 
-            { #if $user.role !== "student" && $user.email === instructor.email && quizPublishedUI === false }
+            { #if $user.role !== "student" && $user.id === instructor.id && quizPublishedUI === false }
             <button class="add" on:click={ addQuestion }>
                 <div class="icon">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
