@@ -34,6 +34,11 @@
                 joinRequests: arrayUnion({ id: $user.id, email: $user.email, pfp: $user.photoURL, name: ($user.firstName + " " + $user.lastName) })
             });
 
+            const notifyAdmin = updateDoc(doc(database, "users", userID), {
+                request: school.id
+            });
+
+
             await Promise.all([updateUser, updateInstitution]);
             
             request = school;

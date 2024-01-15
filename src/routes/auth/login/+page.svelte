@@ -24,7 +24,8 @@
         
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            sendNotification({ type: "success", message: "Signed in successfully" })
+            sendNotification({ type: "success", message: "Signed in successfully" });
+            goto("/");
 
         } catch (error: any) {
 
