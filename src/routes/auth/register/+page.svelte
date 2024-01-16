@@ -90,6 +90,8 @@
             role: role,
             institution: (school) ? school.username : null
         });
+
+        
     }
 
     const submitForm = async () => {
@@ -105,8 +107,12 @@
             sendNotification({ type: "success", message: "Account created successfully" });
 
             
+            if (browser) {
+                window.location.assign(window.location.origin);
+            }
 
             goto("/");
+
         } catch (error: any) {
             console.error({ ...error });
         }

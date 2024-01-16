@@ -7,6 +7,7 @@
     import { auth, database } from "$lib/firebase/app";
     import { sendNotification } from "$lib/utilities/notifications";
     import { getDoc, doc } from "firebase/firestore";
+    import { browser } from "$app/environment";
 
     let email: string = "";
     let password: string = "";
@@ -25,6 +26,11 @@
         try {
             await signInWithEmailAndPassword(auth, email, password);
             sendNotification({ type: "success", message: "Signed in successfully" });
+
+            if (browser) {
+                window.location.assign(window.location.origin);
+            }
+
             goto("/");
 
         } catch (error: any) {
@@ -52,6 +58,10 @@
             const { user } = googleUserCredential;
             if (!user) {
                 throw new Error("Problem setting hooking up to the Google Flow");
+            }
+
+            if (browser) {
+                window.location.assign(window.location.origin);
             }
 
             goto("/");
