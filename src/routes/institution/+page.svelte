@@ -80,7 +80,7 @@
             <div class={ request ? "grid request" : "grid" } >
                 { #if request !== undefined }
                     <button class="campus select drop-shadow show" style="margin-bottom: 0rem;">
-                        <div class="pfp"><img src={ request.pfp ? request.pfp : "/icons/institution.png" } alt=""></div>
+                        <div class="pfp"><img src={ request.icon ? request.icon : "/icons/institution.png" } alt=""></div>
                         <div class="info">
                             <h5>{ request.name }</h5>
                             <h6>@{ request.id }</h6>
