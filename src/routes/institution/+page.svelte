@@ -92,7 +92,7 @@
 
                 { #each filtered as campus }
                 <button class="campus" >
-                    <div class="pfp"><img src={ campus.pfp ? campus.pfp : "/icons/institution.png" } alt=""></div>
+                    <div class="pfp"><img src={ campus.icon ? campus.icon : "/icons/institution.png" } alt=""></div>
                     <div class="info">
                         <h5>{ campus.name }</h5>
                         <h6>@{ campus.id }</h6>
