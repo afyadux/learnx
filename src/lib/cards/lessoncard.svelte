@@ -92,7 +92,15 @@
             grid-template-rows: max-content max-content;
             gap: 0.2rem 0.5rem;
 
-            :global(h4) { grid-column: span 2; font-weight: app.$weight-semibold; height: 3em; }
+            :global(h4) {
+                grid-column: span 2;
+                font-weight: app.$weight-semibold;
+                height: 3em;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+            }
             p { color: app.$color-midground }
             > p:nth-child(3) { text-align: end; }
         }
