@@ -119,8 +119,8 @@
     </div>
     
     <div id="trail">
-        <p>Carl Wunsche Sr. High &middot; <br> SpringISD 02-0924 </p>
-        <p><br>Carl Omondi &middot; Jean-Paul Metoyer</p>
+        <p>Made with &#x3C;&#x2764;&#x3E; for students &#x26; educators</p>
+        <p>The Coding Initiative &copy; 2024</p>
     </div>
 </footer>
 

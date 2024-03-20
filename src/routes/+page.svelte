@@ -61,7 +61,6 @@
             {/if }
 
             
-
             {#each institutional as item }
             <Coursecard course={ item }/>
             {/each }
